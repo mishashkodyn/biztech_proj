@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Inject, Injectable } from '@angular/core';
+import { inject, Inject, Injectable, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { ApiResponse } from '../models/api-response';
 import { User } from '../models/user';
@@ -11,6 +11,7 @@ import { JsonPipe } from '@angular/common';
 export class AuthService {
   private baseUrl = 'https://localhost:5000/api/account';
   private token = 'token';
+  isLoading = signal(false);
 
   httpClient = inject(HttpClient);
 

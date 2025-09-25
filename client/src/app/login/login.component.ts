@@ -9,6 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, RouterLink } from '@angular/router';
 import { ApiResponse } from '../models/api-response';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ButtonComponent } from "../components/button/button.component";
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,8 @@ import { HttpErrorResponse } from '@angular/common/http';
     MatIconModule,
     MatButtonModule,
     MatInputModule,
-    RouterLink
+    RouterLink,
+    ButtonComponent
 ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -30,18 +32,20 @@ export class LoginComponent {
   hide: boolean = false;
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     private snackBar: MatSnackBar,
     private router: Router
   ) {}
 
   login() {
+    this.authService.isLoading.set(true);
     this.authService.login(this.email, this.password).subscribe({
       next: () => {
         this.authService.me().subscribe();
         this.snackBar.open("Logged in successfully.", "Close", {
           duration: 3000
         })
+        this.authService.isLoading.set(false);
       },
       error: (error: HttpErrorResponse) => {
         let err = error.error as ApiResponse<string>;
@@ -49,9 +53,11 @@ export class LoginComponent {
         this.snackBar.open(err.error, "Close", {
           duration: 3000
         });
+        this.authService.isLoading.set(false);
       },
       complete: () => {
         this.router.navigate(['/']);
+        this.authService.isLoading.set(false);
       }
     })
   }
