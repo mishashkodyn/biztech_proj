@@ -42,16 +42,16 @@ export class ChatService {
         console.log('Connection or login error.', error);
       });
 
-    // this.hubConnection!.on('Notify', (user: User) => {
-    //   Notification.requestPermission().then((result) => {
-    //     if (result == 'granted') {
-    //       new Notification('Active now 🟢', {
-    //         body: user.name + ' ' + user.surname + ' is online now',
-    //         icon: user.profileImage,
-    //       });
-    //     }
-    //   });
-    // });
+    this.hubConnection!.on('Notify', (user: User) => {
+      Notification.requestPermission().then((result) => {
+        if (result == 'granted') {
+          new Notification('Active now 🟢', {
+            body: user.name + ' ' + user.surname + ' is online now',
+            icon: user.profileImage,
+          });
+        }
+      });
+    });
 
     this.hubConnection!.on('NotifyTypingToUser', (senderUserName) => {
       this.onlineUsers.update((users) =>
