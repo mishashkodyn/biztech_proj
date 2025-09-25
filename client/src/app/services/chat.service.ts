@@ -20,7 +20,10 @@ export class ChatService {
   onlineUsers = signal<User[]>([]);
   currentOpenedChat = signal<User | null>(null);
   chatMessages = signal<Message[]>([]);
-  isLoading = signal<boolean>(true);
+  isLoading = signal<boolean>(false);
+  autoScrollEnabled = signal<boolean>(true);
+  pageNumber = signal<number>(1);
+  
 
   startConnection(token: string, senderId?: string) {
     this.hubConnection = new HubConnectionBuilder()
@@ -39,16 +42,16 @@ export class ChatService {
         console.log('Connection or login error.', error);
       });
 
-    this.hubConnection!.on('Notify', (user: User) => {
-      Notification.requestPermission().then((result) => {
-        if (result == 'granted') {
-          new Notification('Active now 🟢', {
-            body: user.name + ' ' + user.surname + ' is online now',
-            icon: user.profileImage,
-          });
-        }
-      });
-    });
+    // this.hubConnection!.on('Notify', (user: User) => {
+    //   Notification.requestPermission().then((result) => {
+    //     if (result == 'granted') {
+    //       new Notification('Active now 🟢', {
+    //         body: user.name + ' ' + user.surname + ' is online now',
+    //         icon: user.profileImage,
+    //       });
+    //     }
+    //   });
+    // });
 
     this.hubConnection!.on('NotifyTypingToUser', (senderUserName) => {
       this.onlineUsers.update((users) =>
@@ -84,9 +87,9 @@ export class ChatService {
       );
     });
 
-    this.hubConnection!.on('ReceiveMessageList', (messages: Message[]) => {
+    this.hubConnection!.on('ReceiveMessageList', (message: Message[]) => {
       this.isLoading.set(true);
-      this.chatMessages.set(messages);
+      this.chatMessages.update((messages) => [...message, ...messages]);
       this.isLoading.set(false);
     });
 
@@ -130,13 +133,18 @@ export class ChatService {
   }
 
   loadMessages(pageNumber: number) {
-    this.isLoading.update(() => true);
+    if (pageNumber === 1) {
+      this.chatMessages.set([]);
+    }
+
+    this.pageNumber.set(pageNumber);
+    this.isLoading.set(true);
+
     this.hubConnection
       ?.invoke('LoadMessages', this.currentOpenedChat()?.id, pageNumber)
-      .then()
-      .catch()
+      .catch((err) => console.error(err))
       .finally(() => {
-        this.isLoading.update(() => false);
+        this.isLoading.set(false);
       });
   }
 
@@ -167,11 +175,15 @@ export class ChatService {
   }
 
   notifyTyping() {
-    this.hubConnection!.invoke('NotifyTyping', this.currentOpenedChat()?.userName)
-     .then((x) => {console.log('notify for ', x);
-     }).catch((error) => {
-      console.log(error);
-      
-     })
+    this.hubConnection!.invoke(
+      'NotifyTyping',
+      this.currentOpenedChat()?.userName
+    )
+      .then((x) => {
+        console.log('notify for ', x);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 }
