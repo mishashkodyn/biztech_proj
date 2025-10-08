@@ -21,7 +21,7 @@ jobs:
           node-version: 20
 
       - name: Install and Build Angular
-        working-directory: ./frontend  # 🔹 шлях до твого фронту
+        working-directory: ./client  # 🔹 шлях до твого фронту
         run: |
           npm install
           npm run build --prod
@@ -33,7 +33,7 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore and Build .NET
-        working-directory: ./backend  # 🔹 шлях до твого бекенду
+        working-directory: ./  # 🔹 шлях до твого бекенду
         run: |
           dotnet restore
           dotnet publish -c Release -o publish
@@ -53,3 +53,4 @@ jobs:
           app-name: YOUR-BACKEND-APP-NAME  # 🔹 назва бекенд App Service
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISH_PROFILE_BACK }}
           package: ./backend/publish
+
