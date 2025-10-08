@@ -42,15 +42,16 @@ jobs:
       - name: Deploy Angular to Azure
         uses: azure/webapps-deploy@v3
         with:
-          app-name: YOUR-FRONTEND-APP-NAME  # 🔹 назва фронтового App Service
+          app-name: biztech-ui  # 🔹 назва фронтового App Service
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISH_PROFILE_FRONT }}
-          package: ./frontend/dist  # шлях до зібраного Angular
+          package: ./client/dist  # шлях до зібраного Angular
 
       # --- 5️⃣ Deploy .NET API to Azure App Service ---
       - name: Deploy .NET API to Azure
         uses: azure/webapps-deploy@v3
         with:
-          app-name: YOUR-BACKEND-APP-NAME  # 🔹 назва бекенд App Service
+          app-name: biztechapp 
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISH_PROFILE_BACK }}
-          package: ./backend/publish
+          package: ./publish
+
 
