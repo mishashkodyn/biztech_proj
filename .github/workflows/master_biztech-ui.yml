@@ -23,6 +23,8 @@ jobs:
       - name: Install and Build Angular
         working-directory: ./client  # 🔹 шлях до твого фронту
         run: |
+          pwd
+          ls -la
           npm install
           npm run build --prod
 
@@ -53,6 +55,7 @@ jobs:
           app-name: biztechapp 
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISH_PROFILE_BACK }}
           package: ./publish
+
 
 
 
