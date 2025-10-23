@@ -1,20 +1,27 @@
 <div class="chat-section flex flex-col">
   <div
     #messageScroll
-    class="w-full messageReceiver flex flex-col chat-box overflow-y-auto"
+    class="w-full messageReceiver flex flex-col chat-box overflow-y-auto mb-2"
   >
     <div
-      class="p-2 message mb-2"
+      class="message"
       *ngFor="let item of chatService.chatMessages(); let i = index"
       [ngClass]="{
         myMessage: item.senderId === authService.currentLoggedUser?.id,
         theirMessage: item.senderId !== authService.currentLoggedUser?.id
       }"
     >
-      <div class="b-radius p-2 messageText emojiFonts">
+      <div class="b-radius shadow-sm p-2 messageText emojiFonts">
         {{ item.content }}
-        <div class="messageMe text-gray-500 text-sm">
-          {{ item.createdDate | date : "HH:mm" }}
+        <div class="message-footer">
+          <div class="messageMe">
+            {{ item.createdDate | date : "HH:mm" }}
+          </div>
+          @if(item.senderId === authService.currentLoggedUser?.id) {
+          <mat-icon class="check-mark">
+            {{ item.isRead ? "done_all" : "done" }}
+          </mat-icon>
+          }
         </div>
       </div>
     </div>

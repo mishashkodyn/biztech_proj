@@ -23,18 +23,18 @@ export class ChatService {
   isLoading = signal<boolean>(false);
   autoScrollEnabled = signal<boolean>(true);
   pageNumber = signal<number>(1);
-  isConnected = signal<boolean>(false)
-  
+  isConnected = signal<boolean>(false);
+  chatRightSidebarIsOpen = signal<boolean>(false);
 
   startConnection(token: string, senderId?: string) {
     if (this.hubConnection?.state === HubConnectionState.Connected) return;
 
     if (this.hubConnection) {
-      this.hubConnection.off("ReceiveNewMessage");
-      this.hubConnection.off("ReceiveMessageList");
-      this.hubConnection.off("OnlineUsers");
-      this.hubConnection.off("NotifyTypingToUser");
-      this.hubConnection.off("Notify");
+      this.hubConnection.off('ReceiveNewMessage');
+      this.hubConnection.off('ReceiveMessageList');
+      this.hubConnection.off('OnlineUsers');
+      this.hubConnection.off('NotifyTypingToUser');
+      this.hubConnection.off('Notify');
     }
     this.hubConnection = new HubConnectionBuilder()
       .withUrl(`${this.hubUrl}?senderId=${senderId || ''}`, {
@@ -54,7 +54,7 @@ export class ChatService {
 
     this.hubConnection!.on('Notify', (user: User) => {
       if (user.userName == this.authService.currentLoggedUser?.userName) return;
-      
+
       Notification.requestPermission().then((result) => {
         if (result == 'granted') {
           new Notification('Active now 🟢', {
@@ -106,7 +106,7 @@ export class ChatService {
     });
 
     this.hubConnection!.on('ReceiveNewMessage', (message: Message) => {
-      let audio = new Audio("assets/notification.mp3")
+      let audio = new Audio('assets/notification.mp3');
       audio.play();
       document.title = 'New Message';
 
@@ -200,4 +200,5 @@ export class ChatService {
         console.log(error);
       });
   }
+
 }
