@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, Input, input, output } from '@angular/core';
 
 @Component({
   selector: 'app-button',
@@ -11,6 +11,9 @@ export class ButtonComponent {
   isLoading = input<boolean>();
   action = output<void>();
   text = input.required<string>();
+  @Input() matIcon?: string;
+  @Input() width?: string;
+  @Input() height?: string;
 
   clickHandler() {
     this.action.emit();

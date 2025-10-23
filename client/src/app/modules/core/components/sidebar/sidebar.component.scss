@@ -1,5 +1,5 @@
 :host * {
-    transition: all 250ms ease-in-out;
+  transition: all 250ms ease-in-out;
 }
 
 .scrollbar-hidden::-webkit-scrollbar {
@@ -12,46 +12,92 @@
 }
 
 .sidebar-header {
-    display: flex;
-    flex-direction: column; 
-    align-items: center;  
-    padding-top: 24px;
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 24px;
+  margin-top: 60px;
+  text-align: center;
 
-    > img {
-        border-radius: 100%;
-        object-fit: cover;
-        margin-bottom: 10px;
+  > img {
+    border-radius: 100%;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+
+  .header-text {
+    height: 3rem;
+
+    > h2 {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.5rem;
+      font-weight: bold;
     }
 
-    .header-text {
-        height: 3rem;
-
-        > h2 {
-            margin: 0;
-            font-size: 1rem;
-            line-height: 1.5rem;
-            font-weight: bold;
-        }
-
-        > p {
-            margin: 0;
-            font-size: 0.8rem;
-            font-weight: 400;
-        }
+    > p {
+      margin: 0;
+      font-size: 0.8rem;
+      font-weight: 400;
     }
+  }
+
+  .edit-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: gray;
+    cursor: pointer;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #1e3a8a;
+    }
+  }
 }
 
 .hide-header-text {
-    opacity: 0;
-    height: 0px;
+  opacity: 0;
+  height: 0px;
 }
 
 .selected-menu-item {
-    border-left: 2px solid;
-    border-left-color: #1e3a8a;
+  border-left: 2px solid;
+  border-left-color: #1e3a8a;
 }
 
 a.selected-menu-item mat-icon {
   color: #1e3a8a;
+}
+
+.toggle-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.logout-btn {
+  margin-top: auto;
+}
+
+button[mat-button] {
+  border-radius: 20px;
+}
+
+.logout-btn {
+
+  .text {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: opacity 0.3s ease, width 0.3s ease, margin 0.3s ease;
+    margin-left: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .hide-text {
+    opacity: 0;
+    width: 0;
+    margin-left: 0;
+  }
 }

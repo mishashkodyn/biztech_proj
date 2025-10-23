@@ -11,11 +11,17 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { LayoutComponent } from './layouts/layout/layout.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { UsersPageComponent } from './pages/users-page/users-page.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { UserAccountPageComponent } from './pages/user-account-page/user-account-page.component';
+import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
+import { EditAccountPageComponent } from './pages/edit-account-page/edit-account-page.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 @NgModule({
   declarations: [
@@ -24,7 +30,10 @@ import { UsersPageComponent } from './pages/users-page/users-page.component';
     LayoutComponent,
     SidebarComponent,
     HomePageComponent,
-    UsersPageComponent
+    UsersPageComponent,
+    UserAccountPageComponent,
+    SettingsPageComponent,
+    EditAccountPageComponent
   ],
   imports: [
     CommonModule,
@@ -36,10 +45,12 @@ import { UsersPageComponent } from './pages/users-page/users-page.component';
     FormsModule,
     MatFormFieldModule,
     RouterOutlet,
-    MatToolbarModule,
     MatSidenavModule,
     MatListModule,
-    RouterLinkActive
+    RouterLinkActive,
+    MatToolbarModule,
+    MatTooltipModule,
+    BrowserAnimationsModule
 ] 
 })
 export class CoreModule { }

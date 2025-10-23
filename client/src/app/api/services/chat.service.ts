@@ -23,6 +23,7 @@ export class ChatService {
   isLoading = signal<boolean>(false);
   autoScrollEnabled = signal<boolean>(true);
   pageNumber = signal<number>(1);
+  isConnected = signal<boolean>(false)
   
 
   startConnection(token: string, senderId?: string) {
@@ -45,7 +46,7 @@ export class ChatService {
     this.hubConnection
       .start()
       .then(() => {
-        console.log('Connection started.');
+        this.isConnected.set(true);
       })
       .catch((error) => {
         console.log('Connection or login error.', error);

@@ -1,6 +1,17 @@
-import { Component, computed, Input, OnInit, Output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  signal,
+} from '@angular/core';
 import { AuthService } from '../../../../api/services/auth.service';
 import { User } from '../../../../api/models/user';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { LogoutConfirmModalComponent } from '../../../shared/logout-confirm-modal/logout-confirm-modal.component';
 
 export type MenuItem = {
   icon: string;
@@ -14,14 +25,11 @@ export type MenuItem = {
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent {
+  @Output() widthChanged = new EventEmitter<string>();
 
-  user: User | null = null;
-  sidebarCollapsed = signal(false);
-  
-  @Input() set collapsed(val: boolean) {
-    this.sidebarCollapsed.set(val);
-  } 
+  sidebarCollapsed = signal(true);
+
   menuItems = signal<MenuItem[]>([
     {
       icon: 'home',
@@ -41,17 +49,52 @@ export class SidebarComponent implements OnInit {
       label: 'Users',
       route: 'users',
     },
-  ])
-  profileImageSize = computed(() => this.sidebarCollapsed() ? '32' : '100')
+  ]);
+  profileImageSize = computed(() => (this.sidebarCollapsed() ? '40' : '100'));
+  sidebarWidth = computed(() => (this.sidebarCollapsed() ? '60px' : '250px'));
 
-  constructor(protected authService: AuthService) {}
+  constructor(
+    protected authService: AuthService,
+    private router: Router,
+    private dialog: MatDialog
+  ) {}
 
-  ngOnInit(): void {
-    var loggedInUser = this.authService.currentLoggedUser;
-
-    if (loggedInUser) {
-      this.user = loggedInUser;
+  toggleSidebar(action?: 'close' | 'open') {
+    if (action === 'close') {
+      this.sidebarCollapsed.set(true);
+      this.widthChanged.emit(this.sidebarWidth());
+      return;
     }
+    this.sidebarCollapsed.update((v) => !v);
+    this.widthChanged.emit(this.sidebarWidth());
   }
 
+  logout() {
+    const dialogRef = this.dialog.open(LogoutConfirmModalComponent, {
+      width: '350px',
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        this.authService.logout();
+        this.router.navigate(['/login']);
+      }
+    });
+  }
+
+  settings() {
+    this.toggleSidebar('close');
+    this.router.navigate(['/settings']);
+  }
+
+  goToAccount() {
+    const username = this.authService.currentLoggedUser?.userName;
+    this.router.navigate(['/account', username]);
+    this.toggleSidebar('close');
+  }
+
+  editAccount() {
+    this.router.navigate(['/edit-account']);
+    this.toggleSidebar('close');
+  }
 }

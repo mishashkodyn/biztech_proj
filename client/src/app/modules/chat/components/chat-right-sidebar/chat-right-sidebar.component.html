@@ -6,7 +6,7 @@
       [src]="chatService.currentOpenedChat()?.profileImage"
       alt="Profile picture"
     />
-    <div class="ml-3">
+    <div class="flex flex-col justify-center items-center">
       <p class="text-lg font-semibold">
         {{
           chatService.currentOpenedChat()?.name +
@@ -17,6 +17,15 @@
       <p class="text-sm text-gray-500">
         {{ chatService.currentOpenedChat()?.userName }}
       </p>
+      <div class="mt-2">
+        <app-button
+        [text]="'Go to profile'"
+        [matIcon]="'person'"
+        [width]="'150px'"
+        [height]="'25px'"
+        (action)="goToProfile(chatService.currentOpenedChat()?.userName!)"
+      ></app-button>
+      </div>
     </div>
   </div>
 </div>

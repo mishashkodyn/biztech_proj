@@ -2,16 +2,22 @@
   (click)="clickHandler()"
   type="button"
   [disabled]="isDisabled() || isLoading()"
-  class="w-full flex justify-center items-center mb-5 bg-blue-900 text-white rounded-md p-2 disabled:opacity-30"
+  class="w-full flex justify-center items-center mb-5 bg-blue-900 text-white rounded-md p-2 disabled:opacity-30 btn hover:bg-blue-800"
+  [style.width]="width || '100px'"
+  [style.height]="height || '200px'"
 >
   @if(isLoading()) {
   <div
     class="w-4 h-4 border-2 mr-2 border-white border-t-transparent rounded-full animate-spin"
   ></div>
-  } 
-  @if (isLoading()){
-    <span>Processing...</span>
+  } @if (isLoading()){
+  <span>Processing...</span>
   } @else {
+  <div class="flex items-center">
+    <div *ngIf="matIcon">
+      <mat-icon class="text-sm align-middle">{{ matIcon }}</mat-icon>
+    </div>
     <span>{{ text() }}</span>
+  </div>
   }
 </button>

@@ -1,13 +1,21 @@
-<mat-toolbar class="shadow">
-  <button mat-icon-button (click)="collapsed.set(!collapsed())">
-    <mat-icon>menu</mat-icon>
-  </button>
-</mat-toolbar>
 <mat-sidenav-container class="my-sidenav-container">
-  <mat-sidenav  style="transition: all 500ms ease-in-out" opened mode="side" [style.width]="sidebarWidth()">
-    <app-sidebar class="shadow" [collapsed]="collapsed()"></app-sidebar>
+  <mat-sidenav
+    class="side-nav"
+    style="transition: all 500ms ease-in-out"
+    opened
+    mode="side"
+    [style.width]="sidebarWidth"
+  >
+    <app-sidebar
+      class="shadow"
+      (widthChanged)="onSidebarWidthChanged($event)"
+    ></app-sidebar>
   </mat-sidenav>
-  <mat-sidenav-content style="transition: all 500ms ease-in-out" class="content" [style.margin-left]="sidebarWidth()">
+  <mat-sidenav-content
+    style="transition: all 500ms ease-in-out"
+    class="content"
+    [style.margin-left]="sidebarWidth"
+  >
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>

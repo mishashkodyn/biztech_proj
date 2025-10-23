@@ -1,5 +1,6 @@
 import {
   AfterViewChecked,
+  AfterViewInit,
   Component,
   ElementRef,
   ViewChild,
@@ -13,39 +14,78 @@ import { AuthService } from '../../../../api/services/auth.service';
   templateUrl: './chat-box.component.html',
   styleUrl: './chat-box.component.scss',
 })
-export class ChatBoxComponent implements AfterViewChecked {
-  @ViewChild('chatBox', { read: ElementRef }) public chatBox?: ElementRef;
+export class ChatBoxComponent implements AfterViewChecked, AfterViewInit {
+  // @ViewChild('chatBox', { read: ElementRef }) public chatBox?: ElementRef;
+  @ViewChild('messageScroll') messageScroll: ElementRef | null = null;
+
+  private previousMessageCount = 0;
 
   constructor(
     protected chatService: ChatService,
     protected authService: AuthService
   ) {}
 
-  loadMoreMessage() {
-    const nextPage = this.chatService.pageNumber() + 1;
-    this.chatService.loadMessages(nextPage);
-    this.scrollTop();
+  ngOnInit(): void {
+    this.scrollDown();
   }
 
-  ngAfterViewChecked(): void {
-    if (this.chatService.autoScrollEnabled()) {
-      this.scrollToBottom();
+  scrollDown() {
+    this.messageScroll!.nativeElement.scrollTop = 0;
+  }
+
+  scrollDownAfterDelay() {
+    if (this.messageScroll) {
+      setTimeout(() => {
+        this.scrollDown();
+      }, 100);
     }
   }
 
-  scrollToBottom() {
-    this.chatService.autoScrollEnabled.set(true);
-    this.chatBox!.nativeElement.scrollTo({
-      top: this.chatBox!.nativeElement.scrollHeight,
-      behavior: 'smooth',
-    });
+  ngAfterViewInit(): void {
+    this.scrollToBottom();
   }
 
-  scrollTop() {
-    this.chatService.autoScrollEnabled.set(false);
-    this.chatBox!.nativeElement.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
+  ngAfterViewChecked(): void {
+    const currentMessages = this.chatService.chatMessages().length;
+
+    if (currentMessages !== this.previousMessageCount) {
+      this.scrollToBottom();
+      this.previousMessageCount = currentMessages;
+    }
   }
+
+  scrollToBottom(): void {
+    if (this.messageScroll?.nativeElement) {
+      this.messageScroll.nativeElement.scrollTop =
+        this.messageScroll.nativeElement.scrollHeight;
+    }
+  }
+
+  loadMoreMessage() {
+    const nextPage = this.chatService.pageNumber() + 1;
+    this.chatService.loadMessages(nextPage);
+    this.scrollDown();
+  }
+
+  // ngAfterViewChecked(): void {
+  //   if (this.chatService.autoScrollEnabled()) {
+  //     this.scrollToBottom();
+  //   }
+  // }
+
+  // scrollToBottom() {
+  //   this.chatService.autoScrollEnabled.set(true);
+  //   this.chatBox!.nativeElement.scrollTo({
+  //     top: this.chatBox!.nativeElement.scrollHeight,
+  //     behavior: 'smooth',
+  //   });
+  // }
+
+  // scrollTop() {
+  //   this.chatService.autoScrollEnabled.set(false);
+  //   this.chatBox!.nativeElement.scrollTo({
+  //     top: 0,
+  //     behavior: 'smooth',
+  //   });
+  // }
 }

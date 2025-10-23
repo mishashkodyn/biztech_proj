@@ -7,6 +7,9 @@ import { Component, computed, signal } from '@angular/core';
   styleUrl: './layout.component.scss'
 })
 export class LayoutComponent {
-  collapsed = signal(false);
-  sidebarWidth = computed(() => this.collapsed() ? '60px' : '250px')
+  sidebarWidth = '60px';
+
+  onSidebarWidthChanged(newWidth: string) {
+    this.sidebarWidth = newWidth;
+  }
 }

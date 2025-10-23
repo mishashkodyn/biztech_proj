@@ -1,15 +1,14 @@
 .content {
     padding: 24px;
-
 }
 
 .my-sidenav-container {
   height: 100vh;
   margin-left: 0.1rem;
-  box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
 }
-mat-toolbar {
-    position: relative;
-    z-index: 5;
+.side-nav {
+  transition: all 500ms ease-in-out;
+  background-color: rgb(215, 215, 215);
+  box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
 }
 
