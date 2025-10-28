@@ -1,0 +1,10 @@
+<app-chat-sidebar class="bg-white border-r border-gray-200 md:hidden"/>
+<div class="flex rounded-3xl justify-between h-full">
+  <app-chat-sidebar class="bg-white border-r border-gray-200 hidden md:block w-1/3" />
+  <div class="w-full">
+    <app-chat-window></app-chat-window>
+  </div>
+  <div class="bg-gray-50 border-l border-gray-200 hidden md:block" [style.width]="this.chatService.chatRightSidebarIsOpen() ? '30%' : '0px'">
+    <app-chat-right-sidebar></app-chat-right-sidebar>
+  </div>
+</div>

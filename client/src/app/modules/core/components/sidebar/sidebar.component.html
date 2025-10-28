@@ -1,0 +1,103 @@
+<div class="h-screen flex flex-col overflow-y-hidden overflow-x-hidden">
+  <div class="toggle-btn">
+    <button mat-icon-button (click)="toggleSidebar()">
+      <mat-icon>{{ sidebarCollapsed() ? "menu" : "chevron_left" }}</mat-icon>
+    </button>
+  </div>
+  <div class="sidebar-header">
+    <img
+      [src]="
+        authService.currentLoggedUser?.profileImage ||
+        'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
+      "
+      alt="Profile picture"
+      class="cursor-pointer"
+      (click)="goToAccount()"
+      [width]="profileImageSize()"
+      [height]="profileImageSize()"
+      matTooltip="Go to account"
+          matTooltipPosition="above"
+    />
+    <div class="header-text" [class.hide-header-text]="sidebarCollapsed()">
+      <div class="flex items-center gap-1">
+        <h2>Your account</h2>
+        <mat-icon
+          (click)="editAccount()"
+          class="edit-icon"
+          matTooltip="Edit your account"
+          matTooltipPosition="above"
+          >edit</mat-icon
+        >
+      </div>
+      <p>
+        {{
+          authService.currentLoggedUser?.name +
+            " " +
+            authService.currentLoggedUser?.surname
+        }}
+      </p>
+    </div>
+  </div>
+  <mat-nav-list>
+    <a
+      mat-list-item
+      *ngFor="let item of menuItems()"
+      [routerLink]="item.route"
+      routerLinkActive="selected-menu-item"
+      #rla="routerLinkActive"
+      [activated]="rla.isActive"
+      (click)="toggleSidebar('close')"
+    >
+      <mat-icon class="flex justify-center" matListItemIcon>{{
+        item.icon
+      }}</mat-icon>
+      <span matListItemTitle *ngIf="!sidebarCollapsed()">{{ item.label }}</span>
+    </a>
+  </mat-nav-list>
+
+  <span class="text-muted text-sm mt-4 ms-2">Admin items</span>
+  <mat-nav-list>
+    <a
+      mat-list-item
+      *ngFor="let item of adminItems()"
+      [routerLink]="item.route"
+      routerLinkActive="selected-menu-item"
+      #rla="routerLinkActive"
+      [activated]="rla.isActive"
+      (click)="toggleSidebar('close')"
+    >
+      <mat-icon class="flex justify-center" matListItemIcon>{{
+        item.icon
+      }}</mat-icon>
+      <span matListItemTitle *ngIf="!sidebarCollapsed()">{{ item.label }}</span>
+    </a>
+  </mat-nav-list>
+  <div
+    class="logout-btn w-full p-2 flex"
+    [ngClass]="{
+      'flex-col': sidebarCollapsed(),
+      'flex-row': !sidebarCollapsed()
+    }"
+  >
+    <button
+      mat-button
+      class="flex items-center justify-end w-full"
+      (click)="settings()"
+    >
+      <mat-icon>settings</mat-icon>
+      <span class="text transition-text" [class.hide-text]="sidebarCollapsed()"
+        >Settings</span
+      >
+    </button>
+    <button
+      mat-button
+      class="flex items-center justify-end w-full"
+      (click)="logout()"
+    >
+      <mat-icon>logout</mat-icon>
+      <span class="text transition-text" [class.hide-text]="sidebarCollapsed()"
+        >Logout</span
+      >
+    </button>
+  </div>
+</div>

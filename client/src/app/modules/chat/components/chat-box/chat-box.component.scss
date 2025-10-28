@@ -1,0 +1,86 @@
+.chat-section {
+  height: calc(100vh - 150px);
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.chat-box {
+  scroll-behavior: smooth;
+  border-radius: 5px;
+  overflow-y: scroll;
+}
+
+.chat-box::-webkit-scrollbar {
+  width: 0;
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  max-width: 60%;
+  min-width: 30%;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.myMessage {
+  align-self: flex-end;
+  margin-bottom: 8px;
+  margin-right: 20px;
+
+  .messageText {
+    background-color: #1e3a8a !important;
+    color: white;
+    border-radius: 10px 10px 0 10px;
+    font-size: 14px;
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+  }
+  .messageMe {
+    font-size: 10px;
+    margin-top: 10px;
+    text-align: left;
+    color: #e8f0fe;
+  }
+
+  .message-footer {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .check-mark {
+    font-size: 12px;
+    color: #dbeafe;
+    display: flex;
+    align-items: flex-end;
+  }
+}
+
+.theirMessage {
+  align-self: flex-start;
+  margin-bottom: 8px;
+  margin-left: 20px;
+
+  .messageText {
+    background-color: #e8f0fe;
+    color: black;
+    border-radius: 10px 10px 10px 0;
+    font-size: 14px;
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+  }
+
+  .messageMe {
+    text-align: right;
+    font-size: 10px;
+    margin-top: 10px;
+    color: #383838;
+  }
+}
+
+.date-sizing {
+  font-size: 12px;
+}
+
+.emojiFonts {
+  font-family: "Inter", "Segoe UI Emoji", "Segoe UI Symbol", "Apple Color Emoji",
+    "Twemoji Mozilla", "Noto Color Emoji", "Android Emoji" !important;
+}
