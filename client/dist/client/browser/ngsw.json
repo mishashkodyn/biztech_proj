@@ -1,0 +1,81 @@
+{
+  "configVersion": 1,
+  "timestamp": 1765028484462,
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/favicon.ico",
+        "/index.html",
+        "/main-D7ACVIR2.js",
+        "/manifest.webmanifest",
+        "/polyfills-B6TNHZQ6.js",
+        "/styles-GKXGMMNC.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/chatopen.svg",
+        "/icons/icon-128x128.png",
+        "/icons/icon-144x144.png",
+        "/icons/icon-152x152.png",
+        "/icons/icon-192x192.png",
+        "/icons/icon-512x512.png",
+        "/icons/icon-72x72.png",
+        "/icons/icon-96x96.png",
+        "/register.svg"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/chatopen.svg": "ed464696ac4938bda8699d7dbff47c9bf220d3c2",
+    "/favicon.ico": "9c39f434fe1261f68c5e3eefdf734630d99c5670",
+    "/icons/icon-128x128.png": "8f4ce43fb5a53ffabca119324f76dcec35229339",
+    "/icons/icon-144x144.png": "42eb7e8b0c49d5e01fa2b6a340674e47f998a270",
+    "/icons/icon-152x152.png": "c0e3d0cdded301ee75daad1471d01b4e3b2020c4",
+    "/icons/icon-192x192.png": "c07cbdf6f7e2511c69b04de4572e11b1f7bd1bf5",
+    "/icons/icon-512x512.png": "2c1e54f602fba1fb6ce6d5e422e9fbcfedf574b6",
+    "/icons/icon-72x72.png": "a13d92e3036d4920ee85aa4142fef961ea9907d8",
+    "/icons/icon-96x96.png": "2ce049dbb58f5c96ac0e1d6a6f73dcea6c552b8b",
+    "/index.html": "90e852c6b123c22a9971ac0f1069881da8890cad",
+    "/main-D7ACVIR2.js": "ea0ca6f8c7b06594409bb7f01a7bf22d585d40c4",
+    "/manifest.webmanifest": "f5a45027cf12fbef882e17635dcd253098537849",
+    "/polyfills-B6TNHZQ6.js": "bf76ac291d7f51c1139b7edcf86b359a30c08c64",
+    "/register.svg": "47e036a16cd6abe23c80c66e75d6152948956ef8",
+    "/styles-GKXGMMNC.css": "921034a65760b1e263116a998891a5d73db3755e"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}

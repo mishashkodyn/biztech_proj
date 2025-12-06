@@ -26,7 +26,7 @@ builder.Services.AddCors(
 var JwtSettings = builder.Configuration.GetSection("JwtSettings");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ProdConnection")));
 
 builder.Services.AddOpenApi();
 
