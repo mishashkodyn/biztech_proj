@@ -9,7 +9,7 @@ import { JsonPipe } from '@angular/common';
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'https://localhost:5000/api/account';
+  private baseUrl = 'http://localhost:5000/api/account';
   private token = 'token';
   isLoading = signal(false);
 

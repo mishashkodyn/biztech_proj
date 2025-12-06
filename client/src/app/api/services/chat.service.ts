@@ -12,7 +12,7 @@ import { Message } from '../models/message';
   providedIn: 'root',
 })
 export class ChatService {
-  private hubUrl = 'https://localhost:5000/hubs/chat';
+  private hubUrl = 'http://localhost:5000/hubs/chat';
   private hubConnection?: HubConnection;
 
   constructor(private authService: AuthService) {}
