@@ -4,12 +4,13 @@ import { Observable, tap } from 'rxjs';
 import { ApiResponse } from '../models/api-response';
 import { User } from '../models/user';
 import { JsonPipe } from '@angular/common';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:5000/api/account';
+  private baseUrl = `${environment.apiBaseUrl}/account`;
   private token = 'token';
   isLoading = signal(false);
 

@@ -7,12 +7,13 @@ import {
   HubConnectionState,
 } from '@microsoft/signalr';
 import { Message } from '../models/message';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
-  private hubUrl = 'http://localhost:5000/hubs/chat';
+  private hubUrl = `${environment.hubUrl}/chat`;
   private hubConnection?: HubConnection;
 
   constructor(private authService: AuthService) {}
