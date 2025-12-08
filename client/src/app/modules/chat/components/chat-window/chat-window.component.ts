@@ -23,13 +23,16 @@ export class ChatWindowComponent {
   constructor(protected chatService: ChatService) {}
 
   displayDialog(receiverId?: string) {
-    this.signalRService.remoteUserId = receiverId ?? null;
     this.dialog.open(VideoChatComponent, {
-      width: '400px',
+      width: '600px',
       height: '600px',
       disableClose: true,
-      autoFocus: false
-    })
+      autoFocus: false,
+      data: {
+        isCaller: true,
+        remoteUserId: receiverId
+      }
+    });
   }
 
   sendMessage() {

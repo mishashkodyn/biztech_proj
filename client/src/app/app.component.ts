@@ -1,9 +1,10 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { VideoChatService } from './api/services/video-chat.service';
 import { AuthService } from './api/services/auth.service';
 import { MatDialog } from '@angular/material/dialog';
 import { VideoChatComponent } from './modules/chat/components/video-chat/video-chat.component';
+import { ChatService } from './api/services/chat.service'; // Додав ChatService, бо він у тебе в HTML
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -11,32 +12,64 @@ import { VideoChatComponent } from './modules/chat/components/video-chat/video-c
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'client';
 
-  private signalRService = inject(VideoChatService);
-  private authService = inject(AuthService);
+  public signalRService = inject(VideoChatService);
+  public authService = inject(AuthService);
+  public chatService = inject(ChatService); // Переконайся, що це тут
   private matDialog = inject(MatDialog);
+  private sub = new Subscription();
 
   ngOnInit(): void {
     if (!this.authService.getAccessToken) {
       return;
     }
-    this.signalRService.startConnection();
-    this.startOfferReceive();
+    this.signalRService.startConnection().then(() => {
+      this.startOfferReceive();
+    });
   }
 
+  ngOnDestroy() {
+    this.sub.unsubscribe();
+  }
+
+  // 1. ВИПРАВЛЕННЯ ДЛЯ ВХІДНОГО ДЗВІНКА
   startOfferReceive() {
-    this.signalRService.offerReceived.subscribe(async (data) => {
-      if (data) {
-        this.matDialog.open(VideoChatComponent, {
-          width: '400px',
-          height: '600px',
-          disableClose: false,
-        });
-        this.signalRService.remoteUserId = data.senderId;
-        this.signalRService.incomingCall = true;
-      }
+    this.sub.add(
+      this.signalRService.offerReceived.subscribe((data) => {
+        if (data && data.senderId) {
+          this.matDialog.open(VideoChatComponent, {
+            width: '600px',
+            height: '600px',
+            disableClose: true,
+            data: {
+              isCaller: false,
+              offer: data.offer,
+              remoteUserId: data.senderId
+            }
+          });
+        }
+      })
+    );
+  }
+
+  displayDialog(receiverId?: string) {
+    if (!receiverId) {
+        console.error('No receiverId provided');
+        return;
+    }
+
+
+    this.matDialog.open(VideoChatComponent, {
+      width: '600px',
+      height: '600px',
+      disableClose: true,
+      autoFocus: false,
+      data: {
+        isCaller: true,
+        remoteUserId: receiverId,
+      },
     });
   }
 }

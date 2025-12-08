@@ -9,7 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiResponse } from '../../../../api/models/api-response';
 import { Router, RouterLink } from '@angular/router';
-import { ButtonComponent } from "../../../shared/button/button.component";
+import { ButtonComponent } from '../../../shared/button/button.component';
 
 @Component({
   selector: 'app-register',
@@ -46,12 +46,9 @@ export class RegisterComponent {
       const reader = new FileReader();
       reader.onload = (e) => {
         this.profilePicture = e.target!.result as string;
-        console.log(e.target?.result);
       };
 
       reader.readAsDataURL(file);
-
-      console.log(this.profilePicture);
     }
   }
 
@@ -68,14 +65,14 @@ export class RegisterComponent {
     this.authService.register(formData).subscribe({
       next: () => {
         this.snackBar.open('User registered successfully.', 'Close', {
-          duration: 3000
+          duration: 3000,
         });
         this.authService.isLoading.set(false);
       },
       error: (error: HttpErrorResponse) => {
         let err = error.error as ApiResponse<string>;
         this.snackBar.open(err.error, 'Close', {
-          duration: 3000
+          duration: 3000,
         });
         this.authService.isLoading.set(false);
       },

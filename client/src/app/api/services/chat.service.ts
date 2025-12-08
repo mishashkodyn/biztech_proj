@@ -50,7 +50,6 @@ export class ChatService {
         this.isConnected.set(true);
       })
       .catch((error) => {
-        console.log('Connection or login error.', error);
       });
 
     this.hubConnection!.on('Notify', (user: User) => {
@@ -91,7 +90,6 @@ export class ChatService {
     });
 
     this.hubConnection!.on('OnlineUsers', (users: User[]) => {
-      console.log(users);
       this.onlineUsers.update(() =>
         users.filter(
           (users) =>
@@ -123,7 +121,7 @@ export class ChatService {
 
   disconnectConnection() {
     if (this.hubConnection?.state === HubConnectionState.Connected) {
-      this.hubConnection.stop().catch((error) => console.log(error));
+      this.hubConnection.stop();
     }
   }
 
@@ -181,12 +179,6 @@ export class ChatService {
         receiverId: this.currentOpenedChat()?.id,
         content: message,
       })
-      .then((id) => {
-        console.log('Message send to: ', id);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   }
 
   notifyTyping() {
@@ -194,12 +186,6 @@ export class ChatService {
       'NotifyTyping',
       this.currentOpenedChat()?.userName
     )
-      .then((x) => {
-        console.log('notify for ', x);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   }
 
 }
