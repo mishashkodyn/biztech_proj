@@ -21,6 +21,7 @@ export class VideoChatComponent implements OnInit {
   @ViewChild('remoteVideo') remoteVideo!: ElementRef<HTMLVideoElement>;
 
   private peerConnection!: RTCPeerConnection;
+  private pendingRemoteIce: RTCIceCandidateInit[] = [];
   protected signalRService = inject(VideoChatService);
   protected dialogRef = inject(MatDialogRef<VideoChatComponent>);
 
@@ -43,6 +44,7 @@ export class VideoChatComponent implements OnInit {
           await this.peerConnection.setRemoteDescription(
             new RTCSessionDescription(data.answer)
           );
+          this.flushPendingIceCandidates();
         }
       }
     );
@@ -50,6 +52,10 @@ export class VideoChatComponent implements OnInit {
     this.signalRService.iceCandidateReceived.subscribe(
       async (data) => {
         if (data?.candidate) {
+          if (!this.peerConnection.remoteDescription) {
+            this.pendingRemoteIce.push(data.candidate);
+            return;
+          }
           await this.peerConnection.addIceCandidate(
             new RTCIceCandidate(data.candidate)
           );
@@ -75,6 +81,7 @@ export class VideoChatComponent implements OnInit {
       await this.peerConnection.setRemoteDescription(
         new RTCSessionDescription(offer)
       );
+      this.flushPendingIceCandidates();
 
       let answer = await this.peerConnection.createAnswer();
 
@@ -136,6 +143,7 @@ export class VideoChatComponent implements OnInit {
       this.signalRService.isCallActive = false;
       this.signalRService.incomingCall = false;
       this.peerConnection = new RTCPeerConnection();
+      this.pendingRemoteIce = [];
       this.localVideo.nativeElement.srcObject = null;
       this.dialogRef.close();
       this.signalRService.remoteUserId = null;
@@ -148,5 +156,13 @@ export class VideoChatComponent implements OnInit {
       this.localVideo.nativeElement.srcObject = null;
     }
     // End signal already sent above if remoteUserId existed
+  }
+
+  private async flushPendingIceCandidates() {
+    if (!this.peerConnection.remoteDescription) return;
+    for (const c of this.pendingRemoteIce) {
+      await this.peerConnection.addIceCandidate(new RTCIceCandidate(c));
+    }
+    this.pendingRemoteIce = [];
   }
 }
