@@ -1,8 +1,11 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { ChatService } from '../../../../api/services/chat.service';
 import { TitleCasePipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { ChatBoxComponent } from '../chat-box/chat-box.component';
+import { VideoChatService } from '../../../../api/services/video-chat.service';
+import { MatDialog } from '@angular/material/dialog';
+import { VideoChatComponent } from '../video-chat/video-chat.component';
 
 @Component({
   selector: 'app-chat-window',
@@ -12,10 +15,22 @@ import { ChatBoxComponent } from '../chat-box/chat-box.component';
 })
 export class ChatWindowComponent {
   @ViewChild('chatBox') chatContainer?: ElementRef;
+  dialog = inject(MatDialog)
+  signalRService = inject(VideoChatService);
   message: string = '';
   private shouldScroll = false;
 
   constructor(protected chatService: ChatService) {}
+
+  displayDialog(receiverId?: string) {
+    this.signalRService.remoteUserId = receiverId ?? null;
+    this.dialog.open(VideoChatComponent, {
+      width: '400px',
+      height: '600px',
+      disableClose: true,
+      autoFocus: false
+    })
+  }
 
   sendMessage() {
     if (!this.message) return;

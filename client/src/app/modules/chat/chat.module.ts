@@ -12,6 +12,8 @@ import { ChatComponent } from './pages/chat/chat.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { SharedModule } from '../shared/shared.module';
 import { FormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
+import { VideoChatComponent } from './components/video-chat/video-chat.component';
 
 
 
@@ -32,6 +34,8 @@ import { FormsModule } from '@angular/forms';
     MatMenuModule,
     SharedModule,
     FormsModule,
+    MatDialogModule,
+    VideoChatComponent
   ]
 })
 export class ChatModule { }
