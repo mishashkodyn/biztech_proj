@@ -25,7 +25,7 @@ export class VideoChatService {
   } | null>(null);
 
   public incomingCall = false;
-  public callActive = false;
+  public isCallActive = false;
   public remoteUserId: string | null = null;
   public peerConnection!: RTCPeerConnection;
 

@@ -1,7 +1,7 @@
 import {
   Component,
   ElementRef,
-  Inject,
+  inject,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -11,6 +11,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-video-chat',
+  standalone: true,
   imports: [MatIconModule],
   templateUrl: './video-chat.component.html',
   styleUrl: './video-chat.component.scss',
@@ -20,8 +21,8 @@ export class VideoChatComponent implements OnInit {
   @ViewChild('remoteVideo') remoteVideo!: ElementRef<HTMLVideoElement>;
 
   private peerConnection!: RTCPeerConnection;
-  protected signalRService = Inject(VideoChatService);
-  protected dialogRef: MatDialogRef<VideoChatComponent> = Inject(MatDialogRef);
+  protected signalRService = inject(VideoChatService);
+  protected dialogRef = inject(MatDialogRef<VideoChatComponent>);
 
   ngOnInit(): void {
     this.setupPeerConnection();
@@ -37,8 +38,8 @@ export class VideoChatComponent implements OnInit {
     });
 
     this.signalRService.answerReceived.subscribe(
-      async (data: { answer: RTCSessionDescriptionInit }) => {
-        if (data) {
+      async (data) => {
+        if (data?.answer) {
           await this.peerConnection.setRemoteDescription(
             new RTCSessionDescription(data.answer)
           );
@@ -47,9 +48,9 @@ export class VideoChatComponent implements OnInit {
     );
 
     this.signalRService.iceCandidateReceived.subscribe(
-      async (data: { candidate: RTCIceCandidate }) => {
-        if (data) {
-          this.peerConnection.addIceCandidate(
+      async (data) => {
+        if (data?.candidate) {
+          await this.peerConnection.addIceCandidate(
             new RTCIceCandidate(data.candidate)
           );
         }
@@ -100,7 +101,7 @@ export class VideoChatComponent implements OnInit {
     });
 
     this.peerConnection.onicecandidate = (event) => {
-      if (event.candidate) {
+      if (event.candidate && this.signalRService.remoteUserId) {
         this.signalRService.sendIceCandidate(
           this.signalRService.remoteUserId,
           event.candidate
@@ -128,13 +129,16 @@ export class VideoChatComponent implements OnInit {
 
   async endCall() {
     if (this.peerConnection) {
+      if (this.signalRService.remoteUserId) {
+        this.signalRService.sendEndCall(this.signalRService.remoteUserId);
+      }
       this.peerConnection.close();
-      this.dialogRef.close();
       this.signalRService.isCallActive = false;
       this.signalRService.incomingCall = false;
-      this.signalRService.remoteUserId = null;
       this.peerConnection = new RTCPeerConnection();
       this.localVideo.nativeElement.srcObject = null;
+      this.dialogRef.close();
+      this.signalRService.remoteUserId = null;
     }
 
     const stream = this.localVideo.nativeElement.srcObject as MediaStream;
@@ -143,7 +147,6 @@ export class VideoChatComponent implements OnInit {
       stream.getTracks().forEach((track) => track.stop());
       this.localVideo.nativeElement.srcObject = null;
     }
-
-    this.signalRService.sendEndCall(this.signalRService.remoteUserId!);
+    // End signal already sent above if remoteUserId existed
   }
 }

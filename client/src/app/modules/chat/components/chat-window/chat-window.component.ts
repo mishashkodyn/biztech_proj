@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, Inject, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { ChatService } from '../../../../api/services/chat.service';
 import { TitleCasePipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,14 +16,14 @@ import { VideoChatComponent } from '../video-chat/video-chat.component';
 export class ChatWindowComponent {
   @ViewChild('chatBox') chatContainer?: ElementRef;
   dialog = inject(MatDialog)
-  signalRService = Inject(VideoChatService);
+  signalRService = inject(VideoChatService);
   message: string = '';
   private shouldScroll = false;
 
   constructor(protected chatService: ChatService) {}
 
   displayDialog(receiverId?: string) {
-    this.signalRService.remoteUserId = receiverId;
+    this.signalRService.remoteUserId = receiverId ?? null;
     this.dialog.open(VideoChatComponent, {
       width: '400px',
       height: '600px',
