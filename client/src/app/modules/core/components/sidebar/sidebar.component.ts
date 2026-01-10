@@ -28,7 +28,12 @@ export type MenuItem = {
 export class SidebarComponent {
   @Output() widthChanged = new EventEmitter<string>();
 
+  isMobile = signal(false);
+  @Input('isMobile') set setMobile(val: boolean) {
+    this.isMobile.set(val);
+  }
   sidebarCollapsed = signal(true);
+  isMenuExpanded = computed(() => this.isMobile() || !this.sidebarCollapsed());
 
   menuItems = signal<MenuItem[]>([
     {
@@ -50,7 +55,7 @@ export class SidebarComponent {
       route: 'users',
     },
   ]);
-  profileImageSize = computed(() => (this.sidebarCollapsed() ? '40' : '100'));
+  profileImageSize = computed(() => (this.isMenuExpanded() ? '100' : '40'));
   sidebarWidth = computed(() => (this.sidebarCollapsed() ? '60px' : '250px'));
 
   constructor(
@@ -60,12 +65,13 @@ export class SidebarComponent {
   ) {}
 
   toggleSidebar(action?: 'close' | 'open') {
+    if (this.isMobile()) return; 
+
     if (action === 'close') {
       this.sidebarCollapsed.set(true);
-      this.widthChanged.emit(this.sidebarWidth());
-      return;
+    } else {
+      this.sidebarCollapsed.update((v) => !v);
     }
-    this.sidebarCollapsed.update((v) => !v);
     this.widthChanged.emit(this.sidebarWidth());
   }
 
