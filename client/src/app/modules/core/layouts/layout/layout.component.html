@@ -1,28 +1,10 @@
-<mat-sidenav-container class="my-sidenav-container">
-  <mat-sidenav
-    #sidenav
-    class="side-nav"
-    [mode]="navMode()"
-    [opened]="!isMobile()"
-    [style.width]="isMobile() ? '250px' : sidebarWidth"
-    style="transition: all 500ms ease-in-out"
-    [fixedInViewport]="isMobile()"
-    [fixedTopGap]="0"
-    [fixedBottomGap]="0"
-  >
-    <app-sidebar
-      class="shadow"
-      [isMobile]="isMobile()"
-      (widthChanged)="onSidebarWidthChanged($event)"
-      (click)="closeOnMobile()"
-    ></app-sidebar>
-  </mat-sidenav>
+<header
+  class="fixed top-0 w-full h-16 z-50 transition-transform duration-300"
+  [class.-translate-y-full]="hidden"
+>
+  <app-header></app-header>
+</header>
 
-  <mat-sidenav-content
-    class="content"
-    style="transition: all 500ms ease-in-out"
-    [style.margin-left]="isMobile() ? '0' : sidebarWidth"
-  >
-    <router-outlet></router-outlet>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+<main>
+  <router-outlet></router-outlet>
+</main>

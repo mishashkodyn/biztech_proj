@@ -30,7 +30,7 @@ export class RegisterComponent {
   constructor(
     public authService: AuthService,
     private snackBar: MatSnackBar,
-    private router: Router
+    private router: Router,
   ) {}
 
   togglePassword(event: MouseEvent) {
@@ -80,6 +80,12 @@ export class RegisterComponent {
         this.router.navigate(['/']);
         this.authService.isLoading.set(false);
       },
+    });
+  }
+
+  continueWithGoogle() {
+    this.snackBar.open('Temporarily unavailable.', 'Close', {
+      duration: 3000,
     });
   }
 }

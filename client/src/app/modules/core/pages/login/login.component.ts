@@ -15,7 +15,7 @@ import { ApiResponse } from '../../../../api/models/api-response';
   selector: 'app-login',
   standalone: false,
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
   email!: string;
@@ -26,7 +26,7 @@ export class LoginComponent {
   constructor(
     public authService: AuthService,
     private snackBar: MatSnackBar,
-    private router: Router
+    private router: Router,
   ) {}
 
   login() {
@@ -34,28 +34,40 @@ export class LoginComponent {
     this.authService.login(this.email, this.password).subscribe({
       next: () => {
         this.authService.me().subscribe();
-        this.snackBar.open("Logged in successfully.", "Close", {
-          duration: 3000
-        })
+        this.snackBar.open('Logged in successfully.', 'Close', {
+          duration: 3000,
+        });
         this.authService.isLoading.set(false);
       },
       error: (error: HttpErrorResponse) => {
         let err = error.error as ApiResponse<string>;
 
-        this.snackBar.open(err.error, "Close", {
-          duration: 3000
+        this.snackBar.open(err.error, 'Close', {
+          duration: 3000,
         });
         this.authService.isLoading.set(false);
       },
       complete: () => {
         this.router.navigate(['/']);
         this.authService.isLoading.set(false);
-      }
-    })
+      },
+    });
   }
 
   togglePassword(event: MouseEvent) {
     this.hide = !this.hide;
     event.stopPropagation();
+  }
+
+  forgotPassword() {
+    this.snackBar.open('Temporarily unavailable.', 'Close', {
+      duration: 3000,
+    });
+  }
+
+  continueWithGoogle() {
+    this.snackBar.open('Temporarily unavailable.', 'Close', {
+      duration: 3000,
+    });
   }
 }

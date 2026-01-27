@@ -1,10 +1,10 @@
 {
-  "name": "Biztech",
-  "short_name": "biztech",
+  "name": "Help Hub",
+  "short_name": "helphub",
   "display": "standalone",
   "scope": "./",
-  "theme_color": "#2596BE",
-  "background_color": "#2596BE",
+  "theme_color": "#A6D3BC",
+  "background_color": "#A6D3BC",
   "start_url": "./",
   "icons": [
     {

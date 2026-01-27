@@ -12,12 +12,7 @@ import { User } from '../../../../api/models/user';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { LogoutConfirmModalComponent } from '../../../shared/logout-confirm-modal/logout-confirm-modal.component';
-
-export type MenuItem = {
-  icon: string;
-  label: string;
-  route: string;
-};
+import { MenuItem } from '../../../../api/models/menu-item';
 
 @Component({
   selector: 'app-sidebar',

@@ -5,6 +5,7 @@ import { TypingIndicatorComponent } from './typing-indicator/typing-indicator.co
 import { LogoutConfirmModalComponent } from './logout-confirm-modal/logout-confirm-modal.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIcon } from "@angular/material/icon";
+import { DropdownComponent } from './dropdown/dropdown.component';
 
 
 @NgModule({
@@ -12,6 +13,7 @@ import { MatIcon } from "@angular/material/icon";
     ButtonComponent,
     TypingIndicatorComponent,
     LogoutConfirmModalComponent,
+    DropdownComponent
   ],
   imports: [
     CommonModule,
@@ -21,7 +23,8 @@ import { MatIcon } from "@angular/material/icon";
   exports: [
     ButtonComponent,
     TypingIndicatorComponent,
-    LogoutConfirmModalComponent
+    LogoutConfirmModalComponent,
+    DropdownComponent
   ]
 })
 export class SharedModule { }

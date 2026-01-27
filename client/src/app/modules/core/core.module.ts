@@ -21,6 +21,8 @@ import { UserAccountPageComponent } from './pages/user-account-page/user-account
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { EditAccountPageComponent } from './pages/edit-account-page/edit-account-page.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HeaderComponent } from './components/header/header.component';
+import { MainComponent } from './components/main/main.component';
 
 
 @NgModule({
@@ -33,7 +35,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     UsersPageComponent,
     UserAccountPageComponent,
     SettingsPageComponent,
-    EditAccountPageComponent
+    EditAccountPageComponent,
+    HeaderComponent,
+    MainComponent
   ],
   imports: [
     CommonModule,
@@ -51,6 +55,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatToolbarModule,
     MatTooltipModule,
     BrowserAnimationsModule
-] 
+],
+
 })
 export class CoreModule { }

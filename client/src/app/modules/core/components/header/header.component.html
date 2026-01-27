@@ -1,0 +1,67 @@
+<div class="bg-white flex justify-between items-center shadow-lg px-4 py-1">
+  <div class="flex items-center cursor-pointer" (click)="navigateTo('home')">
+    <img src="/main-icon.png" alt="Help hub" class="w-8 h-8" />
+    <img src="/main-icon-text.png" alt="Help hub" class="h-5 mt-1" />
+  </div>
+  <div class="flex justify-between items-center gap-5">
+    @if (visibilityButtons()) {
+      <div class="hidden md:flex justify-between gap-3">
+        @for (item of menuItems(); track item) {
+          <div
+            class="flex justify-center px-3 text-primary cursor-pointer hover:text-success hover:border-b-2 border-transparent hover:border-success font-mono font-semibold transition-all"
+          >
+            {{ item.label }}
+          </div>
+        }
+      </div>
+    }
+    <div class="flex items-center cursor-pointer mt-2">
+      <app-dropdown
+        [icon]="'language'"
+        [items]="languages"
+        [(selected)]="currentLanguage"
+      ></app-dropdown>
+      @if (visibilityButtons()) {
+        <div class="flex items-center gap-4 px-2">
+          <div class="flex gap-2">
+            <button
+              (click)="navigateTo('login')"
+              class="flex justify-center items-center bg-transparent text-primary font-mono font-semibold border border-primary rounded transition duration-200 cursor-pointer h-8 px-4 hover:shadow-md shadow-success"
+            >
+              Log in
+            </button>
+            <button
+              (click)="navigateTo('registration')"
+              class="flex justify-center items-center border border-primary bg-primary text-mint font-mono font-semibold rounded transition duration-200 cursor-pointer h-8 px-4 hover:shadow-md shadow-success"
+            >
+              Sign up
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+    @if (authService.isLoggedIn()) {
+      <div class="flex items-center gap-5">
+        <div
+          matTooltip="Chat"
+          matTooltipPosition="above"
+          class="flex text-primary hover:text-success cursor-pointer mt-1"
+          (click)="navigateTo('chat')"
+        >
+          <mat-icon class="text-3xl">chat</mat-icon>
+        </div>
+        <div
+          class="rounded-full overflow-hidden border-2 border-mint cursor-pointer hover:shadow-sm shadow-success"
+        >
+          @if (authService.currentLoggedUser?.profileImage) {
+            <img
+              [src]="authService.currentLoggedUser?.profileImage"
+              class="w-10 h-10 object-cover"
+              alt="Avatar Preview"
+            />
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

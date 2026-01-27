@@ -18,32 +18,31 @@ const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
-    canActivate: [AuthGuard],
     children: [
-      { path: 'chat', component: ChatComponent },
+      { path: 'chat', canActivate: [AuthGuard], component: ChatComponent },
       { path: 'home', component: HomePageComponent },
-      { path: 'users', component: UsersPageComponent },
-      { path: 'account/:username', component: UserAccountPageComponent },
-      { path: 'settings', component: SettingsPageComponent},
-      { path: 'edit-account', component: EditAccountPageComponent},
+      { path: 'users', canActivate: [AuthGuard], component: UsersPageComponent },
+      { path: 'account/:username', canActivate: [AuthGuard], component: UserAccountPageComponent },
+      { path: 'settings', canActivate: [AuthGuard], component: SettingsPageComponent },
+      { path: 'edit-account', canActivate: [AuthGuard], component: EditAccountPageComponent },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
+      {
+        path: 'register',
+        component: RegisterComponent,
+        canActivate: [loginGuard],
+      },
+      {
+        path: 'login',
+        component: LoginComponent,
+        canActivate: [loginGuard],
+      },
     ],
-  },
-  {
-    path: 'register',
-    component: RegisterComponent,
-    canActivate: [loginGuard],
-  },
-  {
-    path: 'login',
-    component: LoginComponent,
-    canActivate: [loginGuard],
   },
   {
     path: '**',
     redirectTo: 'chat',
     pathMatch: 'full',
-  }
+  },
 ];
 
 @NgModule({
