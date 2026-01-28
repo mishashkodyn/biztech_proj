@@ -28,7 +28,7 @@ var JwtSettings = builder.Configuration.GetSection("JwtSettings");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddOpenApi();
+//builder.Services.AddOpenApi();
 
 builder.Services.AddIdentityCore<ApplicationUser>()
    .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -73,10 +73,10 @@ builder.Services.AddAuthentication(opt =>
 builder.Services.AddSignalR();
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+//if (app.Environment.IsDevelopment())
+//{
+//    app.MapOpenApi();
+//}
 
 app.UseCors(x => 
     x.AllowAnyHeader()
