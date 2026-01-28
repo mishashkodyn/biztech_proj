@@ -5,14 +5,15 @@ on:
     branches:
       - master
   workflow_dispatch:
-  
-  env:
-  AZURE_WEBAPP_API_NAME: 'BiztechAPI'   # Введіть назву App Service для бекенду
-  AZURE_WEBAPP_CLIENT_NAME: 'BiztecheClient' # Введіть назву App Service для фронтенду
-  DOTNET_VERSION: '10.0.100' # Ваша версія .NET
-  NODE_VERSION: '22.20.0'
 
-  jobs:
+env:
+  AZURE_WEBAPP_API_NAME: 'BiztechAPI'          # Назва вашого App Service для Backend
+  AZURE_WEBAPP_CLIENT_NAME: 'BiztecheClient'   # Назва вашого App Service для Frontend
+  DOTNET_VERSION: '8.0.x'                      # Виправлено на стабільну версію .NET 8
+  NODE_VERSION: '20.x'                         # Стабільна версія Node.js
+
+jobs:
+  # --- ЗАДАЧА 1: БЕКЕНД ---
   build-and-deploy-api:
     runs-on: ubuntu-latest
     steps:
@@ -27,10 +28,10 @@ on:
       run: dotnet restore ./API/API.sln
 
     - name: Build
-      run: dotnet build ./API/YourProjectName.sln --configuration Release --no-restore
+      run: dotnet build ./API/API.sln --configuration Release --no-restore
 
     - name: Publish
-      run: dotnet publish ./API/YourProjectName.sln --configuration Release --no-build --output ./publish
+      run: dotnet publish ./API/API.sln --configuration Release --no-build --output ./publish
 
     - name: Deploy to Azure Web App (API)
       uses: azure/webapps-deploy@v3
@@ -39,7 +40,7 @@ on:
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_API }}
         package: ./publish
 
-build-and-deploy-client:
+  build-and-deploy-client:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
