@@ -53,6 +53,11 @@ export class HeaderComponent {
     }
   }
 
+  logout() {
+    this.authService.logout();
+    this.route.navigate(['/login']);
+  }
+
   visibilityButtons(): boolean {
     if (this.route.url == '/login' || this.route.url == '/register' || this.authService.isLoggedIn() == false) {
       return true;
