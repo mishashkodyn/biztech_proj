@@ -1,10 +1,20 @@
-<app-chat-sidebar class="bg-white border-r border-gray-200 md:hidden"/>
-<div class="flex rounded-3xl justify-between h-full">
-  <app-chat-sidebar class="bg-white border-r border-gray-200 hidden md:block w-1/3" />
-  <div class="w-full">
+<div class="flex rounded-3xl justify-between">
+  <div class="bg-white border-r border-gray-200 md:w-1/3 w-full">
+    <app-chat-sidebar></app-chat-sidebar>
+  </div>
+  <div
+    [ngClass]="{
+      hidden: !chatService.currentOpenedChat(),
+      'block w-full': chatService.currentOpenedChat(),
+    }"
+    class="md:block"
+  >
     <app-chat-window></app-chat-window>
   </div>
-  <div class="bg-gray-50 border-l border-gray-200 hidden md:block" [style.width]="this.chatService.chatRightSidebarIsOpen() ? '30%' : '0px'">
+  <div
+    class="bg-gray-50 border-l border-gray-200"
+    [style.width]="chatService.chatRightSidebarIsOpen() ? '30%' : '0px'"
+  >
     <app-chat-right-sidebar></app-chat-right-sidebar>
   </div>
 </div>
