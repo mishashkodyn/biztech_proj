@@ -43,6 +43,12 @@
     @if (authService.isLoggedIn()) {
       <div class="flex items-center gap-5">
         <div
+          class="flex text-primary hover:text-success cursor-pointer mt-1"
+          (click)="logout()"
+        >
+          <mat-icon class="text-3xl">logout</mat-icon>
+        </div>
+        <div
           matTooltip="Chat"
           matTooltipPosition="above"
           class="flex text-primary hover:text-success cursor-pointer mt-1"
