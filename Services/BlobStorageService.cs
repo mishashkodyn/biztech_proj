@@ -9,18 +9,16 @@ namespace API.Services
     public class BlobStorageService : IBlobStorageService
     {
         private readonly BlobServiceClient _blobServiceClient;
-        private readonly string _containerName;
         private static readonly FileExtensionContentTypeProvider Provider = new FileExtensionContentTypeProvider();
-
-        public BlobStorageService(BlobServiceClient blobServiceClient, IConfiguration configuration) 
+        private const string CONTAINER_NAME = "helphub";
+        public BlobStorageService(BlobServiceClient blobServiceClient) 
         { 
             _blobServiceClient = blobServiceClient;
-            _containerName = configuration["BlobStorage:BlobContainerName"] ?? "helphub";
         }
 
         public async Task<BlobInfoDto> GetBlobAsync(string blobName) 
         {
-            var conteinerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+            var conteinerClient = _blobServiceClient.GetBlobContainerClient(CONTAINER_NAME);
 
             var blobClient = conteinerClient.GetBlobClient(blobName);
 
@@ -31,7 +29,7 @@ namespace API.Services
 
         public async Task UploadFileBlobAsync(string filePath, string fileName)
         {
-            var conteinerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+            var conteinerClient = _blobServiceClient.GetBlobContainerClient(CONTAINER_NAME);
 
             var blobClient = conteinerClient.GetBlobClient(fileName);
 
@@ -40,7 +38,7 @@ namespace API.Services
 
         public async Task DeleteBlobAsync(string blobName)
         {
-            var conteinerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+            var conteinerClient = _blobServiceClient.GetBlobContainerClient(CONTAINER_NAME);
 
             var blobClient = conteinerClient.GetBlobClient(blobName);
 
