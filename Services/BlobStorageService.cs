@@ -27,13 +27,20 @@ namespace API.Services
             return new BlobInfoDto(blobDownloadInfo.Value.Content, blobDownloadInfo.Value.ContentType);
         }
 
-        public async Task UploadFileBlobAsync(string filePath, string fileName)
+        public async Task<string> UploadFileAsync(IFormFile file)
         {
-            var conteinerClient = _blobServiceClient.GetBlobContainerClient(CONTAINER_NAME);
+            var containerClient = _blobServiceClient.GetBlobContainerClient(CONTAINER_NAME);
 
-            var blobClient = conteinerClient.GetBlobClient(fileName);
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+            var blobClient = containerClient.GetBlobClient(fileName);
 
-            await blobClient.UploadAsync(filePath, new BlobHttpHeaders {ContentType = GetContentType(filePath)});
+            using var stream = file.OpenReadStream();
+            await blobClient.UploadAsync(stream, new BlobHttpHeaders
+            {
+                ContentType = file.ContentType
+            });
+
+            return blobClient.Uri.ToString();
         }
 
         public async Task DeleteBlobAsync(string blobName)

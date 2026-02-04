@@ -6,7 +6,7 @@ namespace API.Services.Interfaces
     public interface IBlobStorageService
     {
         public Task<BlobInfoDto> GetBlobAsync(string blobName);
-        public Task UploadFileBlobAsync(string filePath, string fileName);
+        public Task<string> UploadFileAsync(IFormFile file);
         public Task DeleteBlobAsync(string blobName);
     }
 }

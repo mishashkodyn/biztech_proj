@@ -21,12 +21,12 @@ namespace API.Controllers
             return File(data.Content, data.ContentType);
         }
 
-        [HttpPost("uploadFile")]
-        public async Task<IActionResult> UploadFile([FromBody] UploadFileRequest request)
-        {
-            await _blobService.UploadFileBlobAsync(request.FilePath!, request.FileName!);
-            return Ok();
-        }
+        //[HttpPost("uploadFile")]
+        //public async Task<IActionResult> UploadFile([FromBody] UploadFileRequest request)
+        //{
+        //    await _blobService.UploadFileBlobAsync(request.FilePath!, request.FileName!);
+        //    return Ok();
+        //}
 
         [HttpDelete("{blobName}")]
         public async Task<IActionResult> DeleteFile(string blobName)
