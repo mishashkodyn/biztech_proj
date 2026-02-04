@@ -3,6 +3,7 @@ using API.Core.DTOs;
 using API.Core.Entities;
 using API.Extentions;
 using API.Services;
+using API.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,7 @@ namespace API.Endpoints
 
             group.MapPost("/register", async (HttpContext context, UserManager<ApplicationUser>
              userManager, [FromForm] string name, [FromForm] string surname, [FromForm] string email,
-             [FromForm] string password, [FromForm] string username, [FromForm] IFormFile? profileImage) =>
+             [FromForm] string password, [FromForm] string username, [FromForm] IFormFile? profileImage, IBlobStorageService blobService) =>
             {
                 var userFromDb = await userManager.FindByEmailAsync(email);
 
@@ -32,9 +33,7 @@ namespace API.Endpoints
                     return Results.BadRequest(Response<string>.Failure("Profile image is required"));
                 }
 
-                var picture = await FileUpload.Upload(profileImage);
-
-                picture = $"{context.Request.Scheme}://{context.Request.Host}/uploads/{picture}";
+                string pictureUrl = await blobService.UploadFileAsync(profileImage);
 
                 var user = new ApplicationUser
                 {
@@ -42,13 +41,14 @@ namespace API.Endpoints
                     Surname = surname,
                     Email = email,
                     UserName = username,
-                    ProfileImage = picture
+                    ProfileImage = pictureUrl
                 };
 
                 var result = await userManager.CreateAsync(user, password);
 
                 if (!result.Succeeded)
                 {
+                    await blobService.DeleteBlobAsync(user.ProfileImage);
                     return Results.BadRequest(Response<string>.Failure(result.Errors
                         .Select(x => x.Description).FirstOrDefault()!));
                 }
@@ -66,7 +66,7 @@ namespace API.Endpoints
 
                 var user = await userManager.FindByEmailAsync(dto.Email);
 
-                if (user is null) 
+                if (user is null)
                 {
                     return Results.BadRequest(Response<string>.Failure("User not found."));
                 }

@@ -31,7 +31,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddSingleton(x =>
-    new BlobServiceClient(builder.Configuration.GetConnectionString("DefaultConnection")));
+    new BlobServiceClient(builder.Configuration.GetConnectionString("BlobConnection")));
 
 //builder.Services.AddOpenApi();
 
