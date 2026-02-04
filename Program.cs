@@ -3,6 +3,8 @@ using API.Data;
 using API.Endpoints;
 using API.Hubs;
 using API.Services;
+using API.Services.Interfaces;
+using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,9 +26,13 @@ builder.Services.AddCors(
     }
 );
 var JwtSettings = builder.Configuration.GetSection("JwtSettings");
+var blobStorageSettings = builder.Configuration.GetSection("BlobStorage");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddSingleton(x =>
+    new BlobServiceClient(blobStorageSettings["BlobConnection"]));
 
 //builder.Services.AddOpenApi();
 
@@ -70,6 +76,8 @@ builder.Services.AddAuthentication(opt =>
     };
 });
 
+builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
+builder.Services.AddControllers();
 builder.Services.AddSignalR();
 var app = builder.Build();
 
@@ -92,5 +100,6 @@ app.UseStaticFiles();
 app.MapHub<ChatHub>("hubs/chat");
 app.MapHub<VideoChatHub>("hubs/video");
 app.MapAccountEndpoint();
+app.MapControllers();
 
 app.Run();
