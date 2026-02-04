@@ -26,12 +26,13 @@ builder.Services.AddCors(
     }
 );
 var JwtSettings = builder.Configuration.GetSection("JwtSettings");
+var blobConn = builder.Configuration.GetConnectionString("BlobConnection")
+               ?? builder.Configuration["ConnectionStrings:BlobConnection"];
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddSingleton(x =>
-    new BlobServiceClient(builder.Configuration.GetConnectionString("BlobConnection")));
+builder.Services.AddSingleton(x => new BlobServiceClient(blobConn));
 
 //builder.Services.AddOpenApi();
 
