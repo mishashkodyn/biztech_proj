@@ -14,6 +14,7 @@ import { SharedModule } from '../shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { VideoChatComponent } from './components/video-chat/video-chat.component';
+import { CdkAutofill } from "@angular/cdk/text-field";
 
 
 
@@ -35,7 +36,8 @@ import { VideoChatComponent } from './components/video-chat/video-chat.component
     SharedModule,
     FormsModule,
     MatDialogModule,
-    VideoChatComponent
-  ]
+    VideoChatComponent,
+    CdkAutofill
+]
 })
 export class ChatModule { }

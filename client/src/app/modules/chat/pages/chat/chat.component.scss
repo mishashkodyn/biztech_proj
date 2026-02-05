@@ -1,0 +1,12 @@
+@media (min-width: 768px) {
+  .right-sidebar {
+    width: 0;
+    overflow: hidden;
+    transition: width 0.3s ease;
+  }
+
+  .right-sidebar.open {
+    width: 30%;
+    min-width: 300px;
+  }
+}

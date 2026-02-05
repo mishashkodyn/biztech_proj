@@ -35,6 +35,14 @@ export class ChatWindowComponent {
     });
   }
 
+  closeChatWindow() {
+    this.chatService.currentOpenedChat.set(null);
+  }
+
+  openRightSideBar() {
+    this.chatService.chatRightSidebarIsOpen.set(true);
+  }
+
   sendMessage() {
     if (!this.message) return;
     this.chatService.sendMessage(this.message);
