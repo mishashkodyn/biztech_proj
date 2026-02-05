@@ -1,29 +1,30 @@
-<div class="chat-section flex flex-col">
+<div class="chat-section flex flex-col h-full">
+  
   <div
     #messageScroll
-    class="w-full messageReceiver flex flex-col chat-box overflow-y-auto mb-2"
+    class="flex-1 overflow-y-auto p-4 flex flex-col gap-2"
   >
     <div
-      class="message"
+      class="message max-w-[85%] md:max-w-[70%]"
       *ngFor="let item of chatService.chatMessages(); let i = index"
       [ngClass]="{
-        myMessage: item.senderId === authService.currentLoggedUser?.id,
-        theirMessage: item.senderId !== authService.currentLoggedUser?.id
+        'self-end': item.senderId === authService.currentLoggedUser?.id,
+        'self-start': item.senderId !== authService.currentLoggedUser?.id
       }"
     >
-      <div class="b-radius shadow-sm p-2 messageText emojiFonts">
-        {{ item.content }}
-        <div class="message-footer">
-          <div class="messageMe">
-            {{ item.createdDate | date : "HH:mm" }}
-          </div>
-          @if(item.senderId === authService.currentLoggedUser?.id) {
-          <mat-icon class="check-mark">
-            {{ item.isRead ? "done_all" : "done" }}
-          </mat-icon>
-          }
-        </div>
+      <div 
+        class="p-3 rounded-2xl shadow-sm text-sm md:text-base relative min-w-[80px]"
+        [ngClass]="{
+             'bg-blue-100 rounded-br-none': item.senderId === authService.currentLoggedUser?.id,
+             'bg-gray-100 rounded-bl-none': item.senderId !== authService.currentLoggedUser?.id
+        }"
+      >
+        <span class="break-words block mb-3">{{ item.content }}</span>
+        <div class="absolute bottom-1 right-2 flex items-center gap-1 text-[10px] text-gray-500">
+           <span>{{ item.createdDate | date : "HH:mm" }}</span>
+           </div>
       </div>
+
     </div>
   </div>
 </div>

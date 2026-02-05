@@ -1,58 +1,47 @@
 @if (chatService.currentOpenedChat()) {
-  <div class="relative w-full bg-white h-full">
-    <div
-      class="chat-header flex justify-between items-center border-b border-gray-200 w-full bg-white p-4"
-    >
-      <div
-        class="cursor-pointer hover:text-blue-900 block md:hidden"
-        (click)="closeChatWindow()"
-      >
+  <div class="flex flex-col h-full w-full bg-white relative">
+    
+    <div class="shrink-0 flex justify-between items-center border-b border-gray-200 w-full bg-white px-4 py-1 md:py-3">
+      <div class="cursor-pointer hover:text-blue-900 block md:hidden" (click)="closeChatWindow()">
         <mat-icon>arrow_back</mat-icon>
       </div>
-      <div>
-        <span
-          class="font-bold leading-normal cursor-pointer"
-          (click)="openRightSideBar()"
-        >
-          {{
-            chatService.currentOpenedChat()!.name +
-              " " +
-              chatService.currentOpenedChat()!.surname | titlecase
-          }}
-        </span>
-        <br />
-        <span class="text-green-400 text-sm font-bold">
-          {{ chatService.status(chatService.currentOpenedChat()?.userName!) }}
-        </span>
+      <div class="text-center md:text-left">
+         <span class="font-bold leading-normal cursor-pointer" (click)="openRightSideBar()">
+           {{ chatService.currentOpenedChat()!.name + " " + chatService.currentOpenedChat()!.surname | titlecase }}
+         </span>
+         <br />
+         <span class="text-green-400 text-sm font-bold">
+           {{ chatService.status(chatService.currentOpenedChat()?.userName!) }}
+         </span>
       </div>
-      <div
-        class="cursor-pointer hover:text-blue-900"
-        (click)="displayDialog(chatService.currentOpenedChat()!.id)"
-      >
+      <div class="cursor-pointer hover:text-blue-900" (click)="displayDialog(chatService.currentOpenedChat()!.id)">
         <mat-icon>video_call</mat-icon>
       </div>
     </div>
-    <div class="mb-1">
-      <app-chat-box />
+
+    <div class="flex-1 min-h-0 w-full relative overflow-hidden">
+      <app-chat-box class="h-full block" />
     </div>
-    <div
-      class="absolute bottom-0 left-0 flex items-center border-t border-gray-200 w-full bg-white p-4"
-    >
-      <input
-        type="text"
-        (input)="chatService.notifyTyping()"
-        (keydown.enter)="sendMessage()"
-        [(ngModel)]="message"
-        class="w-full bg-gray-200 focus:outline-none text-gray-900 border border-gray-400 px-4 py-2 rounded-full"
-        placeholder="Type message"
-      />
-      <div class="ml-5 cursor-pointer items-center hover:text-blue-900">
-        <mat-icon (click)="sendMessage()"> send </mat-icon>
+
+    <div class="shrink-0 border-t border-gray-200 w-full bg-white p-4">
+      <div class="flex items-center w-full">
+        <input
+          type="text"
+          (input)="chatService.notifyTyping()"
+          (keydown.enter)="sendMessage()"
+          [(ngModel)]="message"
+          class="w-full bg-gray-200 focus:outline-none text-gray-900 border border-gray-400 px-4 py-2 rounded-full"
+          placeholder="Type message"
+        />
+        <div class="ml-4 cursor-pointer flex items-center hover:text-blue-900 text-primary">
+          <mat-icon (click)="sendMessage()"> send </mat-icon>
+        </div>
       </div>
     </div>
+
   </div>
 } @else {
-  <div class="flex flex-col items-center justify-center p-4 md:h-full">
+  <div class="flex flex-col items-center justify-center h-full p-4">
     <img src="chatopen.svg" />
   </div>
 }
