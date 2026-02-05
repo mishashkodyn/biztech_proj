@@ -21,7 +21,7 @@ export class LoginComponent {
   email!: string;
   password!: string;
 
-  hide: boolean = false;
+  hide: boolean = true;
 
   constructor(
     public authService: AuthService,
