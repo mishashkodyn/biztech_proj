@@ -1,7 +1,5 @@
 .chat-section {
-  height: calc(100vh - 150px);
-  overflow-y: auto;
-  scroll-behavior: smooth;
+  height: 100%;
 }
 
 .chat-box {
@@ -84,3 +82,5 @@
   font-family: "Inter", "Segoe UI Emoji", "Segoe UI Symbol", "Apple Color Emoji",
     "Twemoji Mozilla", "Noto Color Emoji", "Android Emoji" !important;
 }
+
+
