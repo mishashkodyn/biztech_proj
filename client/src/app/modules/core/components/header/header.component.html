@@ -1,9 +1,12 @@
-<div class="bg-white flex justify-between items-center shadow-lg px-4 py-1">
-  <div class="flex items-center cursor-pointer" (click)="navigateTo('home')">
-    <img src="/main-icon.png" alt="Help hub" class="w-8 h-8" />
-    <img src="/main-icon-text.png" alt="Help hub" class="h-5 mt-1" />
+<div class="bg-white flex justify-between items-center shadow-lg px-2 py-2 md:px-4 md:py-1 h-14 md:h-auto">
+  
+  <div class="flex items-center cursor-pointer gap-1 md:gap-0" (click)="navigateTo('home')">
+    <img src="/main-icon.png" alt="Help hub" class="w-6 h-6 md:w-8 md:h-8 shrink-0" />
+    <img src="/main-icon-text.png" alt="Help hub" class="h-4 mt-1 hidden sm:block md:h-5" />
   </div>
-  <div class="flex justify-between items-center gap-5">
+
+  <div class="flex justify-end items-center gap-2 md:gap-5">
+    
     @if (visibilityButtons()) {
       <div class="hidden md:flex justify-between gap-3">
         @for (item of menuItems(); track item) {
@@ -15,24 +18,30 @@
         }
       </div>
     }
-    <div class="flex items-center cursor-pointer mt-2">
+
+    <div class="flex items-center gap-2 md:gap-2">
+      
       <app-dropdown
         [icon]="'language'"
         [items]="languages"
         [(selected)]="currentLanguage"
+        class="shrink-0 mt-2"
       ></app-dropdown>
+
       @if (visibilityButtons()) {
-        <div class="flex items-center gap-4 px-2">
-          <div class="flex gap-2">
+        <div class="flex items-center gap-2 md:gap-4">
+          <div class="flex gap-2 shrink-0">
             <button
               (click)="navigateTo('login')"
-              class="flex justify-center items-center bg-transparent text-primary font-mono font-semibold border border-primary rounded transition duration-200 cursor-pointer h-8 px-4 hover:shadow-md shadow-success"
+              class="flex justify-center items-center bg-transparent text-primary font-mono font-semibold border border-primary rounded transition duration-200 cursor-pointer 
+                     text-xs px-2 h-8       md:px-4 md:text-base   hover:shadow-md shadow-success whitespace-nowrap"
             >
               Log in
             </button>
             <button
               (click)="navigateTo('registration')"
-              class="flex justify-center items-center border border-primary bg-primary text-mint font-mono font-semibold rounded transition duration-200 cursor-pointer h-8 px-4 hover:shadow-md shadow-success"
+              class="flex justify-center items-center border border-primary bg-primary text-mint font-mono font-semibold rounded transition duration-200 cursor-pointer 
+                     text-xs px-2 h-8       md:px-4 md:text-base   hover:shadow-md shadow-success whitespace-nowrap"
             >
               Sign up
             </button>
@@ -40,29 +49,33 @@
         </div>
       }
     </div>
+
     @if (authService.isLoggedIn()) {
-      <div class="flex items-center gap-5">
+      <div class="flex items-center gap-3 md:gap-5">
+        
         <div
-          class="flex text-primary hover:text-success cursor-pointer mt-1"
+          class="flex text-primary hover:text-success cursor-pointer"
           (click)="logout()"
         >
-          <mat-icon class="text-3xl">logout</mat-icon>
+          <mat-icon class="text-2xl md:text-3xl">logout</mat-icon>
         </div>
+
         <div
           matTooltip="Chat"
           matTooltipPosition="above"
-          class="flex text-primary hover:text-success cursor-pointer mt-1"
+          class="flex text-primary hover:text-success cursor-pointer"
           (click)="navigateTo('chat')"
         >
-          <mat-icon class="text-3xl">chat</mat-icon>
+          <mat-icon class="text-2xl md:text-3xl">chat</mat-icon>
         </div>
+
         <div
-          class="rounded-full overflow-hidden border-2 border-mint cursor-pointer hover:shadow-sm shadow-success"
+          class="rounded-full overflow-hidden border-2 border-mint cursor-pointer hover:shadow-sm shadow-success shrink-0"
         >
           @if (authService.currentLoggedUser?.profileImage) {
             <img
               [src]="authService.currentLoggedUser?.profileImage"
-              class="w-10 h-10 object-cover"
+              class="w-8 h-8 md:w-10 md:h-10 object-cover"
               alt="Avatar Preview"
             />
           }
