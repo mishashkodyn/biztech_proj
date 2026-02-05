@@ -25,7 +25,7 @@ export class RegisterComponent {
   surname!: string;
   profilePicture: string = 'https://randomuser.me/api/portraits/lego/5.jpg';
   profileImage: File | null = null;
-  hide: boolean = false;
+  hide: boolean = true;
 
   constructor(
     public authService: AuthService,

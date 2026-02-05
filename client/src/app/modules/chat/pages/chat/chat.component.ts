@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ChatSidebarComponent } from "../../components/chat-sidebar/chat-sidebar.component";
 import { ChatWindowComponent } from "../../components/chat-window/chat-window.component";
 import { ChatRightSidebarComponent } from "../../components/chat-right-sidebar/chat-right-sidebar.component";
@@ -10,7 +10,12 @@ import { ChatService } from '../../../../api/services/chat.service';
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
 })
-export class ChatComponent {
+export class ChatComponent implements OnDestroy {
   constructor(protected chatService: ChatService) {
+  }
+
+  ngOnDestroy(): void {
+    this.chatService.chatRightSidebarIsOpen.set(false);
+    this.chatService.currentOpenedChat.set(null);
   }
 }

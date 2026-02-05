@@ -1,33 +1,65 @@
-@if (chatService.currentOpenedChat()){
-<div class="p-3">
-  <div class="flex flex-col text-center items-center mt-3">
-    <img
-      class="rounded-full mb-4 w-44 h-44 object-cover"
-      [src]="chatService.currentOpenedChat()?.profileImage"
-      alt="Profile picture"
-    />
-    <div class="flex flex-col justify-center items-center">
-      <p class="text-lg font-semibold">
-        {{
-          chatService.currentOpenedChat()?.name +
-            " " +
-            chatService.currentOpenedChat()?.surname | titlecase
-        }}
-      </p>
-      <p class="text-sm text-gray-500">
-        {{ chatService.currentOpenedChat()?.userName }}
-      </p>
-      <div class="mt-2">
-        <app-button
-        [text]="'Go to profile'"
-        [matIcon]="'person'"
-        [width]="'150px'"
-        [height]="'25px'"
-        (action)="goToProfile(chatService.currentOpenedChat()?.userName!)"
-      ></app-button>
+@if (chatService.currentOpenedChat()) {
+  <div [hidden]="!chatService.chatRightSidebarIsOpen()" class="p-3">
+    <div class="text-primary cursor-pointer hover:text-sky">
+      <mat-icon (click)="chatService.chatRightSidebarIsOpen.set(false)"
+        >close</mat-icon
+      >
+    </div>
+    <div class="flex flex-col text-center items-center mt-3">
+      <img
+        class="rounded-full border-2 border-lg border-primary mb-4 w-44 h-44 object-cover"
+        [src]="chatService.currentOpenedChat()?.profileImage"
+        alt="Profile picture"
+      />
+      <div class="flex flex-col justify-center items-center">
+        <p class="text-lg font-semibold">
+          {{
+            chatService.currentOpenedChat()?.name +
+              " " +
+              chatService.currentOpenedChat()?.surname | titlecase
+          }}
+        </p>
+        <p class="text-sm text-gray-500">
+          {{ chatService.currentOpenedChat()?.userName }}
+        </p>
+        <div class="mt-2">
+          <app-button
+            [text]="'Go to profile'"
+            [matIcon]="'person'"
+            [width]="'150px'"
+            [height]="'25px'"
+            (action)="goToProfile(chatService.currentOpenedChat()?.userName!)"
+          ></app-button>
+        </div>
       </div>
     </div>
+    <div
+      class="bg-gray-200 rounded rounded-full mt-3 gap-3 p-1 flex justify-between"
+    >
+      @for (item of tabItems(); track item) {
+        <div
+          (click)="setActiveTab(item)"
+          class="text-xs w-30 flex justify-center items-center cursor-pointer transition-all duration-200 px-1 h-8"
+          [ngClass]="
+            item.label == activeTab
+              ? 'bg-primary text-white rounded rounded-full'
+              : ''
+          "
+        >
+          {{ item.label }}
+        </div>
+      }
+    </div>
+    <div
+      class="flex flex-col items-center justify-center mt-6 py-10 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 text-gray-500 text-sm select-none"
+    >
+      @if (activeTab == "Information") {
+        <span>No information available</span>
+      } @else if (activeTab == "Files") {
+        <span>No files available</span>
+      } @else if (activeTab == "Media") {
+        <span>No voice or video calls yet</span>
+      }
+    </div>
   </div>
-</div>
-
 }

@@ -5,13 +5,13 @@
       placeholder="Search"
       class="bg-slate-100 border-1 focus:ring-1 focus:ring-slate-100 focus:outline-none w-full mb-3 border-slate-50 p-1 pl-10 text-slate-500 font-normal px-3 rounded-md"
     />
-    <mat-icon class="absolute text-gray-400 laft-2 top-1 pr-3">search</mat-icon>
+    <mat-icon class="absolute text-gray-400 left-2 top-1 pr-3">search</mat-icon>
   </div>
-  <div class="py-1 flex md:block overflow-y-auto scroll-smooth">
+  <div class="py-1">
     @for (user of chatService.onlineUsers(); track user){
     <div
       (click)="openChatWindow(user)"
-      class="flex flex-col md:flex-row mr-5 items-center border-b relative bg-white hover:bg-slate-200 cursor-pointer hover:rounded-md border-gray-100 px-3 gap-2 py-2"
+      class="flex flex-row mr-5 items-center border-b relative bg-white hover:bg-slate-200 cursor-pointer hover:rounded-md border-gray-300 px-3 gap-2 py-2"
     >
       <div
         class="h-12 w-12 rounded-full object-cover overflow-hidden"
