@@ -12,6 +12,9 @@
 html, body {
   height: 100%;
   font-family: var(--font-sans);
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: pan-x pan-y;
 }
 
 .custom-scroll {
