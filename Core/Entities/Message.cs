@@ -10,6 +10,7 @@
         public bool IsRead { get; set; }
         public Message? ReplyMessage { get; set; }
         public Guid? ReplyMessageId { get; set; }
+        public List<MessageAttachment>? Attachments { get; set; }
         public ApplicationUser? Sender { get; set; }
         public ApplicationUser? Receiver { get; set; }
 

@@ -24,7 +24,7 @@
         }
 
         <div
-          class="p-2 rounded-xl shadow-sm text-sm md:text-base relative min-w-[120px]"
+          class="pt-2 px-2 rounded-xl shadow-sm text-sm md:text-base relative min-w-[120px]"
           [ngClass]="{
             'bg-mint rounded-br-none text-slate-800':
               item.senderId === authService.currentLoggedUser?.id,
@@ -49,17 +49,81 @@
               {{ item.replyMessageContent }}
             </span>
           </div>
-          <span class="break-words block leading-relaxed">
-            {{ item.content }}
-          </span>
+          @if (item.attachments && item.attachments.length > 0) {
+            <div class="flex flex-col gap-2 mb-2">
+              @for (att of item.attachments; track $index) {
+                @if (att.type === "image") {
+                  <div class="rounded-lg overflow-hidden border border-black/5">
+                    <img
+                      [src]="att.path"
+                      class="w-full h-auto max-h-[300px] object-cover cursor-pointer hover:opacity-95 transition"
+                      alt="attachment"
+                      (click)="viewImage(att.path)"
+                    />
+                  </div>
+                } @else if (att.type === "video") {
+                  <div class="rounded-lg overflow-hidden bg-black">
+                    <video
+                      [src]="att.path"
+                      controls
+                      class="w-full max-h-[300px]"
+                    ></video>
+                  </div>
+                } @else {
+                  <a
+                    [href]="att.path"
+                    target="_blank"
+                    class="flex items-center gap-3 p-2 rounded-lg bg-black/5 hover:bg-black/10 transition border border-black/5 no-underline group"
+                  >
+                    <div
+                      class="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 text-primary"
+                    >
+                      <mat-icon
+                        class="text-[20px] w-[20px] h-[20px] flex items-center justify-center"
+                      >
+                        {{
+                          att.type === "pdf" ? "picture_as_pdf" : "description"
+                        }}
+                      </mat-icon>
+                    </div>
+                    <div class="flex flex-col min-w-0 overflow-hidden">
+                      <span
+                        class="text-xs font-semibold truncate w-full text-gray-800"
+                        >{{ att.name }}</span
+                      >
+                      <span class="text-[10px] text-gray-500 uppercase"
+                        >{{ att.name.split(".").pop() }} File</span
+                      >
+                    </div>
+                    <mat-icon
+                      class="ml-auto text-gray-400 group-hover:text-primary"
+                      >download</mat-icon
+                    >
+                  </a>
+                }
+              }
+            </div>
+          }
+          @if (item.content) {
+            <span class="break-words block leading-relaxed">
+              {{ item.content }}
+            </span>
+          }
 
-          <div class="flex justify-end items-center gap-1 mt-1">
+          <div class="flex justify-between items-center gap-1">
             <span class="text-[10px] text-gray-500 opacity-70">
               {{ item.createdDate | date: "HH:mm" }}
             </span>
+            @if (item.senderId === authService.currentLoggedUser?.id) {
+              <span class="text-primary"
+                ><mat-icon class="scale-70">{{
+                  item.isRead ? "done_all" : "done"
+                }}</mat-icon>
+              </span>
+            }
           </div>
         </div>
-         @if (item.senderId !== authService.currentLoggedUser?.id) {
+        @if (item.senderId !== authService.currentLoggedUser?.id) {
           <span class="text-gray-400 hover:text-primary mb-2 transition-colors">
             <mat-icon
               (click)="addReplyMessage(item)"

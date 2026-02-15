@@ -1,4 +1,7 @@
-﻿namespace API.Core.DTOs.Message
+﻿using API.Core.DTOs.BlobStorage;
+using API.Core.Entities;
+
+namespace API.Core.DTOs.Message
 {
     public class MessageRequestDto
     {
@@ -12,5 +15,6 @@
         public string? ReplyMessageContent { get; set; }
         public string? ReplyMessageSenderName { get; set; }
         public DateTime CreatedDate { get; set; }
+        public List<MessageAttachment>? Attachments { get; set; }
     }
 }

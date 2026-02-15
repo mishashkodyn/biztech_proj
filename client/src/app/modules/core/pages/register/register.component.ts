@@ -42,7 +42,7 @@ export class RegisterComponent {
     const file: File = event.target.files[0];
     if (file) {
       this.profileImage = file;
-
+      
       const reader = new FileReader();
       reader.onload = (e) => {
         this.profilePicture = e.target!.result as string;
