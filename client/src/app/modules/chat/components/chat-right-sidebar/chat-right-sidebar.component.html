@@ -1,6 +1,6 @@
 @if (chatService.currentOpenedChat()) {
   <div [hidden]="!chatService.chatRightSidebarIsOpen()" class="p-3">
-    <div class="text-primary cursor-pointer hover:text-sky">
+    <div class="text-primary cursor-pointer hover:text-success">
       <mat-icon (click)="chatService.chatRightSidebarIsOpen.set(false)"
         >close</mat-icon
       >

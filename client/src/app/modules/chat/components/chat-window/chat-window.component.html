@@ -1,21 +1,56 @@
 @if (chatService.currentOpenedChat()) {
   <div class="flex flex-col h-full w-full bg-white relative overscroll-none">
-    
-    <div class="shrink-0 flex justify-between items-center border-b border-gray-200 w-full bg-white px-4 py-1 md:py-3">
-      <div class="cursor-pointer hover:text-blue-900 block md:hidden" (click)="closeChatWindow()">
-        <mat-icon>arrow_back</mat-icon>
+    <div
+      class="shrink-0 flex justify-between items-center bg-white/90 backdrop-blur-md border-b border-gray-100 w-full px-4 py-2 md:py-3 z-10"
+    >
+      <div class="flex items-center gap-3">
+        <button
+          (click)="closeChatWindow()"
+          class="md:hidden p-2 -ml-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600"
+        >
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+
+        <div
+          (click)="openRightSideBar()"
+          class="relative w-10 h-10 rounded-full bg-mint flex items-center justify-center text-primary font-semibold cursor-pointer border border-white shadow-sm"
+        >
+          {{ chatService.currentOpenedChat()?.name?.[0]
+          }}{{ chatService.currentOpenedChat()?.surname?.[0] }}
+          @if (chatService.currentOpenedChat()?.isOnline) {
+            <span
+              class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"
+            ></span>
+          }
+        </div>
+
+        <div class="flex flex-col cursor-pointer" (click)="openRightSideBar()">
+          <h3 class="font-semibold text-gray-900 leading-tight text-base">
+            {{
+              chatService.currentOpenedChat()!.name +
+                " " +
+                chatService.currentOpenedChat()!.surname | titlecase
+            }}
+          </h3>
+          <span class="text-xs font-medium text-green-600">
+            {{ chatService.status(chatService.currentOpenedChat()?.userName!) }}
+          </span>
+        </div>
       </div>
-      <div class="text-center md:text-left">
-         <span class="font-bold leading-normal cursor-pointer" (click)="openRightSideBar()">
-           {{ chatService.currentOpenedChat()!.name + " " + chatService.currentOpenedChat()!.surname | titlecase }}
-         </span>
-         <br />
-         <span class="text-green-400 text-sm font-bold">
-           {{ chatService.status(chatService.currentOpenedChat()?.userName!) }}
-         </span>
-      </div>
-      <div class="cursor-pointer hover:text-blue-900" (click)="displayDialog(chatService.currentOpenedChat()!.id)">
-        <mat-icon>video_call</mat-icon>
+
+      <div class="flex items-center gap-1">
+        <button
+          (click)="displayDialog(chatService.currentOpenedChat()!.id)"
+          class="p-2.5 rounded-xl text-primary hover:text-success hover:bg-gray-100 transition-all duration-200 cursor-pointer"
+        >
+          <mat-icon class="scale-110">video_call</mat-icon>
+        </button>
+
+        <button
+          class="p-2.5 rounded-xl text-primary hover:text-success hover:bg-gray-100 transition-all duration-200 cursor-pointer"
+        >
+          <mat-icon>more_vert</mat-icon>
+        </button>
       </div>
     </div>
 
@@ -23,22 +58,55 @@
       <app-chat-box class="h-full block" />
     </div>
 
-    <div class="shrink-0 border-t border-gray-200 w-full bg-white p-4">
-      <div class="flex items-center w-full">
-        <input
-          type="text"
-          (input)="chatService.notifyTyping()"
-          (keydown.enter)="sendMessage()"
-          [(ngModel)]="message"
-          class="w-full bg-gray-200 focus:outline-none text-gray-900 border border-gray-400 px-4 py-2 rounded-full"
-          placeholder="Type message"
-        />
-        <div class="ml-4 cursor-pointer flex items-center hover:text-blue-900 text-primary">
-          <mat-icon (click)="sendMessage()"> send </mat-icon>
+    <div
+      class="shrink-0 w-full bg-white/80 backdrop-blur-md border-t border-gray-100 p-4 pb-6"
+    >
+      <div
+        class="flex items-end max-w-5xl mx-auto gap-3"
+      >
+        <div class="relative flex-grow">
+          @if (chatService.replyMessage()) {
+            <div
+              class="absolute top-2 left-2 right-2 bg-gray-100 border border-gray-200 rounded-xl px-3 py-2 text-xs text-gray-700 flex justify-between items-start"
+            >
+              <div class="truncate flex items-center gap-1">
+                <span class="block font-medium text-gray-500">
+                  <mat-icon>reply</mat-icon>
+                </span>
+                <span class="block truncate">{{
+                  chatService.replyMessage()?.content
+                }}</span>
+              </div>
+
+              <button
+                type="button"
+                class="ml-2 text-gray-400 hover:text-gray-600"
+                (click)="chatService.replyMessage.set(null)"
+              >
+                ✕
+              </button>
+            </div>
+          }
+          <input
+            type="text"
+            (input)="chatService.notifyTyping()"
+            (keydown.enter)="sendMessage()"
+            [(ngModel)]="message"
+            [class.pt-16]="chatService.replyMessage()"
+            class="w-full bg-gray-50 border border-gray-200 focus:border-primary focus:ring-4 focus:ring-blue-500/10 focus:bg-white text-gray-900 text-sm px-5 py-3 rounded-2xl transition-all duration-200 outline-none"
+            placeholder="Enter your message..."
+          />
         </div>
+
+        <button
+          (click)="sendMessage()"
+          [disabled]="!message?.trim()"
+          class="flex items-center justify-center w-11 h-11 rounded-xl cursor-pointer bg-primary hover:bg-success disabled:active:scale-100 transition-all duration-200 shadow-lg shadow-blue-500/30 text-white"
+        >
+          <mat-icon class="text-[20px] leading-none">send</mat-icon>
+        </button>
       </div>
     </div>
-
   </div>
 } @else {
   <div class="flex flex-col items-center justify-center h-full p-4">
