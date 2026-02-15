@@ -26,6 +26,7 @@ export class ChatService {
   pageNumber = signal<number>(1);
   isConnected = signal<boolean>(false);
   chatRightSidebarIsOpen = signal<boolean>(false);
+  replyMessage = signal<Message | null>(null);
 
   startConnection(token: string, senderId?: string) {
     if (this.hubConnection?.state === HubConnectionState.Connected) return;
@@ -162,6 +163,7 @@ export class ChatService {
   }
 
   sendMessage(message: string) {
+    
     this.chatMessages.update((messages) => [
       ...messages,
       {
@@ -170,15 +172,22 @@ export class ChatService {
         receiverId: this.currentOpenedChat()?.id!,
         createdDate: new Date().toString(),
         isRead: false,
-        id: 0,
+        replyMessageId: this.replyMessage()?.id,
+        replyMessageContent: this.replyMessage()?.content ?? undefined,
+        replyMessageSenderName: this.replyMessage()?.senderName,
+        id: undefined,
       },
     ]);
 
     this.hubConnection
       ?.invoke('SendMessage', {
         receiverId: this.currentOpenedChat()?.id,
+        senderId: this.authService.currentLoggedUser!.id,
         content: message,
+        replyMessageId: this.replyMessage()?.id
       })
+
+    this.replyMessage.set(null);
   }
 
   notifyTyping() {

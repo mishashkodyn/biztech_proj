@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { ChatService } from '../../../../api/services/chat.service';
 import { AuthService } from '../../../../api/services/auth.service';
+import { Message } from '../../../../api/models/message';
 
 @Component({
   selector: 'app-chat-box',
@@ -27,6 +28,12 @@ export class ChatBoxComponent implements AfterViewChecked, AfterViewInit {
 
   ngOnInit(): void {
     this.scrollDown();
+  }
+
+  addReplyMessage(message: Message){
+    if (message) {
+      this.chatService.replyMessage.set(message);
+    }
   }
 
   scrollDown() {

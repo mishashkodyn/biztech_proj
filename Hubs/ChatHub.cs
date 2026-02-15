@@ -77,7 +77,13 @@ namespace API.Hubs
                     Content = x.Content,
                     CreatedDate = x.CreatedDate,
                     ReceiverId = x.ReceiverId,
+                    ReplyMessageId = x.ReplyMessageId ?? Guid.Empty,
+                    ReplyMessageContent = x.ReplyMessage != null ? x.ReplyMessage.Content : "",
+                    ReplyMessageSenderName = x.ReplyMessage != null && x.ReplyMessage.Sender != null
+                                 ? x.ReplyMessage.Sender.Name
+                                 : "",
                     SenderId = x.SenderId,
+                    SenderName = x.Sender != null ? x.Sender.Name : ""
                 })
                 .ToListAsync();
 
@@ -99,22 +105,21 @@ namespace API.Hubs
 
         public async Task SendMessage(MessageRequestDto message)
         {
-            var senderId = Context.User!.Identity!.Name;
-            var receiverId = message.ReceiverId;
 
             var newMsg = new Message
             {
-                Sender = await userManager.FindByNameAsync(senderId!),
-                Receiver = await userManager.FindByIdAsync(receiverId!.ToString()!),
+                SenderId = message.SenderId,
+                ReceiverId = message.ReceiverId,
                 IsRead = false,
                 CreatedDate = DateTime.UtcNow,
+                ReplyMessageId = message.ReplyMessageId,
                 Content = message.Content
             };
 
             context.Messages.Add(newMsg);
             await context.SaveChangesAsync();
 
-            await Clients.User(receiverId.ToString()!).SendAsync("ReceiveNewMessage", newMsg);
+            await Clients.User(message.ReceiverId.ToString()!).SendAsync("ReceiveNewMessage", newMsg);
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
