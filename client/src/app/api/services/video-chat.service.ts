@@ -3,6 +3,7 @@
   import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
   import { AuthService } from './auth.service';
   import { BehaviorSubject, Subject } from 'rxjs';
+import { FilesService } from './files.service';
 
   @Injectable({
     providedIn: 'root',
@@ -11,6 +12,7 @@
     private hubUrl = `${environment.hubUrl}/video`;
     public hubConnection: HubConnection | null = null;
     private authService = inject(AuthService);
+    private filesService = inject(FilesService)
 
     public offerReceived = new Subject<{ senderId: string; offer: RTCSessionDescriptionInit }>();
     public answerReceived = new Subject<{ senderId: string; answer: RTCSessionDescriptionInit }>();

@@ -68,7 +68,7 @@ namespace API.Hubs
                 .Where(x => x.ReceiverId == currentUser!.Id && x.SenderId ==
                 recipientId || x.SenderId == currentUser!.Id && x.ReceiverId == recipientId)
                 .OrderByDescending(x => x.CreatedDate)
-                .Skip((pageNumber-1)* pageSize)
+                .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .OrderBy(x => x.CreatedDate)
                 .Select(x => new MessageResponseDto
@@ -83,7 +83,9 @@ namespace API.Hubs
                                  ? x.ReplyMessage.Sender.Name
                                  : "",
                     SenderId = x.SenderId,
-                    SenderName = x.Sender != null ? x.Sender.Name : ""
+                    IsRead = x.IsRead,
+                    SenderName = x.Sender != null ? x.Sender.Name : "",
+                    Attachments = x.Attachments ?? new List<MessageAttachment>()
                 })
                 .ToListAsync();
 
@@ -105,20 +107,28 @@ namespace API.Hubs
 
         public async Task SendMessage(MessageRequestDto message)
         {
+            var newId = Guid.NewGuid();
 
             var newMsg = new Message
             {
+                Id = newId,
                 SenderId = message.SenderId,
                 ReceiverId = message.ReceiverId,
                 IsRead = false,
                 CreatedDate = DateTime.UtcNow,
                 ReplyMessageId = message.ReplyMessageId,
-                Content = message.Content
+                Content = message.Content,
+                Attachments = message.Attachments?.Select(a => new MessageAttachment
+                {
+                    MessageId = newId,
+                    Path = a.Path ?? "",
+                    Type = a.Type,
+                    Name = a.Name ?? ""
+                }).ToList()
             };
 
             context.Messages.Add(newMsg);
             await context.SaveChangesAsync();
-
             await Clients.User(message.ReceiverId.ToString()!).SendAsync("ReceiveNewMessage", newMsg);
         }
 

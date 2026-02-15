@@ -50,8 +50,7 @@ export class ChatService {
       .then(() => {
         this.isConnected.set(true);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
 
     this.hubConnection!.on('Notify', (user: User) => {
       if (user.userName == this.authService.currentLoggedUser?.userName) return;
@@ -74,7 +73,7 @@ export class ChatService {
           }
 
           return user;
-        })
+        }),
       );
 
       setTimeout(() => {
@@ -85,7 +84,7 @@ export class ChatService {
             }
 
             return user;
-          })
+          }),
         );
       }, 5000);
     });
@@ -94,8 +93,8 @@ export class ChatService {
       this.onlineUsers.update(() =>
         users.filter(
           (users) =>
-            users.userName !== this.authService.currentLoggedUser?.userName
-        )
+            users.userName !== this.authService.currentLoggedUser?.userName,
+        ),
       );
     });
 
@@ -133,7 +132,7 @@ export class ChatService {
     }
 
     const onlineUser = this.onlineUsers().find(
-      (user) => user.userName === username
+      (user) => user.userName === username,
     );
 
     return onlineUser?.isTyping ? 'Typing...' : this.isUserOnline();
@@ -141,7 +140,7 @@ export class ChatService {
 
   isUserOnline(): string {
     let onlineUser = this.onlineUsers().find(
-      (user) => user.userName === this.currentOpenedChat()?.userName
+      (user) => user.userName === this.currentOpenedChat()?.userName,
     );
     return onlineUser?.isOnline ? 'online' : this.currentOpenedChat()!.userName;
   }
@@ -162,39 +161,21 @@ export class ChatService {
       });
   }
 
-  sendMessage(message: string) {
-    
-    this.chatMessages.update((messages) => [
-      ...messages,
-      {
-        content: message,
-        senderId: this.authService.currentLoggedUser!.id,
-        receiverId: this.currentOpenedChat()?.id!,
-        createdDate: new Date().toString(),
-        isRead: false,
-        replyMessageId: this.replyMessage()?.id,
-        replyMessageContent: this.replyMessage()?.content ?? undefined,
-        replyMessageSenderName: this.replyMessage()?.senderName,
-        id: undefined,
-      },
-    ]);
+  async sendMessageHub(messageContent: string, attachments: any[]) {
+    return this.hubConnection?.invoke('SendMessage', {
+      receiverId: this.currentOpenedChat()?.id,
+      senderId: this.authService.currentLoggedUser!.id,
+      content: messageContent,
+      replyMessageId: this.replyMessage()?.id,
+      attachments: attachments,
+    });
 
-    this.hubConnection
-      ?.invoke('SendMessage', {
-        receiverId: this.currentOpenedChat()?.id,
-        senderId: this.authService.currentLoggedUser!.id,
-        content: message,
-        replyMessageId: this.replyMessage()?.id
-      })
-
-    this.replyMessage.set(null);
   }
 
   notifyTyping() {
     this.hubConnection!.invoke(
       'NotifyTyping',
-      this.currentOpenedChat()?.userName
-    )
+      this.currentOpenedChat()?.userName,
+    );
   }
-
 }

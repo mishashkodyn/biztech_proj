@@ -23,14 +23,14 @@ export class ChatBoxComponent implements AfterViewChecked, AfterViewInit {
 
   constructor(
     protected chatService: ChatService,
-    protected authService: AuthService
+    protected authService: AuthService,
   ) {}
 
   ngOnInit(): void {
     this.scrollDown();
   }
 
-  addReplyMessage(message: Message){
+  addReplyMessage(message: Message) {
     if (message) {
       this.chatService.replyMessage.set(message);
     }
@@ -38,6 +38,10 @@ export class ChatBoxComponent implements AfterViewChecked, AfterViewInit {
 
   scrollDown() {
     this.messageScroll!.nativeElement.scrollTop = 0;
+  }
+
+  viewImage(url: string) {
+    window.open(url, '_blank');
   }
 
   scrollDownAfterDelay() {
