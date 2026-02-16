@@ -1,7 +1,7 @@
 <div class="chat-section flex flex-col h-full">
   <div
     #messageScroll
-    class="flex-1 custom-scroll overflow-y-auto p-4 flex flex-col gap-2"
+    class="flex-1 custom-scroll overflow-y-auto p-4 flex flex-col gap-1"
     style="overscroll-behavior-y: contain"
   >
     <div
@@ -24,13 +24,8 @@
         }
 
         <div
-          class="pt-2 px-2 rounded-xl shadow-sm text-sm md:text-base relative min-w-[120px]"
-          [ngClass]="{
-            'bg-mint rounded-br-none text-slate-800':
-              item.senderId === authService.currentLoggedUser?.id,
-            'bg-gray-100 rounded-bl-none text-gray-800':
-              item.senderId !== authService.currentLoggedUser?.id,
-          }"
+          class="pt-2 px-2 shadow-sm text-sm md:text-base relative min-w-[120px] max-w-full overflow-visible"
+          [ngClass]="getBubbleClass(i)"
         >
           <div
             *ngIf="item.replyMessageContent"
@@ -110,17 +105,33 @@
             </span>
           }
 
-          <div class="flex justify-between items-center gap-1">
-            <span class="text-[10px] text-gray-500 opacity-70">
+          <div
+            class="flex items-center gap-1"
+            [ngClass]="
+              item.senderId === authService.currentLoggedUser?.id
+                ? 'justify-between'
+                : 'justify-end'
+            "
+          >
+            <span
+              class="text-[10px] opacity-70"
+              [ngClass]="
+                item.senderId === authService.currentLoggedUser?.id
+                  ? 'text-gray-900'
+                  : 'text-gray-300 pb-2'
+              "
+            >
               {{ item.createdDate | date: "HH:mm" }}
             </span>
-            @if (item.senderId === authService.currentLoggedUser?.id) {
-              <span class="text-primary"
-                ><mat-icon class="scale-70">{{
-                  item.isRead ? "done_all" : "done"
-                }}</mat-icon>
-              </span>
-            }
+
+            <div
+              [hidden]="item.senderId !== authService.currentLoggedUser?.id"
+              class="text-primary p-0"
+            >
+              <mat-icon class="scale-70">{{
+                item.isRead ? "done_all" : "done"
+              }}</mat-icon>
+            </div>
           </div>
         </div>
         @if (item.senderId !== authService.currentLoggedUser?.id) {
