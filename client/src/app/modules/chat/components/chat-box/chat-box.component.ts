@@ -78,25 +78,47 @@ export class ChatBoxComponent implements AfterViewChecked, AfterViewInit {
     this.scrollDown();
   }
 
-  // ngAfterViewChecked(): void {
-  //   if (this.chatService.autoScrollEnabled()) {
-  //     this.scrollToBottom();
-  //   }
-  // }
+  getBubbleClass(index: number): string {
+    const messages = this.chatService.chatMessages();
+    const currentMsg = messages[index];
+    const prevMsg = messages[index - 1];
+    const nextMsg = messages[index + 1];
 
-  // scrollToBottom() {
-  //   this.chatService.autoScrollEnabled.set(true);
-  //   this.chatBox!.nativeElement.scrollTo({
-  //     top: this.chatBox!.nativeElement.scrollHeight,
-  //     behavior: 'smooth',
-  //   });
-  // }
+    const isMe =
+      currentMsg.senderId ===
+      this.chatService['authService'].currentLoggedUser?.id;
 
-  // scrollTop() {
-  //   this.chatService.autoScrollEnabled.set(false);
-  //   this.chatBox!.nativeElement.scrollTo({
-  //     top: 0,
-  //     behavior: 'smooth',
-  //   });
-  // }
+    const isPrevSame = prevMsg && prevMsg.senderId === currentMsg.senderId;
+    const isNextSame = nextMsg && nextMsg.senderId === currentMsg.senderId;
+
+    let classes = isMe
+      ? 'bg-mint text-slate-800 ml-auto '
+      : 'bg-primary text-white mr-auto ';
+
+    const radiusLarge = 'rounded-2xl';
+    const radiusSmall = 'rounded-md';
+    const radiusNone = 'rounded-none';
+
+    if (isMe) {
+      classes += 'rounded-l-2xl ';
+
+      classes += isPrevSame ? `rounded-tr-${radiusSmall} ` : `rounded-tr-2xl `;
+
+      classes += isNextSame ? `rounded-br-${radiusSmall} ` : 'rounded-br-none ';
+    } else {
+      classes += 'rounded-r-2xl ';
+
+      classes += isPrevSame ? `rounded-tl-${radiusSmall} ` : `rounded-tl-2xl `;
+
+      classes += isNextSame ? `rounded-bl-${radiusSmall} ` : 'rounded-bl-none ';
+    }
+
+    if (!isNextSame) {
+      classes += 'mb-2';
+    } else {
+      classes += 'mb-0.5';
+    }
+
+    return classes;
+  }
 }
