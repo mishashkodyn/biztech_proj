@@ -18,14 +18,20 @@ namespace API.Controllers
         }
 
         [HttpPost("chat")]
-        public async Task<IActionResult> Chat([FromBody] List<ChatMessageDto> request)
+        public async Task<IActionResult> Chat([FromBody] AiChatRequestDto request)
         {
-            if (request is null)
-                return BadRequest("Message cannot be empty");
+            if (request is null || !request.Messages.Any())
+                return BadRequest("Response cannot be empty");
 
-            var result = await _aiService.ChatAsync(request);
-
-            return Ok(Response<string>.Success(result, "AI response received successfully"));
+            try
+            {
+                var result = await _aiService.ChatAsync(request);
+                return Ok(Response<string>.Success(result, "AI response received successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, Response<string>.Failure($"AI Error: {ex.Message}"));
+            }
 
         }
     }

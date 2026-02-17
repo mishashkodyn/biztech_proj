@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { AiChatResponse, AiMessage } from '../models/ai-chat-response';
+import { AiChatRequest, AiMessage } from '../models/ai-chat-request';
 import { ApiResponse } from '../models/api-response';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -13,10 +13,10 @@ export class AiService {
 
   private http = inject(HttpClient);
 
-  chatAsync(history: AiMessage[]): Observable<ApiResponse<string>> {
+  chatAsync(request: AiChatRequest): Observable<ApiResponse<string>> {
     return this.http.post<ApiResponse<string>>(
       `${this.baseUrl}/chat`,
-      history,
+      request,
     );
   }
 }

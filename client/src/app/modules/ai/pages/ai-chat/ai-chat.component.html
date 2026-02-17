@@ -1,7 +1,6 @@
 <div class="flex flex-col h-full w-full bg-gray-50 overflow-hidden">
   <div #scrollContainer class="flex-grow overflow-y-auto p-4">
     <div class="w-full md:max-w-5xl md:mx-auto flex flex-col space-y-4">
-      
       @for (msg of messages; track $index) {
         <div
           class="flex w-full"
@@ -12,15 +11,20 @@
               'bg-blue-600 text-white rounded-l-2xl rounded-tr-2xl shadow-blue-100':
                 msg.isUser,
               'bg-white text-gray-800 border border-gray-200 rounded-r-2xl rounded-tl-2xl shadow-sm':
-                !msg.isUser
+                !msg.isUser,
             }"
             class="max-w-[85%] md:max-w-[70%] p-3 shadow-sm break-words"
           >
-            <p class="text-sm whitespace-pre-wrap leading-relaxed">
-              {{ msg.text }}
-            </p>
+            @if (msg.isUser) {
+              <p class="text-sm whitespace-pre-wrap leading-relaxed">
+                {{ msg.text }}
+              </p>
+            } @else {
+              <markdown class="text-sm leading-relaxed block" [data]="msg.text">
+              </markdown>
+            }
 
-            <span 
+            <span
               class="text-[10px] opacity-70 block mt-1"
               [class.text-right]="true"
             >

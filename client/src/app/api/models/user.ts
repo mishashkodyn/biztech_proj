@@ -10,4 +10,5 @@ export interface User {
     lastMessage: string;
     unreadCount: number;
     isTyping: boolean;
+    preferredAiProvider: string;
 }

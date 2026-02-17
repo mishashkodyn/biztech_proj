@@ -8,8 +8,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app.routing.module';
 import { AiModule } from './modules/ai/ai.module';
-
-
+import { MarkdownModule } from 'ngx-markdown';
 
 @NgModule({
   declarations: [ AppComponent ],
@@ -22,6 +21,7 @@ import { AiModule } from './modules/ai/ai.module';
     CoreModule,
     AiModule,
     SharedModule,
+    MarkdownModule.forRoot()
   ],
   bootstrap: [AppComponent]
 })

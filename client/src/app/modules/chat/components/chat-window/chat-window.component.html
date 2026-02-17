@@ -144,7 +144,7 @@
 
         <button
           (click)="sendMessage()"
-          [disabled]="!message?.trim() && selectedFiles.length === 0"
+          [disabled]="!message.trim() && selectedFiles.length === 0"
           class="shrink-0 flex items-center justify-center w-11 h-11 rounded-xl cursor-pointer bg-primary hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-blue-500/30 text-white"
         >
           <mat-icon class="text-[20px] leading-none transform translate-x-0.5"

@@ -4,6 +4,6 @@ namespace API.Services.Interfaces
 {
     public interface IAiService
     {
-        Task<string> ChatAsync(List<ChatMessageDto> request);
+        Task<string> ChatAsync(AiChatRequestDto request);
     }
 }
