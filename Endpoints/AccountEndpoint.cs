@@ -92,6 +92,22 @@ namespace API.Endpoints
                 return Results.Ok(Response<ApplicationUser>.Success(currentLoggedInUser!, "User fetched successfully."));
             }).RequireAuthorization();
 
+            group.MapGet("/AIprovider", async (HttpContext context, UserManager<ApplicationUser> userManager) =>
+            {
+                var currentLoggedInUserId = context.User.GetUserId()!;
+
+                var currentLoggedInUser = await userManager.Users.SingleOrDefaultAsync(x => x.Id == currentLoggedInUserId);
+
+                var response = new UserDto
+                {
+                    Name = currentLoggedInUser!.Name,
+                    Surname = currentLoggedInUser.Surname,
+                    PreferredAiProvider = currentLoggedInUser.PreferredAiProvider
+                };
+
+                return Results.Ok(Response<UserDto>.Success(response!, "User fetched successfully."));
+            }).RequireAuthorization();
+
             return group;
         }
     }

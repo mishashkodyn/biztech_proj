@@ -14,7 +14,7 @@ namespace API.Hubs
     [Authorize]
     public class ChatHub(UserManager<ApplicationUser> userManager, ApplicationDbContext context) : Hub
     {
-        public static readonly ConcurrentDictionary<string, OnlineUserDto>
+        public static readonly ConcurrentDictionary<string, UserDto>
 
         onlineUsers = new();
 
@@ -31,7 +31,7 @@ namespace API.Hubs
                 onlineUsers[userName].ConnectionId = connectionId;
             } else
             {
-                var user = new OnlineUserDto
+                var user = new UserDto
                 {
                     ConnectionId = connectionId,
                     UserName = userName,
@@ -159,13 +159,13 @@ namespace API.Hubs
                     senderUserName);
             }
         }
-        private async Task<IEnumerable<OnlineUserDto>> GetAllUsers ()
+        private async Task<IEnumerable<UserDto>> GetAllUsers ()
         {
             var username = Context.User!.GetUserName();
 
             var onlineUsersSet = new HashSet<string>(onlineUsers.Keys);
 
-            var users = await userManager.Users.Select(u => new OnlineUserDto
+            var users = await userManager.Users.Select(u => new UserDto
             {
                 Id = u.Id,
                 UserName = u.UserName,

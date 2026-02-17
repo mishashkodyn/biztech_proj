@@ -7,6 +7,6 @@ namespace API.Core.Entities
         public string? Name { get; set; }
         public string? Surname { get; set; }
         public string? ProfileImage { get; set; }
-
+        public string PreferredAiProvider { get; set; } = "Groq";
     }
 }

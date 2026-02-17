@@ -22,6 +22,7 @@ namespace API.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new MessageConfiguration());
+            modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
         }
     }
 }

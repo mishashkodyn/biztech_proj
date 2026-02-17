@@ -1,8 +1,9 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { AiChatResponse, AiMessage } from '../../../../api/models/ai-chat-response';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AiChatRequest, AiMessage } from '../../../../api/models/ai-chat-request';
 import { AiChatMessage } from '../../../../api/models/ai-chat-message';
 import { AiService } from '../../../../api/services/ai.service';
 import { timestamp } from 'rxjs';
+import { AuthService } from '../../../../api/services/auth.service';
 
 @Component({
   selector: 'app-ai-chat',
@@ -10,13 +11,28 @@ import { timestamp } from 'rxjs';
   styleUrl: './ai-chat.component.scss',
   standalone: false,
 })
-export class AiChatComponent {
+export class AiChatComponent implements OnInit {
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   message: string = '';
   messages: AiChatMessage[] = [];
   isLoading: boolean = false;
+  private userName: string = '';
+  private provider: string = 'Groq';
 
-  constructor(private service: AiService) {}
+  constructor(private service: AiService, private authService: AuthService) {}
+
+  ngOnInit(): void {
+    this.authService.getUserAIProveder().subscribe( {
+      next: (res) => {
+        this.userName = res.data.name + " " + res.data.surname;
+        this.provider = res.data.preferredAiProvider;
+      },
+      error: () => {
+        this.userName = "Anonymous user";
+        this.provider = "None";
+      }
+    })
+  }
 
   ngAfterViewChecked(): void {
     this.scrollToBottom();
@@ -32,7 +48,6 @@ export class AiChatComponent {
     };
     this.messages.push(userMsg);
     this.scrollToBottom();    
-    const currentMessage = this.message;
     this.message = '';
     this.isLoading = true;
 
@@ -41,7 +56,13 @@ export class AiChatComponent {
       content: msg.text
     }));
 
-    this.service.chatAsync(conversationHistory).subscribe({
+    const payload: AiChatRequest = {
+      userName: this.userName,
+      provider: this.provider,
+      messages: conversationHistory
+    }
+
+    this.service.chatAsync(payload).subscribe({
       next: (response) => {
         this.messages.push({
           text: response.data,

@@ -22,7 +22,7 @@ export class AuthService {
       .pipe(
         tap((res) => {
           localStorage.setItem(this.token, res.data);
-        })
+        }),
       );
   }
 
@@ -39,7 +39,7 @@ export class AuthService {
           }
 
           return res;
-        })
+        }),
       );
   }
 
@@ -55,13 +55,24 @@ export class AuthService {
           if (res.isSuccess) {
             localStorage.setItem('user', JSON.stringify(res.data));
           }
-        })
+        }),
       );
+  }
+
+  getUserAIProveder(): Observable<ApiResponse<User>> {
+    return this.httpClient.get<ApiResponse<User>>(
+      `${this.baseUrl}/AIprovider`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.getAccessToken}`,
+        },
+      },
+    );
   }
 
   logout() {
     localStorage.removeItem(this.token);
-    localStorage.removeItem('user')
+    localStorage.removeItem('user');
   }
 
   get getAccessToken(): string | null {
@@ -72,7 +83,7 @@ export class AuthService {
     return !!localStorage.getItem(this.token);
   }
 
-  get currentLoggedUser() : User | null {
+  get currentLoggedUser(): User | null {
     const user: User = JSON.parse(localStorage.getItem('user') || '{}');
     return user;
   }
