@@ -13,6 +13,7 @@ import { UsersPageComponent } from './modules/core/pages/users-page/users-page.c
 import { UserAccountPageComponent } from './modules/core/pages/user-account-page/user-account-page.component';
 import { SettingsPageComponent } from './modules/core/pages/settings-page/settings-page.component';
 import { EditAccountPageComponent } from './modules/core/pages/edit-account-page/edit-account-page.component';
+import { AiChatComponent } from './modules/ai/pages/ai-chat/ai-chat.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,7 @@ const routes: Routes = [
       { path: 'account/:username', canActivate: [AuthGuard], component: UserAccountPageComponent },
       { path: 'settings', canActivate: [AuthGuard], component: SettingsPageComponent },
       { path: 'edit-account', canActivate: [AuthGuard], component: EditAccountPageComponent },
+      { path: 'ai-chat', canActivate: [AuthGuard], component: AiChatComponent},
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       {
         path: 'register',
