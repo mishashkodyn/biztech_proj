@@ -1,7 +1,9 @@
-﻿namespace API.Services.Interfaces
+﻿using API.Core.DTOs.AI;
+
+namespace API.Services.Interfaces
 {
     public interface IAiService
     {
-        Task<string> ChatAsync(string message);
+        Task<string> ChatAsync(List<ChatMessageDto> request);
     }
 }

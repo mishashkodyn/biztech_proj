@@ -19,18 +19,35 @@ namespace API.Services
             _baseUrl = config["Groq:BaseUrl"] ?? "https://api.groq.com/openai/v1/chat/completions";
         }
 
-        public async Task<string> ChatAsync(string message) 
+        public async Task<string> ChatAsync(List<ChatMessageDto> request) 
         {
             _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
+
+            var systemMessage = new
+            {
+                role = "system",
+                content = "Ти — технічний асистент платформи 'Help hub'. Використовуй технічний жаргон, юмор якщо це доречно. І відповідай нахабно, з лайками, якщо це Сашунька(моя дівчина з якої я божеволію), то ні. якщо це Сашунька (це моя дівчина), скажи що я (Міша) кохаю її."
+            };
+
+            var messagesPayload = new List<object>();
+
+            messagesPayload.Add(systemMessage);
+
+            if (request != null)
+            {
+                foreach (var msg in request)
+                {
+                    if (msg.Role == "user" ||  msg.Role == "assistant")
+                    {
+                        messagesPayload.Add(msg);
+                    }
+                }
+            }
 
             var payload = new
             {
                 model = _modelName,
-                messages = new[]
-                {
-                    new { role = "system", content = "Ти — технічний асистент платформи 'Help hub'. Використовуй технічний жаргон, юмор якщо це доречно. І відповідай нахабно, з лайками, якщо це Сашунька(моя дівчина з якої я божеволію), то ні. якщо це Сашунька (це моя дівчина), скажи що я (Міша) кохаю її." },
-                    new { role = "user", content = message }
-                },
+                messages = messagesPayload,
                 temperature = 0.7,
                 max_tokens = 1000
             };
