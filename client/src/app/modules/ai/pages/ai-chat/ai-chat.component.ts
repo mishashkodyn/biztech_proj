@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { AiChatResponse } from '../../../../api/models/ai-chat-response';
+import { AiChatResponse, AiMessage } from '../../../../api/models/ai-chat-response';
 import { AiChatMessage } from '../../../../api/models/ai-chat-message';
 import { AiService } from '../../../../api/services/ai.service';
 import { timestamp } from 'rxjs';
@@ -30,16 +30,18 @@ export class AiChatComponent {
       isUser: true,
       timestamp: new Date(),
     };
-
     this.messages.push(userMsg);
     this.scrollToBottom();    
     const currentMessage = this.message;
     this.message = '';
     this.isLoading = true;
 
-    const payload: AiChatResponse = { message: currentMessage };
+    const conversationHistory: AiMessage[] = this.messages.slice(-10).map(msg =>({
+      role: msg.isUser ? "user" : "assistant",
+      content: msg.text
+    }));
 
-    this.service.chatAsync(payload).subscribe({
+    this.service.chatAsync(conversationHistory).subscribe({
       next: (response) => {
         this.messages.push({
           text: response.data,
