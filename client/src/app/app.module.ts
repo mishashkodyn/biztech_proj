@@ -7,6 +7,7 @@ import { SharedModule } from './modules/shared/shared.module';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app.routing.module';
+import { AiModule } from './modules/ai/ai.module';
 
 
 
@@ -19,6 +20,7 @@ import { AppRoutingModule } from './app.routing.module';
     AppRoutingModule,
     ChatModule,
     CoreModule,
+    AiModule,
     SharedModule,
   ],
   bootstrap: [AppComponent]

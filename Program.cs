@@ -77,6 +77,10 @@ builder.Services.AddAuthentication(opt =>
 });
 
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
+builder.Services.AddScoped<IAiService, AiService>();
+
+builder.Services.AddHttpClient();
+
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
 var app = builder.Build();

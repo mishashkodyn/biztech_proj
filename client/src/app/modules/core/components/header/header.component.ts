@@ -50,6 +50,10 @@ export class HeaderComponent {
         this.route.navigate(['/chat']);
         break;
       }
+      case 'ai-chat': {
+        this.route.navigate(['/ai-chat']);
+        break;
+      }
     }
   }
 
