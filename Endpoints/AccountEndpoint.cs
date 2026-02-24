@@ -33,7 +33,6 @@ namespace API.Endpoints
                 {
                     profileImageUrl = await blobService.UploadFileAsync(profileImage);
                 }
-                
 
                 var user = new ApplicationUser
                 {
@@ -53,6 +52,7 @@ namespace API.Endpoints
                         .Select(x => x.Description).FirstOrDefault()!));
                 }
 
+                await userManager.AddToRoleAsync(user, ApplicationRole.ROLE_USER);
                 return Results.Ok(Response<string>.Success("", "User create successfully."));
             }).DisableAntiforgery();
 
@@ -77,19 +77,32 @@ namespace API.Endpoints
                 {
                     return Results.BadRequest(Response<string>.Failure("Invalid password."));
                 }
+                var roles = await userManager.GetRolesAsync(user!);
 
-                var token = tokenService.GenerateToken(user.Id, user.UserName!);
+                var token = tokenService.GenerateToken(user.Id, user.UserName!, roles);
 
                 return Results.Ok(Response<string>.Success(token, "Login successfully"));
             });
 
             group.MapGet("/me", async (HttpContext context, UserManager<ApplicationUser> userManager) =>
             {
-                var currentLoggedInUserId = context.User.GetUserId()!;
+                var userId = context.User.GetUserId()!;
+                var user = await userManager.FindByIdAsync(userId.ToString());
 
-                var currentLoggedInUser = await userManager.Users.SingleOrDefaultAsync(x => x.Id == currentLoggedInUserId);
+                if (user == null) return Results.NotFound();
 
-                return Results.Ok(Response<ApplicationUser>.Success(currentLoggedInUser!, "User fetched successfully."));
+                var roles = await userManager.GetRolesAsync(user);
+
+                return Results.Ok(Response<object>.Success(new
+                {
+                    user.Id,
+                    user.Name,
+                    user.Surname,
+                    user.Email,
+                    user.ProfileImage,
+                    user.PreferredAiProvider,
+                    Roles = roles
+                }, "User fetched successfully."));
             }).RequireAuthorization();
 
             group.MapGet("/AIprovider", async (HttpContext context, UserManager<ApplicationUser> userManager) =>

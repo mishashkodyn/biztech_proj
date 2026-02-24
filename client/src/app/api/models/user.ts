@@ -11,4 +11,5 @@ export interface User {
     unreadCount: number;
     isTyping: boolean;
     preferredAiProvider: string;
+    roles: string[];
 }
