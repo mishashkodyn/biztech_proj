@@ -27,13 +27,13 @@ namespace API.Endpoints
                 {
                     return Results.BadRequest(Response<string>.Failure("User is alreade exist."));
                 }
+                var profileImageUrl = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
 
-                if (profileImage is null)
+                if (profileImage is not null)
                 {
-                    return Results.BadRequest(Response<string>.Failure("Profile image is required"));
+                    profileImageUrl = await blobService.UploadFileAsync(profileImage);
                 }
-
-                string pictureUrl = await blobService.UploadFileAsync(profileImage);
+                
 
                 var user = new ApplicationUser
                 {
@@ -41,7 +41,7 @@ namespace API.Endpoints
                     Surname = surname,
                     Email = email,
                     UserName = email,
-                    ProfileImage = pictureUrl
+                    ProfileImage = profileImageUrl
                 };
 
                 var result = await userManager.CreateAsync(user, password);

@@ -12,18 +12,46 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250918225103_Initial")]
-    partial class Initial
+    [Migration("20260224200359_addRoles")]
+    partial class addRoles
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("API.Core.Entities.ApplicationRole", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
 
             modelBuilder.Entity("API.Core.Entities.ApplicationUser", b =>
                 {
@@ -70,6 +98,12 @@ namespace API.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("PreferredAiProvider")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Groq");
 
                     b.Property<string>("ProfileImage")
                         .HasColumnType("nvarchar(max)");
@@ -118,6 +152,9 @@ namespace API.Migrations
                     b.Property<Guid?>("ReceiverId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("ReplyMessageId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("SenderId")
                         .HasColumnType("uniqueidentifier");
 
@@ -125,37 +162,38 @@ namespace API.Migrations
 
                     b.HasIndex("ReceiverId");
 
+                    b.HasIndex("ReplyMessageId");
+
                     b.HasIndex("SenderId");
 
                     b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
+            modelBuilder.Entity("API.Core.Entities.MessageAttachment", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("MessageId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                    b.HasIndex("MessageId");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("MessageAttachments");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -267,18 +305,34 @@ namespace API.Migrations
                         .WithMany()
                         .HasForeignKey("ReceiverId");
 
+                    b.HasOne("API.Core.Entities.Message", "ReplyMessage")
+                        .WithMany()
+                        .HasForeignKey("ReplyMessageId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("API.Core.Entities.ApplicationUser", "Sender")
                         .WithMany()
                         .HasForeignKey("SenderId");
 
                     b.Navigation("Receiver");
 
+                    b.Navigation("ReplyMessage");
+
                     b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("API.Core.Entities.MessageAttachment", b =>
+                {
+                    b.HasOne("API.Core.Entities.Message", null)
+                        .WithMany("Attachments")
+                        .HasForeignKey("MessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                    b.HasOne("API.Core.Entities.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -305,7 +359,7 @@ namespace API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                    b.HasOne("API.Core.Entities.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -325,6 +379,11 @@ namespace API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("API.Core.Entities.Message", b =>
+                {
+                    b.Navigation("Attachments");
                 });
 #pragma warning restore 612, 618
         }

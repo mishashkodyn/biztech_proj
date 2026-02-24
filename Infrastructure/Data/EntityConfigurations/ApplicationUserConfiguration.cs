@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace API.Data.EntityConfigurations
+namespace API.Infrastructure.Data.EntityConfigurations
 {
     public class ApplicationUserConfiguration : IEntityTypeConfiguration<ApplicationUser>
     {
