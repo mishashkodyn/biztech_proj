@@ -19,7 +19,7 @@ namespace API.Endpoints
 
             group.MapPost("/register", async (HttpContext context, UserManager<ApplicationUser>
              userManager, [FromForm] string name, [FromForm] string surname, [FromForm] string email,
-             [FromForm] string password, [FromForm] string username, [FromForm] IFormFile? profileImage, IBlobStorageService blobService) =>
+             [FromForm] string password, [FromForm] IFormFile? profileImage, IBlobStorageService blobService) =>
             {
                 var userFromDb = await userManager.FindByEmailAsync(email);
 
@@ -40,7 +40,7 @@ namespace API.Endpoints
                     Name = name,
                     Surname = surname,
                     Email = email,
-                    UserName = username,
+                    UserName = email,
                     ProfileImage = pictureUrl
                 };
 

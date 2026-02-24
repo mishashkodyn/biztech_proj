@@ -36,9 +36,12 @@ builder.Services.AddSingleton(x => new BlobServiceClient(blobConn));
 
 //builder.Services.AddOpenApi();
 
-builder.Services.AddIdentityCore<ApplicationUser>()
-   .AddEntityFrameworkStores<ApplicationDbContext>()
-   .AddDefaultTokenProviders();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
 
 builder.Services.AddScoped<TokenService>();
 
