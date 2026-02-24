@@ -19,7 +19,7 @@ namespace API.Endpoints
 
             group.MapPost("/register", async (HttpContext context, UserManager<ApplicationUser>
              userManager, [FromForm] string name, [FromForm] string surname, [FromForm] string email,
-             [FromForm] string password, [FromForm] string username, [FromForm] IFormFile? profileImage, IBlobStorageService blobService) =>
+             [FromForm] string password, [FromForm] IFormFile? profileImage, IBlobStorageService blobService) =>
             {
                 var userFromDb = await userManager.FindByEmailAsync(email);
 
@@ -27,21 +27,20 @@ namespace API.Endpoints
                 {
                     return Results.BadRequest(Response<string>.Failure("User is alreade exist."));
                 }
+                var profileImageUrl = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
 
-                if (profileImage is null)
+                if (profileImage is not null)
                 {
-                    return Results.BadRequest(Response<string>.Failure("Profile image is required"));
+                    profileImageUrl = await blobService.UploadFileAsync(profileImage);
                 }
-
-                string pictureUrl = await blobService.UploadFileAsync(profileImage);
 
                 var user = new ApplicationUser
                 {
                     Name = name,
                     Surname = surname,
                     Email = email,
-                    UserName = username,
-                    ProfileImage = pictureUrl
+                    UserName = email,
+                    ProfileImage = profileImageUrl
                 };
 
                 var result = await userManager.CreateAsync(user, password);
@@ -53,6 +52,7 @@ namespace API.Endpoints
                         .Select(x => x.Description).FirstOrDefault()!));
                 }
 
+                await userManager.AddToRoleAsync(user, ApplicationRole.ROLE_USER);
                 return Results.Ok(Response<string>.Success("", "User create successfully."));
             }).DisableAntiforgery();
 
@@ -77,19 +77,32 @@ namespace API.Endpoints
                 {
                     return Results.BadRequest(Response<string>.Failure("Invalid password."));
                 }
+                var roles = await userManager.GetRolesAsync(user!);
 
-                var token = tokenService.GenerateToken(user.Id, user.UserName!);
+                var token = tokenService.GenerateToken(user.Id, user.UserName!, roles);
 
                 return Results.Ok(Response<string>.Success(token, "Login successfully"));
             });
 
             group.MapGet("/me", async (HttpContext context, UserManager<ApplicationUser> userManager) =>
             {
-                var currentLoggedInUserId = context.User.GetUserId()!;
+                var userId = context.User.GetUserId()!;
+                var user = await userManager.FindByIdAsync(userId.ToString());
 
-                var currentLoggedInUser = await userManager.Users.SingleOrDefaultAsync(x => x.Id == currentLoggedInUserId);
+                if (user == null) return Results.NotFound();
 
-                return Results.Ok(Response<ApplicationUser>.Success(currentLoggedInUser!, "User fetched successfully."));
+                var roles = await userManager.GetRolesAsync(user);
+
+                return Results.Ok(Response<object>.Success(new
+                {
+                    user.Id,
+                    user.Name,
+                    user.Surname,
+                    user.Email,
+                    user.ProfileImage,
+                    user.PreferredAiProvider,
+                    Roles = roles
+                }, "User fetched successfully."));
             }).RequireAuthorization();
 
             group.MapGet("/AIprovider", async (HttpContext context, UserManager<ApplicationUser> userManager) =>

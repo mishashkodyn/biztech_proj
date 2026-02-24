@@ -59,7 +59,6 @@ export class RegisterComponent {
     formData.append('password', this.password);
     formData.append('name', this.name);
     formData.append('surname', this.surname);
-    formData.append('username', this.username);
     formData.append('profileImage', this.profileImage!);
 
     this.authService.register(formData).subscribe({

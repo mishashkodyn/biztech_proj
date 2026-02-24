@@ -1,14 +1,13 @@
-﻿
-using API.Core.Entities;
-using API.Data.EntityConfigurations;
+﻿using API.Core.Entities;
+using API.Infrastructure.Data.EntityConfigurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Data
+namespace API.Infrastructure.Data
  
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -23,6 +22,18 @@ namespace API.Data
 
             modelBuilder.ApplyConfiguration(new MessageConfiguration());
             modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
+
+            //modelBuilder.Entity<ApplicationUser>()
+            //    .HasMany(u => u.UserRoles)
+            //    .WithOne(ur => ur.User)
+            //    .HasForeignKey(ur => ur.UserId)
+            //    .IsRequired();
+
+            //modelBuilder.Entity<ApplicationRole>()
+            //    .HasMany(r => r.Users)
+            //    .WithOne()
+            //    .HasForeignKey(ur => ur.RoleId)
+            //    .IsRequired();
         }
     }
 }

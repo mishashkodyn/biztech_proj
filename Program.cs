@@ -1,7 +1,8 @@
 using API.Core.Entities;
-using API.Data;
 using API.Endpoints;
 using API.Hubs;
+using API.Infrastructure.Data;
+using API.Infrastructure.Identity;
 using API.Services;
 using API.Services.Interfaces;
 using Azure.Storage.Blobs;
@@ -36,9 +37,12 @@ builder.Services.AddSingleton(x => new BlobServiceClient(blobConn));
 
 //builder.Services.AddOpenApi();
 
-builder.Services.AddIdentityCore<ApplicationUser>()
-   .AddEntityFrameworkStores<ApplicationDbContext>()
-   .AddDefaultTokenProviders();
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
 
 builder.Services.AddScoped<TokenService>();
 
@@ -89,6 +93,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
@@ -102,6 +107,17 @@ using (var scope = app.Services.CreateScope())
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
         logger.LogError(ex, "An error occurred while migrating the database.");
+    }
+
+    var configuration = services.GetRequiredService<IConfiguration>();
+    try
+    {
+        await DbInitializer.SeedRolesAndAdminAsync(services, configuration);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Error initializing roles or admin.");
     }
 }
 

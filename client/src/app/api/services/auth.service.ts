@@ -87,4 +87,21 @@ export class AuthService {
     const user: User = JSON.parse(localStorage.getItem('user') || '{}');
     return user;
   }
+
+  get isSuperAdmin(): boolean {
+    return this.currentLoggedUser?.roles?.includes('Superadmin') ?? false;
+  }
+
+  get isAdmin(): boolean {
+    const roles = this.currentLoggedUser?.roles ?? [];
+    return roles.includes('Administrator') || roles.includes('Superadmin');
+  }
+
+  get isPsychologist(): boolean {
+    return this.currentLoggedUser?.roles?.includes('Psychologist') ?? false;
+  }
+
+  hasRole(role: string): boolean {
+    return this.currentLoggedUser?.roles?.includes(role) ?? false;
+  }
 }
