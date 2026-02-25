@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { VideoChatComponent } from '../video-chat/video-chat.component';
 import { lastValueFrom } from 'rxjs';
 import { FilesService } from '../../../../api/services/files.service';
+import { AuthService } from '../../../../api/services/auth.service';
 
 @Component({
   selector: 'app-chat-window',
@@ -24,6 +25,7 @@ export class ChatWindowComponent {
 
   constructor(
     protected chatService: ChatService,
+    private authService: AuthService,
     private filesService: FilesService,
   ) {}
 
@@ -67,20 +69,20 @@ export class ChatWindowComponent {
 
     this.selectedFiles = [];
 
-    this.chatService.chatMessages.update((messages) => [
-      ...messages,
-      {
-        content: contentToSend,
-        senderId: this.chatService['authService'].currentLoggedUser!.id,
-        receiverId: this.chatService.currentOpenedChat()?.id!,
-        createdDate: new Date().toString(),
-        isRead: false,
-        replyMessageId: replyId,
-        replyMessageContent: replyContent ?? undefined,
-        replyMessageSenderName: replySender,
-        attachments: tempAttachments,
-      },
-    ]);
+    // this.chatService.chatMessages.update((messages) => [
+    //   ...messages,
+    //   {
+    //     content: contentToSend,
+    //     senderId: this.authService.currentLoggedUser!.id,
+    //     receiverId: this.chatService.currentOpenedChat()?.id!,
+    //     createdDate: new Date().toString(),
+    //     isRead: false,
+    //     replyMessageId: replyId,
+    //     replyMessageContent: replyContent ?? undefined,
+    //     replyMessageSenderName: replySender,
+    //     attachments: tempAttachments,
+    //   },
+    // ]);
 
     this.scrollToBottom();
 
@@ -93,7 +95,7 @@ export class ChatWindowComponent {
         );
       }
 
-      await this.chatService.sendMessageHub(contentToSend, uploadedAttachments);
+      await this.chatService.sendMessageHub(contentToSend, uploadedAttachments, this.authService.currentLoggedUser!.id!);
     } catch (error) {
       console.error('Помилка відправки:', error);
     }

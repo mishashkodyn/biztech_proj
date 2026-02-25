@@ -16,8 +16,7 @@ import { Message } from '../../../../api/models/message';
   styleUrl: './chat-box.component.scss',
 })
 export class ChatBoxComponent implements AfterViewChecked, AfterViewInit {
-  // @ViewChild('chatBox', { read: ElementRef }) public chatBox?: ElementRef;
-  @ViewChild('messageScroll') messageScroll: ElementRef | null = null;
+ @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
 
   private previousMessageCount = 0;
 
@@ -27,7 +26,11 @@ export class ChatBoxComponent implements AfterViewChecked, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.scrollDown();
+    // this.scrollDown();
+  }
+
+  ngAfterViewChecked(): void {
+    this.scrollToBottom();
   }
 
   addReplyMessage(message: Message) {
@@ -36,46 +39,25 @@ export class ChatBoxComponent implements AfterViewChecked, AfterViewInit {
     }
   }
 
-  scrollDown() {
-    this.messageScroll!.nativeElement.scrollTop = 0;
+  private scrollToBottom(): void {
+    try {
+      this.scrollContainer.nativeElement.scrollTop =
+        this.scrollContainer.nativeElement.scrollHeight;
+    } catch (err) {}
   }
 
   viewImage(url: string) {
     window.open(url, '_blank');
   }
 
-  scrollDownAfterDelay() {
-    if (this.messageScroll) {
-      setTimeout(() => {
-        this.scrollDown();
-      }, 100);
-    }
-  }
-
   ngAfterViewInit(): void {
     this.scrollToBottom();
-  }
-
-  ngAfterViewChecked(): void {
-    const currentMessages = this.chatService.chatMessages().length;
-
-    if (currentMessages !== this.previousMessageCount) {
-      this.scrollToBottom();
-      this.previousMessageCount = currentMessages;
-    }
-  }
-
-  scrollToBottom(): void {
-    if (this.messageScroll?.nativeElement) {
-      this.messageScroll.nativeElement.scrollTop =
-        this.messageScroll.nativeElement.scrollHeight;
-    }
   }
 
   loadMoreMessage() {
     const nextPage = this.chatService.pageNumber() + 1;
     this.chatService.loadMessages(nextPage);
-    this.scrollDown();
+    // this.scrollDown();
   }
 
   getBubbleClass(index: number): string {
@@ -86,7 +68,7 @@ export class ChatBoxComponent implements AfterViewChecked, AfterViewInit {
 
     const isMe =
       currentMsg.senderId ===
-      this.chatService['authService'].currentLoggedUser?.id;
+      this.authService.currentLoggedUser?.id;
 
     const isPrevSame = prevMsg && prevMsg.senderId === currentMsg.senderId;
     const isNextSame = nextMsg && nextMsg.senderId === currentMsg.senderId;
