@@ -161,21 +161,23 @@ namespace API.Hubs
         }
         private async Task<IEnumerable<UserDto>> GetAllUsers ()
         {
-            var username = Context.User!.GetUserName();
+            var currentUserName = Context.User!.Identity!.Name;
 
             var onlineUsersSet = new HashSet<string>(onlineUsers.Keys);
 
-            var users = await userManager.Users.Select(u => new UserDto
-            {
-                Id = u.Id,
-                UserName = u.UserName,
-                ProfileImage = u.ProfileImage,
-                Name = u.Name,
-                Surname = u.Surname,
-                IsOnline = onlineUsersSet.Contains(u.UserName!),
-                UnreadCount = context.Messages.Count(x => x.ReceiverId == u.Id && !x.IsRead)
-            }).OrderByDescending(u => u.IsOnline)
-            .ToListAsync();
+            var users = await userManager.Users
+                .Where(u => u.UserName != currentUserName)
+                .Select(u => new UserDto
+                {
+                    Id = u.Id,
+                    UserName = u.UserName,
+                    ProfileImage = u.ProfileImage,
+                    Name = u.Name,
+                    Surname = u.Surname,
+                    IsOnline = onlineUsersSet.Contains(u.UserName!),
+                    UnreadCount = context.Messages.Count(x => x.ReceiverId == u.Id && !x.IsRead)
+                }).OrderByDescending(u => u.IsOnline)
+                .ToListAsync();
 
             return users;
         }
