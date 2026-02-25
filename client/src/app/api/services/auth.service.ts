@@ -6,6 +6,8 @@ import { User } from '../models/user';
 import { JsonPipe } from '@angular/common';
 import { environment } from '../../../environments/environment';
 import { SidebarService } from './sidebar.service';
+import { PresenceService } from './presence-service';
+import { ChatService } from './chat.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +18,8 @@ export class AuthService {
   isLoading = signal(false);
   sidebarService = inject(SidebarService);
   httpClient = inject(HttpClient);
+  presenceService = inject(PresenceService);
+  chatService = inject(ChatService);
 
   register(data: FormData): Observable<ApiResponse<string>> {
     return this.httpClient
@@ -28,21 +32,19 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<ApiResponse<string>> {
-    return this.httpClient
-      .post<ApiResponse<string>>(`${this.baseUrl}/login`, {
-        email,
-        password,
+  return this.httpClient
+    .post<ApiResponse<string>>(`${this.baseUrl}/login`, { email, password })
+    .pipe(
+      tap((res) => {
+        if (res.isSuccess && res.data) {
+          localStorage.setItem(this.token, res.data);
+          
+          this.presenceService.startConnection(res.data);
+          this.chatService.startConnection(res.data);
+        }
       })
-      .pipe(
-        tap((res) => {
-          if (res.isSuccess) {
-            localStorage.setItem(this.token, res.data);
-          }
-
-          return res;
-        }),
-      );
-  }
+    );
+}
 
   me(): Observable<ApiResponse<User>> {
     return this.httpClient

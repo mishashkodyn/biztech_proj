@@ -6,6 +6,7 @@ import { TitleCasePipe } from '@angular/common';
 import { ChatService } from '../../../../api/services/chat.service';
 import { User } from '../../../../api/models/user';
 import { TypingIndicatorComponent } from '../../../shared/typing-indicator/typing-indicator.component';
+import { PresenceService } from '../../../../api/services/presence-service';
 
 @Component({
   selector: 'app-chat-sidebar',
@@ -17,17 +18,17 @@ export class ChatSidebarComponent implements OnInit {
   constructor(
     protected authService: AuthService,
     private router: Router,
-    protected chatService: ChatService
+    protected chatService: ChatService,
+    protected presenceService: PresenceService
   ) {}
 
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
-    this.chatService.disconnectConnection();
   }
 
   ngOnInit(): void {
-    this.chatService.startConnection(this.authService.getAccessToken!)
+    // this.chatService.startConnection(this.authService.getAccessToken!)
   }
 
   openChatWindow(user: User) {
