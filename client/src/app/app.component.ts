@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { VideoChatComponent } from './modules/chat/components/video-chat/video-chat.component';
 import { ChatService } from './api/services/chat.service'; // Додав ChatService, бо він у тебе в HTML
 import { Subscription } from 'rxjs';
+import { PresenceService } from './api/services/presence-service';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +18,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public signalRService = inject(VideoChatService);
   public authService = inject(AuthService);
-  public chatService = inject(ChatService); // Переконайся, що це тут
+  public presenceService = inject(PresenceService);
+  public chatService = inject(ChatService);
   private matDialog = inject(MatDialog);
   private sub = new Subscription();
 
@@ -28,6 +30,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this.signalRService.startConnection().then(() => {
       this.startOfferReceive();
     });
+    this.presenceService.startConnection();
+    this.chatService.startConnection();
   }
 
   ngOnDestroy() {
@@ -46,20 +50,19 @@ export class AppComponent implements OnInit, OnDestroy {
             data: {
               isCaller: false,
               offer: data.offer,
-              remoteUserId: data.senderId
-            }
+              remoteUserId: data.senderId,
+            },
           });
         }
-      })
+      }),
     );
   }
 
   displayDialog(receiverId?: string) {
     if (!receiverId) {
-        console.error('No receiverId provided');
-        return;
+      console.error('No receiverId provided');
+      return;
     }
-
 
     this.matDialog.open(VideoChatComponent, {
       width: '600px',

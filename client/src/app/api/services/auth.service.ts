@@ -38,9 +38,6 @@ export class AuthService {
       tap((res) => {
         if (res.isSuccess && res.data) {
           localStorage.setItem(this.token, res.data);
-          
-          this.presenceService.startConnection(res.data);
-          this.chatService.startConnection(res.data);
         }
       })
     );
@@ -57,6 +54,12 @@ export class AuthService {
         tap((res) => {
           if (res.isSuccess) {
             localStorage.setItem('user', JSON.stringify(res.data));
+          }
+          if (!this.presenceService.isConnected()) {
+            this.presenceService.startConnection();
+          }
+          if (!this.chatService.isConnected()) {
+            this.chatService.startConnection();
           }
         }),
       );
@@ -75,6 +78,8 @@ export class AuthService {
 
   logout() {
     this.sidebarService.toggleSideBar()
+    this.presenceService.stopConnection();
+    this.chatService.stopConnection();
     localStorage.removeItem(this.token);
     localStorage.removeItem('user');
   }
