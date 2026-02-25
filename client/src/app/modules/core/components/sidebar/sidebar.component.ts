@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { LogoutConfirmModalComponent } from '../../../shared/logout-confirm-modal/logout-confirm-modal.component';
 import { MenuItem } from '../../../../api/models/menu-item';
+import { SidebarService } from '../../../../api/services/sidebar.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -23,19 +24,9 @@ import { MenuItem } from '../../../../api/models/menu-item';
 export class SidebarComponent {
   @Output() widthChanged = new EventEmitter<string>();
 
-  isMobile = signal(false);
-  @Input('isMobile') set setMobile(val: boolean) {
-    this.isMobile.set(val);
-  }
   sidebarCollapsed = signal(true);
-  isMenuExpanded = computed(() => this.isMobile() || !this.sidebarCollapsed());
 
   menuItems = signal<MenuItem[]>([
-    {
-      icon: 'home',
-      label: 'Home',
-      route: 'home',
-    },
     {
       icon: 'chat',
       label: 'Chat',
@@ -49,26 +40,19 @@ export class SidebarComponent {
       label: 'Users',
       route: 'users',
     },
+    {
+      icon: 'smart_toy',
+      label: 'AI Assistant',
+      route: 'ai-chat',
+    },
   ]);
-  profileImageSize = computed(() => (this.isMenuExpanded() ? '100' : '40'));
-  sidebarWidth = computed(() => (this.sidebarCollapsed() ? '60px' : '250px'));
 
   constructor(
     protected authService: AuthService,
+    protected sidebarService: SidebarService,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {}
-
-  toggleSidebar(action?: 'close' | 'open') {
-    if (this.isMobile()) return; 
-
-    if (action === 'close') {
-      this.sidebarCollapsed.set(true);
-    } else {
-      this.sidebarCollapsed.update((v) => !v);
-    }
-    this.widthChanged.emit(this.sidebarWidth());
-  }
 
   logout() {
     const dialogRef = this.dialog.open(LogoutConfirmModalComponent, {
@@ -83,19 +67,18 @@ export class SidebarComponent {
     });
   }
 
-  settings() {
-    this.toggleSidebar('close');
-    this.router.navigate(['/settings']);
-  }
-
-  goToAccount() {
-    const username = this.authService.currentLoggedUser?.userName;
-    this.router.navigate(['/account', username]);
-    this.toggleSidebar('close');
-  }
-
-  editAccount() {
-    this.router.navigate(['/edit-account']);
-    this.toggleSidebar('close');
+  navigateTo(to: string) {
+    switch (to) {
+      case 'home': {
+        this.router.navigate(['/home']);
+        this.sidebarService.toggleSideBar();
+        break;
+      }
+      case 'settings': {
+        this.router.navigate(['/settings']);
+        this.sidebarService.toggleSideBar();
+        break;
+      }
+    }
   }
 }

@@ -1,22 +1,30 @@
 <div
   class="bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] w-full h-13 flex justify-between items-center px-4 md:px-6 relative z-50"
 >
-  <div
-    class="flex items-center cursor-pointer gap-1 md:gap-0"
-    (click)="navigateTo('home')"
-  >
-    <img
-      src="/main-icon.png"
-      alt="Help hub"
-      class="w-6 h-6 md:w-8 md:h-8 shrink-0"
-    />
-    <img
-      src="/main-icon-text.png"
-      alt="Help hub"
-      class="h-4 mt-1 hidden sm:block md:h-5"
-    />
-  </div>
+  <div class="flex items-center gap-2 md:gap-4">
+    @if (!visibilityButtons()) {
+      <button
+        (click)="toggleSideBar()"
+        class="flex items-center justify-center pr-2 text-primary cursor-pointer hover:text-success transition-colors"
+      >
+        <mat-icon class="text-2xl md:text-3xl transition-all duration-300">
+          menu
+        </mat-icon>
+      </button>
+    }
 
+    <div
+      class="flex items-center cursor-pointer gap-1 md:gap-0"
+      (click)="navigateTo('home')"
+    >
+      <img
+        src="/main-icon.png"
+        alt="Help hub"
+        class="w-6 h-6 md:w-8 md:h-8 shrink-0"
+      />
+      <img src="/main-icon-text.png" alt="Help hub" class="h-4 mt-1 md:h-5" />
+    </div>
+  </div>
   <div class="flex justify-end items-center gap-2 md:gap-5">
     @if (visibilityButtons()) {
       <div class="hidden md:flex justify-between gap-3">
@@ -31,25 +39,25 @@
     }
 
     <div class="flex items-center gap-2 md:gap-2">
-      <app-dropdown
+      <!-- <app-dropdown
         [icon]="'language'"
         [items]="languages"
         [(selected)]="currentLanguage"
-        class="shrink-0 mt-2"
-      ></app-dropdown>
+        class="shrink-0 hidden md:flex"
+      ></app-dropdown> -->
 
       @if (visibilityButtons()) {
         <div class="flex items-center gap-2 md:gap-4">
           <div class="flex gap-2 shrink-0">
             <button
               (click)="navigateTo('login')"
-              class="flex justify-center items-center bg-transparent text-primary font-mono font-semibold border border-primary rounded transition duration-200 cursor-pointer text-xs px-2 h-8 md:px-4 md:text-base hover:shadow-md shadow-success whitespace-nowrap"
+              class="flex justify-center items-center bg-transparent text-primary font-mono font-semibold border border-primary rounded transition duration-200 cursor-pointer text-xh-8 md:px-4 md:text-base hover:shadow-md shadow-success whitespace-nowrap"
             >
               Log in
             </button>
             <button
               (click)="navigateTo('registration')"
-              class="flex justify-center items-center border border-primary bg-primary text-mint font-mono font-semibold rounded transition duration-200 cursor-pointer text-xs px-2 h-8 md:px-4 md:text-base hover:shadow-md shadow-success whitespace-nowrap"
+              class="flex justify-center items-center border border-primary bg-primary text-mint font-mono font-semibold rounded transition duration-200 cursor-pointer text-xs h-8 md:px-4 md:text-base hover:shadow-md shadow-success whitespace-nowrap"
             >
               Sign up
             </button>
@@ -60,32 +68,6 @@
 
     @if (authService.isLoggedIn()) {
       <div class="flex items-center gap-3 md:gap-5">
-        <div
-          class="flex text-primary hover:text-success cursor-pointer"
-          (click)="logout()"
-        >
-          <mat-icon class="text-2xl md:text-3xl">logout</mat-icon>
-        </div>
-
-        <div
-          matTooltip="Chat"
-          matTooltipPosition="above"
-          class="flex text-primary hover:text-success cursor-pointer"
-          (click)="navigateTo('chat')"
-        >
-          <mat-icon class="text-2xl md:text-3xl">chat</mat-icon>
-        </div>
-        @if (authService.isSuperAdmin) {
-          <div
-            matTooltip="Chat with AI"
-            matTooltipPosition="above"
-            class="flex text-primary hover:text-success cursor-pointer"
-            (click)="navigateTo('ai-chat')"
-          >
-            <mat-icon class="text-2xl md:text-3xl">smart_toy</mat-icon>
-          </div>
-        }
-
         <div
           class="rounded-full overflow-hidden border-2 border-mint cursor-pointer hover:shadow-sm shadow-success shrink-0"
         >

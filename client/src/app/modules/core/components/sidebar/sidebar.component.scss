@@ -11,69 +11,9 @@
   scrollbar-width: none;
 }
 
-.sidebar-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 24px;
-  margin-top: 60px;
-  text-align: center;
-
-  > img {
-    border-radius: 100%;
-    object-fit: cover;
-    margin-bottom: 10px;
-  }
-
-  .header-text {
-    height: 3rem;
-
-    > h2 {
-      margin: 0;
-      font-size: 1rem;
-      line-height: 1.5rem;
-      font-weight: bold;
-    }
-
-    > p {
-      margin: 0;
-      font-size: 0.8rem;
-      font-weight: 400;
-    }
-  }
-
-  .edit-icon {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
-    color: gray;
-    cursor: pointer;
-    transition: color 0.2s ease;
-
-    &:hover {
-      color: #1e3a8a;
-    }
-  }
-}
-
 .hide-header-text {
   opacity: 0;
   height: 0px;
-}
-
-.selected-menu-item {
-  border-left: 2px solid;
-  border-left-color: #1e3a8a;
-}
-
-a.selected-menu-item mat-icon {
-  color: #1e3a8a;
-}
-
-.toggle-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
 }
 
 .logout-btn {
@@ -85,12 +25,14 @@ button[mat-button] {
 }
 
 .logout-btn {
-
   .text {
     display: inline-block;
     overflow: hidden;
     white-space: nowrap;
-    transition: opacity 0.3s ease, width 0.3s ease, margin 0.3s ease;
+    transition:
+      opacity 0.3s ease,
+      width 0.3s ease,
+      margin 0.3s ease;
     margin-left: 0.5rem;
     margin-top: 0.5rem;
   }
@@ -100,4 +42,52 @@ button[mat-button] {
     width: 0;
     margin-left: 0;
   }
+}
+
+.selected-menu-item {
+  background-color: var(--color-mint) !important;
+  color: var(--color-primary) !important;
+  border-radius: 8px !important;
+
+  .link-icon {
+    color: var(--color-primary) !important;
+  }
+
+  .link-text {
+    font-weight: 600 !important;
+  }
+}
+
+.sidebar-link {
+  border-radius: 8px !important;
+  transition: all 0.2s ease-in-out !important;
+  color: #4a5568;
+}
+
+.link-icon {
+  margin-right: 12px !important;
+  transition: color 0.2s ease !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.footer-link {
+  gap: 12px;
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+:host ::ng-deep .mat-mdc-list-item-active-indicator {
+  display: none !important;
 }

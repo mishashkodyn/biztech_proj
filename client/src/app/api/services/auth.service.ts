@@ -5,6 +5,7 @@ import { ApiResponse } from '../models/api-response';
 import { User } from '../models/user';
 import { JsonPipe } from '@angular/common';
 import { environment } from '../../../environments/environment';
+import { SidebarService } from './sidebar.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,7 @@ export class AuthService {
   private baseUrl = `${environment.apiBaseUrl}/account`;
   private token = 'token';
   isLoading = signal(false);
-
+  sidebarService = inject(SidebarService);
   httpClient = inject(HttpClient);
 
   register(data: FormData): Observable<ApiResponse<string>> {
@@ -71,6 +72,7 @@ export class AuthService {
   }
 
   logout() {
+    this.sidebarService.toggleSideBar()
     localStorage.removeItem(this.token);
     localStorage.removeItem('user');
   }
