@@ -15,7 +15,7 @@ export class PresenceService {
   private hubUrl = `${environment.hubUrl}/online-users`;
   private hubConnection?: HubConnection;
 
-  onlineUsers = signal<User[]>([]);
+  usersList = signal<User[]>([]);
   isConnected = signal<boolean>(false);
   constructor() {}
 
@@ -36,8 +36,24 @@ export class PresenceService {
       .then(() => this.isConnected.set(true))
       .catch((error) => console.error('Presence Hub Error: ', error));
 
-    this.hubConnection.on('OnlineUsers', (users: User[]) => {
-      this.onlineUsers.set(users);
+    this.hubConnection.on('ReceiveAllUsers', (users: User[]) => {
+      this.usersList.set(users);
+    });
+
+    this.hubConnection.on('UserStatusChanged', (changedUser: User) => {
+      this.usersList.update(currentUsers => {
+        const index = currentUsers.findIndex(u => u.userName === changedUser.userName);
+        
+        if (index !== -1) {
+          const updatedUsers = [...currentUsers];
+          updatedUsers[index] = { ...updatedUsers[index], isOnline: changedUser.isOnline };
+          
+          return updatedUsers.sort((a, b) => Number(b.isOnline) - Number(a.isOnline));
+          
+        } else {
+          return [...currentUsers, changedUser];
+        }
+      });
     });
 
     this.hubConnection.on('Notify', (user: User) => {

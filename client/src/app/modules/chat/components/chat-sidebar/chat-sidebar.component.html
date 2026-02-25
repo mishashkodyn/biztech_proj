@@ -8,7 +8,7 @@
     <mat-icon class="absolute text-gray-400 left-2 top-1 pr-3">search</mat-icon>
   </div>
   <div class="py-1">
-    @for (user of presenceService.onlineUsers(); track user){
+    @for (user of presenceService.usersList(); track user){
     <div
       (click)="openChatWindow(user)"
       class="flex flex-row items-center border-b relative bg-white hover:bg-slate-200 cursor-pointer border-gray-200 gap-3 px-3 py-2"

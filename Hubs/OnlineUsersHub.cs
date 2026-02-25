@@ -12,62 +12,78 @@ namespace API.Hubs
     [Authorize]
     public class OnlineUsersHub(UserManager<ApplicationUser> userManager, ApplicationDbContext context) : Hub
     {
-        public static readonly ConcurrentDictionary<string, UserDto>  OnlineUsers = new ();
-
+        private static readonly ConcurrentDictionary<string, HashSet<string>> OnlineUsers = new();
         public override async Task OnConnectedAsync()
         {
             var userName = Context.User!.Identity!.Name!;
-            var currentUser = await userManager.FindByNameAsync(userName);
             var connectionId = Context.ConnectionId;
 
-            if (currentUser == null) return;
+            var userConnections = OnlineUsers.GetOrAdd(userName, _ => new HashSet<string>());
 
-            var userDto = new UserDto
+            bool isNewlyOnline;
+
+            lock (userConnections)
             {
-                ConnectionId = connectionId,
-                UserName = userName,
-                ProfileImage = currentUser.ProfileImage,
-                Name = currentUser.Name,
-                Surname = currentUser.Surname,
-                IsOnline = true
-            };
-
-            bool isNewlyAdded = OnlineUsers.TryAdd(userName, userDto);
-
-            if (!isNewlyAdded)
-            {
-                OnlineUsers[userName].ConnectionId = connectionId;
+                isNewlyOnline = userConnections.Count == 0;
+                userConnections.Add(connectionId);
             }
 
-            if (isNewlyAdded)
-            {
-                await Clients.Others.SendAsync("Notify", currentUser);
-            }
+            var allUsersForCaller = await GetUsersWithStatusForUser(userName);
+            await Clients.Caller.SendAsync("ReceiveAllUsers", allUsersForCaller);
 
-            await SendOnlineUsersToAll();
+
+            if (isNewlyOnline)
+            {
+                var currentUser = await userManager.FindByNameAsync(userName);
+                if (currentUser != null)
+                {
+                    var notifyDto = CreateBasicUserDto(currentUser, true);
+                    await Clients.Others.SendAsync("UserStatusChanged", notifyDto);
+
+                    await Clients.Others.SendAsync("Notify", notifyDto);
+                }
+            }
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
             var userName = Context.User!.Identity!.Name!;
+            var connectionId = Context.ConnectionId;
 
-            if (OnlineUsers.TryRemove(userName, out _))
+            bool isFullyOffline = false;
+
+            if (OnlineUsers.TryGetValue(userName, out var connections))
             {
-                await SendOnlineUsersToAll();
+                lock (connections)
+                {
+                    connections.Remove(connectionId);
+                    if (connections.Count == 0)
+                    {
+                        isFullyOffline = true;
+                        OnlineUsers.TryRemove(userName, out _);
+                    }
+                }
+            }
+
+            if (isFullyOffline)
+            {
+                var currentUser = await userManager.FindByNameAsync(userName);
+                if (currentUser != null)
+                {
+                    var notifyDto = CreateBasicUserDto(currentUser, false);
+                    await Clients.Others.SendAsync("UserStatusChanged", notifyDto);
+                }
             }
 
             await base.OnDisconnectedAsync(exception);
         }
 
-        private async Task SendOnlineUsersToAll()
+        private async Task<IEnumerable<UserDto>> GetUsersWithStatusForUser(string currentUserName)
         {
-            var allUsers = await GetAllUsersWithStatus();
-            await Clients.All.SendAsync("OnlineUsers", allUsers);
-        }
+            var currentUser = await userManager.FindByNameAsync(currentUserName);
+            if (currentUser == null) return new List<UserDto>();
 
-        private async Task<IEnumerable<UserDto>> GetAllUsersWithStatus()
-        {
-            var currentUserName = Context.User?.Identity?.Name;
+            var currentUserId = currentUser.Id;
             var onlineUsersSet = new HashSet<string>(OnlineUsers.Keys);
 
             return await userManager.Users
@@ -80,11 +96,25 @@ namespace API.Hubs
                     Name = u.Name,
                     Surname = u.Surname,
                     IsOnline = onlineUsersSet.Contains(u.UserName!),
-                    UnreadCount = context.Messages.Count(x => x.ReceiverId == u.Id && !x.IsRead)
+                    UnreadCount = context.Messages.Count(x => x.ReceiverId == currentUserId && x.SenderId == u.Id && !x.IsRead)
                 })
                 .OrderByDescending(u => u.IsOnline)
                 .ThenBy(u => u.Name)
                 .ToListAsync();
+        }
+
+        private static UserDto CreateBasicUserDto(ApplicationUser user, bool isOnline)
+        {
+            return new UserDto
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                ProfileImage = user.ProfileImage,
+                Name = user.Name,
+                Surname = user.Surname,
+                IsOnline = isOnline,
+                UnreadCount = 0
+            };
         }
     }
 }
