@@ -29,7 +29,8 @@ export class ChatService {
   replyMessage = signal<Message | null>(null);
   presenceService = inject(PresenceService);
 
-  startConnection(token: string, senderId?: string) {
+  startConnection(senderId?: string) {
+    console.log("CHAT CONN");
     if (this.hubConnection?.state === HubConnectionState.Connected) return;
 
     if (this.hubConnection) {
@@ -40,7 +41,7 @@ export class ChatService {
     }
     this.hubConnection = new HubConnectionBuilder()
       .withUrl(`${this.hubUrl}?senderId=${senderId || ''}`, {
-        accessTokenFactory: () => token,
+        accessTokenFactory: () => localStorage.getItem('token')!,
       })
       .withAutomaticReconnect()
       .build();
@@ -92,7 +93,9 @@ export class ChatService {
   }
 
   stopConnection() {
-    this.hubConnection?.stop().catch((err) => console.error(err));
+    console.log("CHAT STOP");
+    
+    this.hubConnection?.stop().then(() => this.isConnected.set(false)).catch((err) => console.error(err));
   }
 
   loadMessages(pageNumber: number) {

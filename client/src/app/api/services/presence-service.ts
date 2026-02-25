@@ -1,5 +1,9 @@
 import { Injectable, signal } from '@angular/core';
-import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
+import {
+  HubConnection,
+  HubConnectionBuilder,
+  HubConnectionState,
+} from '@microsoft/signalr';
 import { environment } from '../../../environments/environment';
 import { AuthService } from './auth.service';
 import { User } from '../models/user';
@@ -10,22 +14,26 @@ import { User } from '../models/user';
 export class PresenceService {
   private hubUrl = `${environment.hubUrl}/online-users`;
   private hubConnection?: HubConnection;
-  onlineUsers = signal<User[]>([]);
 
+  onlineUsers = signal<User[]>([]);
+  isConnected = signal<boolean>(false);
   constructor() {}
 
-  startConnection(token: string) {
+  startConnection() {
+    console.log('PRESENCE CONN');
+
     if (this.hubConnection?.state === HubConnectionState.Connected) return;
 
     this.hubConnection = new HubConnectionBuilder()
       .withUrl(this.hubUrl, {
-        accessTokenFactory: () => token,
+        accessTokenFactory: () => localStorage.getItem('token')!,
       })
       .withAutomaticReconnect()
       .build();
 
     this.hubConnection
       .start()
+      .then(() => this.isConnected.set(true))
       .catch((error) => console.error('Presence Hub Error: ', error));
 
     this.hubConnection.on('OnlineUsers', (users: User[]) => {
@@ -38,8 +46,9 @@ export class PresenceService {
   }
 
   stopConnection() {
+    console.log('PRESENCE STOP');
     if (this.hubConnection?.state === HubConnectionState.Connected) {
-      this.hubConnection.stop();
+      this.hubConnection.stop().then(() => this.isConnected.set(false));
     }
   }
 
