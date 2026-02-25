@@ -52,7 +52,7 @@ export class ChatService {
       .catch((error) => console.error('Chat Hub Error: ', error));
 
     this.hubConnection!.on('NotifyTypingToUser', (senderUserName) => {
-      this.presenceService.onlineUsers.update((users) =>
+      this.presenceService.usersList.update((users) =>
         users.map((user) => {
           if (user.userName === senderUserName) {
             return { ...user, isTyping: true };
@@ -62,7 +62,7 @@ export class ChatService {
       );
 
       setTimeout(() => {
-        this.presenceService.onlineUsers.update((users) =>
+        this.presenceService.usersList.update((users) =>
           users.map((user) => {
             if (user.userName === senderUserName) {
               return { ...user, isTyping: false };
