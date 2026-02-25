@@ -90,12 +90,7 @@ export class ChatService {
     });
 
     this.hubConnection!.on('OnlineUsers', (users: User[]) => {
-      this.onlineUsers.update(() =>
-        users.filter(
-          (users) =>
-            users.userName !== this.authService.currentLoggedUser?.userName,
-        ),
-      );
+      this.onlineUsers.set(users);
     });
 
     this.hubConnection!.on('ReceiveMessageList', (message: Message[]) => {
@@ -169,7 +164,6 @@ export class ChatService {
       replyMessageId: this.replyMessage()?.id,
       attachments: attachments,
     });
-
   }
 
   notifyTyping() {
