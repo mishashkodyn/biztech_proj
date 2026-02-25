@@ -1,86 +1,85 @@
 <div class="h-screen flex flex-col overflow-y-hidden overflow-x-hidden">
-  
-  <div class="toggle-btn" *ngIf="!isMobile()">
-    <button mat-icon-button (click)="toggleSidebar()">
-      <mat-icon>{{ isMenuExpanded() ? "chevron_left" : "menu" }}</mat-icon>
+  <div
+    class="flex items-center gap-2 md:gap-4 w-full h-13 px-4 md:px-6 relative"
+  >
+    <button
+      (click)="sidebarService.toggleSideBar()"
+      class="flex items-center justify-center pr-2 text-primary cursor-pointer hover:text-success transition-colors"
+    >
+      <mat-icon class="text-2xl md:text-3xl transition-all duration-300">
+        menu
+      </mat-icon>
     </button>
-  </div>
-
-  <div class="sidebar-header">
-    <img
-      [src]="authService.currentLoggedUser?.profileImage || '...'"
-      alt="Profile picture"
-      class="cursor-pointer"
-      (click)="goToAccount()"
-      [width]="profileImageSize()"
-      [height]="profileImageSize()"
-      matTooltip="Go to account"
-      matTooltipPosition="above"
-    />
-    
-    <div class="header-text" [class.hide-header-text]="!isMenuExpanded()">
-      <div class="flex items-center gap-1">
-        <h2>Your account</h2>
-        <mat-icon
-          (click)="editAccount()"
-          class="edit-icon"
-          matTooltip="Edit your account"
-          matTooltipPosition="above"
-          >edit</mat-icon>
-      </div>
-      <p>
-        {{ authService.currentLoggedUser?.name + " " + authService.currentLoggedUser?.surname }}
-      </p>
+    <div
+      class="flex items-center cursor-pointer gap-1 md:gap-0"
+      (click)="navigateTo('home')"
+    >
+      <img
+        src="/main-icon.png"
+        alt="Help hub"
+        class="w-6 h-6 md:w-8 md:h-8 shrink-0"
+      />
+      <img src="/main-icon-text.png" alt="Help hub" class="h-4 mt-1 md:h-5" />
     </div>
   </div>
+  <div class="flex flex-col h-full bg-white border-r border-gray-100 font-sans">
+    <div class="flex-1 px-3 py-4 custom-scroll overflow-y-auto">
+      <nav class="space-y-1">
+        @for (item of menuItems(); track item.route) {
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="selected-menu-item"
+            #rla="routerLinkActive"
+            (click)="sidebarService.toggleSideBar()"
+            class="flex items-center h-[48px] sidebar-link group px-2 hover:bg-mint/40"
+          >
+            <mat-icon class="link-icon">{{ item.icon }}</mat-icon>
+            <span class="link-text">{{ item.label }}</span>
+          </a>
+        }
 
-  <mat-nav-list>
-    <a
-      mat-list-item
-      *ngFor="let item of menuItems()"
-      [routerLink]="item.route"
-      routerLinkActive="selected-menu-item"
-      #rla="routerLinkActive"
-      [activated]="rla.isActive"
-      (click)="toggleSidebar('close')"
+        @if (authService.isAdmin || authService.isSuperAdmin) {
+          <div class="mt-8 mb-2 px-4">
+            <span
+              class="text-[10px] uppercase tracking-widest font-bold text-success/60"
+              >Admin Panel</span
+            >
+          </div>
+
+          @for (item of adminItems(); track item.route) {
+            <a
+              [routerLink]="item.route"
+              routerLinkActive="selected-menu-item"
+              #rla="routerLinkActive"
+              (click)="sidebarService.toggleSideBar()"
+              class="flex items-center h-[48px] sidebar-link group px-2 hover:bg-mint/40"
+            >
+              <mat-icon class="link-icon">{{ item.icon }}</mat-icon>
+              <span class="link-text">{{ item.label }}</span>
+            </a>
+          }
+        }
+      </nav>
+    </div>
+
+    <div
+      class="flex md:block justify-center md:justify-start items-center p-4 border-t border-gray-50"
     >
-      <mat-icon class="flex justify-center" matListItemIcon>{{ item.icon }}</mat-icon>
-      
-      <span matListItemTitle *ngIf="isMenuExpanded()">{{ item.label }}</span>
-    </a>
-  </mat-nav-list>
+      <button
+        (click)="navigateTo('settings')"
+        class="flex items-center items-center justify-center md:justify-start footer-link text-primary hover:bg-mint/40"
+      >
+        <mat-icon class="text-xl">settings</mat-icon>
+        <span class="font-medium text-sm">Settings</span>
+      </button>
 
-  <span class="text-muted text-sm mt-4 ms-2" *ngIf="isMenuExpanded()">Admin items</span>
-  
-  <mat-nav-list>
-    <a
-      mat-list-item
-      *ngFor="let item of adminItems()"
-      [routerLink]="item.route"
-      routerLinkActive="selected-menu-item"
-      #rla="routerLinkActive"
-      [activated]="rla.isActive"
-      (click)="toggleSidebar('close')"
-    >
-      <mat-icon class="flex justify-center" matListItemIcon>{{ item.icon }}</mat-icon>
-      <span matListItemTitle *ngIf="isMenuExpanded()">{{ item.label }}</span>
-    </a>
-  </mat-nav-list>
-
-  <div
-    class="logout-btn w-full p-2 flex"
-    [ngClass]="{
-      'flex-col': !isMenuExpanded(),
-      'flex-row': isMenuExpanded()
-    }"
-  >
-    <button mat-button class="flex items-center justify-end w-full" (click)="settings()">
-      <mat-icon>settings</mat-icon>
-      <span class="text transition-text" [class.hide-text]="!isMenuExpanded()">Settings</span>
-    </button>
-    <button mat-button class="flex items-center justify-end w-full" (click)="logout()">
-      <mat-icon>logout</mat-icon>
-      <span class="text transition-text" [class.hide-text]="!isMenuExpanded()">Logout</span>
-    </button>
+      <button
+        (click)="logout()"
+        class="flex items-center justify-center md:justify-start footer-link text-red-600 hover:bg-red-100"
+      >
+        <mat-icon class="text-xl">logout</mat-icon>
+        <span class="font-medium text-sm">Logout</span>
+      </button>
+    </div>
   </div>
 </div>

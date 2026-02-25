@@ -3,6 +3,7 @@ import { MenuItem } from '../../../../api/models/menu-item';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../api/services/auth.service';
 import { DropdownItem } from '../../../../api/models/dropdown-item';
+import { SidebarService } from '../../../../api/services/sidebar.service';
 
 @Component({
   selector: 'app-header',
@@ -30,7 +31,7 @@ export class HeaderComponent {
 
   currentLanguage = this.languages[0];
 
-  constructor(private route: Router, protected authService: AuthService) {}
+  constructor(private route: Router, protected authService: AuthService, protected sidebarService: SidebarService) {}
 
   navigateTo(to: string) {
     switch (to) {
@@ -60,6 +61,10 @@ export class HeaderComponent {
   logout() {
     this.authService.logout();
     this.route.navigate(['/login']);
+  }
+
+  toggleSideBar() {
+    this.sidebarService.sideBarOpen.set(!this.sidebarService.sideBarOpen());
   }
 
   visibilityButtons(): boolean {
