@@ -16,31 +16,33 @@ namespace API.Hubs
         public override async Task OnConnectedAsync()
         {
             var httpContext = Context.GetHttpContext();
-            var receiverId = httpContext?.Request.Query["senderId"].ToString();
+            var contactIdStr = httpContext?.Request.Query["contactId"].ToString();
 
-            if (!string.IsNullOrEmpty(receiverId))
+            if (Guid.TryParse(contactIdStr, out Guid contactId))
             {
-                await LoadMessages(Guid.Parse(receiverId));
+                await LoadMessages(contactId, 1);
             }
 
             await base.OnConnectedAsync();
         }
 
-        public async Task LoadMessages(Guid recipientId, int pageNumber = 1)
+        public async Task LoadMessages(Guid contactId, int pageNumber = 1)
         {
             int pageSize = 10;
-            var username = Context.User!.Identity!.Name;
-            var currentUser = await userManager.FindByNameAsync(username!);
+            var currentUserId = Context.UserIdentifier;
 
-            if (currentUser == null) return;
+            if (currentUserId == null) return;
+            var currentUserIdGuid = Guid.Parse(currentUserId);
 
             var messages = await context.Messages
-                .Where(x => (x.ReceiverId == currentUser.Id && x.SenderId == recipientId) ||
-                            (x.SenderId == currentUser.Id && x.ReceiverId == recipientId))
+                .Include(x => x.Sender)
+                .Include(x => x.ReplyMessage).ThenInclude(r => r.Sender)
+                .Include(x => x.Attachments)
+                .Where(x => (x.ReceiverId == currentUserIdGuid && x.SenderId == contactId) ||
+                            (x.SenderId == currentUserIdGuid && x.ReceiverId == contactId))
                 .OrderByDescending(x => x.CreatedDate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .OrderBy(x => x.CreatedDate)
                 .Select(x => new MessageResponseDto
                 {
                     Id = x.Id,
@@ -49,8 +51,7 @@ namespace API.Hubs
                     ReceiverId = x.ReceiverId,
                     ReplyMessageId = x.ReplyMessageId ?? Guid.Empty,
                     ReplyMessageContent = x.ReplyMessage != null ? x.ReplyMessage.Content : "",
-                    ReplyMessageSenderName = x.ReplyMessage != null && x.ReplyMessage.Sender != null
-                        ? x.ReplyMessage.Sender.Name : "",
+                    ReplyMessageSenderName = x.ReplyMessage != null && x.ReplyMessage.Sender != null ? x.ReplyMessage.Sender.Name : "",
                     SenderId = x.SenderId,
                     IsRead = x.IsRead,
                     SenderName = x.Sender != null ? x.Sender.Name : "",
@@ -58,29 +59,34 @@ namespace API.Hubs
                 })
                 .ToListAsync();
 
+            messages.Reverse();
+
             var unreadMessages = await context.Messages
-                .Where(x => x.ReceiverId == currentUser.Id && x.SenderId == recipientId && !x.IsRead)
+                .Where(x => x.ReceiverId == currentUserIdGuid && x.SenderId == contactId && !x.IsRead)
                 .ToListAsync();
 
             if (unreadMessages.Any())
             {
                 unreadMessages.ForEach(m => m.IsRead = true);
                 await context.SaveChangesAsync();
+
+                await Clients.User(contactId.ToString()).SendAsync("MessagesMarkedAsRead", currentUserIdGuid);
             }
 
-            await Clients.Caller.SendAsync("ReceiveMessageList", messages);
+            await Clients.Caller.SendAsync("ReceiveMessageList", new { Messages = messages, Page = pageNumber });
         }
 
         public async Task SendMessage(MessageRequestDto message)
         {
+            var senderIdGuid = Guid.Parse(Context.UserIdentifier!);
             var newId = Guid.NewGuid();
 
             var newMsg = new Message
             {
                 Id = newId,
-                SenderId = message.SenderId,
+                SenderId = senderIdGuid,
                 ReceiverId = message.ReceiverId,
-                IsRead = false, 
+                IsRead = false,
                 CreatedDate = DateTime.UtcNow,
                 ReplyMessageId = message.ReplyMessageId,
                 Content = message.Content,
@@ -95,8 +101,23 @@ namespace API.Hubs
 
             context.Messages.Add(newMsg);
             await context.SaveChangesAsync();
-            await Clients.User(message.ReceiverId.ToString()!).SendAsync("ReceiveNewMessage", newMsg);
-            await Clients.Caller.SendAsync("ReceiveNewMessage", newMsg);
+
+            var sender = await userManager.FindByIdAsync(senderIdGuid.ToString());
+
+            var messageDto = new MessageResponseDto
+            {
+                Id = newMsg.Id,
+                Content = newMsg.Content,
+                CreatedDate = newMsg.CreatedDate,
+                ReceiverId = newMsg.ReceiverId,
+                SenderId = newMsg.SenderId,
+                SenderName = sender?.Name ?? "",
+                IsRead = false,
+                Attachments = newMsg.Attachments
+            };
+
+            await Clients.User(message.ReceiverId.ToString()!).SendAsync("ReceiveNewMessage", messageDto);
+            await Clients.Caller.SendAsync("ReceiveNewMessage", messageDto);
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
@@ -104,12 +125,32 @@ namespace API.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async Task NotifyTyping(string recipientUserName)
+        public async Task NotifyTyping(Guid contactId)
         {
             var senderUserName = Context.User!.Identity!.Name;
             if (string.IsNullOrEmpty(senderUserName)) return;
 
-            await Clients.User(recipientUserName).SendAsync("NotifyTypingToUser", senderUserName);
+            await Clients.User(contactId.ToString()).SendAsync("NotifyTypingToUser", senderUserName);
+        }
+
+        public async Task MarkChatAsRead(Guid contactId)
+        {
+            var currentUserIdStr = Context.UserIdentifier;
+            if (string.IsNullOrEmpty(currentUserIdStr)) return;
+
+            var currentUserIdGuid = Guid.Parse(currentUserIdStr);
+
+            var unreadMessages = await context.Messages
+                .Where(x => x.ReceiverId == currentUserIdGuid && x.SenderId == contactId && !x.IsRead)
+                .ToListAsync();
+
+            if (unreadMessages.Any())
+            {
+                unreadMessages.ForEach(m => m.IsRead = true);
+                await context.SaveChangesAsync();
+
+                await Clients.User(contactId.ToString()).SendAsync("MessagesMarkedAsRead", currentUserIdGuid);
+            }
         }
     }
 }

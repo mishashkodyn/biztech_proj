@@ -31,10 +31,25 @@
             routerLinkActive="selected-menu-item"
             #rla="routerLinkActive"
             (click)="sidebarService.toggleSideBar()"
-            class="flex items-center h-[48px] sidebar-link group px-2 hover:bg-mint/40"
+            class="flex items-center justify-between h-[48px] sidebar-link group px-2 hover:bg-mint/40"
           >
-            <mat-icon class="link-icon">{{ item.icon }}</mat-icon>
-            <span class="link-text">{{ item.label }}</span>
+            <div class="flex">
+              <mat-icon class="link-icon">{{ item.icon }}</mat-icon>
+              <span class="link-text">{{ item.label }}</span>
+            </div>
+            @if (
+              item.label === "Chat" && presenceService.totalUnreadCount() > 0
+            ) {
+              <div
+                class="bg-red-600 text-white text-[11px] font-bold min-w-[20px] h-[20px] px-1 flex items-center justify-center rounded-full shadow-md"
+              >
+                <span>{{
+                  presenceService.totalUnreadCount() > 99
+                    ? "99+"
+                    : presenceService.totalUnreadCount()
+                }}</span>
+              </div>
+            }
           </a>
         }
 

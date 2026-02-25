@@ -8,37 +8,48 @@
     <mat-icon class="absolute text-gray-400 left-2 top-1 pr-3">search</mat-icon>
   </div>
   <div class="py-1">
-    @for (user of presenceService.usersList(); track user){
-    <div
-      (click)="openChatWindow(user)"
-      class="flex flex-row items-center border-b relative bg-white hover:bg-slate-200 cursor-pointer border-gray-200 gap-3 px-3 py-2"
-    >
+    @for (user of presenceService.usersList(); track user) {
       <div
-        class="h-12 w-12 rounded-full object-cover border border-sky border-1 shadow shadow-lg overflow-hidden"
+        (click)="openChatWindow(user)"
+        class="flex flex-row items-center border-b relative bg-white hover:bg-slate-200 cursor-pointer border-gray-200 gap-3 px-3 py-2"
       >
-        <img [src]="user.profileImage" class="w-full h-full object-cover"/>
-        <p class="absolute text-xs text-slate-400 hidden">
-          {{ user.unreadCount ? user.unreadCount + " new messages" : "" }}
-        </p>
-      </div>
-      @if(user.isOnline) {
-      <div class="ml-auto font-medium absolute right-4 text-xs">
-        <div class="bg-green-700 w-3 h-3 rounded-full"></div>
-      </div>
-      } @else {
-      <div class="bg-gray-100 w-3 h-3 absolute right-4 rounded-full"></div>
-      }
-      <div>
-        <span class="text-base text-gray-600 font-normal">{{
-          user.name | titlecase
-        }}</span>
-        @if(user.isTyping){
-        <div>
-          <app-typing-indicator />
+        <div class="relative h-12 w-12">
+          <div
+            class="h-12 w-12 rounded-full overflow-hidden border border-sky-500 shadow-lg"
+          >
+            <img [src]="user.profileImage" class="w-full h-full object-cover" />
+          </div>
+
+          <span
+            *ngIf="user.unreadCount > 0"
+            class="absolute -top-1 -right-1 bg-red-600 text-white text-[11px] font-bold min-w-[20px] h-[20px] px-1 flex items-center justify-center rounded-full shadow-md"
+          >
+            {{ user.unreadCount > 99 ? "99+" : user.unreadCount }}
+          </span>
         </div>
+
+        @if (user.isOnline) {
+          <div class="absolute right-4">
+            <div class="bg-green-600 w-3 h-3 rounded-full"></div>
+          </div>
+        } @else {
+          <div class="absolute right-4">
+            <div class="bg-gray-300 w-3 h-3 rounded-full"></div>
+          </div>
         }
+
+        <div>
+          <span class="text-base text-gray-700 font-medium">
+            {{ user.name | titlecase }}
+          </span>
+
+          @if (user.isTyping) {
+            <div>
+              <app-typing-indicator />
+            </div>
+          }
+        </div>
       </div>
-    </div>
     }
   </div>
 </div>

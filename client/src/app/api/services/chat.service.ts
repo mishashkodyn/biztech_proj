@@ -1,11 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { User } from '../models/user';
-import { AuthService } from './auth.service';
-import {
-  HubConnection,
-  HubConnectionBuilder,
-  HubConnectionState,
-} from '@microsoft/signalr';
+import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
 import { Message } from '../models/message';
 import { environment } from '../../../environments/environment';
 import { PresenceService } from './presence-service';
@@ -16,8 +11,7 @@ import { PresenceService } from './presence-service';
 export class ChatService {
   private hubUrl = `${environment.hubUrl}/chat`;
   private hubConnection?: HubConnection;
-
-  constructor() {}
+  private typingTimeouts = new Map<string, any>();
 
   currentOpenedChat = signal<User | null>(null);
   chatMessages = signal<Message[]>([]);
@@ -29,77 +23,94 @@ export class ChatService {
   replyMessage = signal<Message | null>(null);
   presenceService = inject(PresenceService);
 
-  startConnection(senderId?: string) {
-    console.log("CHAT CONN");
+  constructor() {}
+
+  startConnection(contactId?: string) {
     if (this.hubConnection?.state === HubConnectionState.Connected) return;
 
-    if (this.hubConnection) {
-      this.hubConnection.off('ReceiveNewMessage');
-      this.hubConnection.off('ReceiveMessageList');
-      this.hubConnection.off('NotifyTypingToUser');
-      this.hubConnection.off('Notify');
+    const url = contactId ? `${this.hubUrl}?contactId=${contactId}` : this.hubUrl;
+
+    if (!this.hubConnection) {
+      this.hubConnection = new HubConnectionBuilder()
+        .withUrl(url, { accessTokenFactory: () => localStorage.getItem('token')! })
+        .withAutomaticReconnect()
+        .build();
+
+      this.registerHubEvents();
     }
-    this.hubConnection = new HubConnectionBuilder()
-      .withUrl(`${this.hubUrl}?senderId=${senderId || ''}`, {
-        accessTokenFactory: () => localStorage.getItem('token')!,
-      })
-      .withAutomaticReconnect()
-      .build();
 
     this.hubConnection
       .start()
       .then(() => this.isConnected.set(true))
       .catch((error) => console.error('Chat Hub Error: ', error));
+  }
 
-    this.hubConnection!.on('NotifyTypingToUser', (senderUserName) => {
+  private registerHubEvents() {
+    this.hubConnection!.on('NotifyTypingToUser', (senderUserName: string) => {
       this.presenceService.usersList.update((users) =>
-        users.map((user) => {
-          if (user.userName === senderUserName) {
-            return { ...user, isTyping: true };
-          }
-          return user;
-        }),
+        users.map((u) => (u.userName === senderUserName ? { ...u, isTyping: true } : u))
       );
 
-      setTimeout(() => {
-        this.presenceService.usersList.update((users) =>
-          users.map((user) => {
-            if (user.userName === senderUserName) {
-              return { ...user, isTyping: false };
-            }
-
-            return user;
-          }),
-        );
-      }, 5000);
-    });
-
-    this.hubConnection.on('ReceiveMessageList', (messages: Message[]) => {
-      this.chatMessages.set(messages);
-    });
-
-    this.hubConnection.on('ReceiveNewMessage', (message: Message) => {
-      const audio = new Audio('assets/notification.mp3');
-      audio.play();
-
-      const currentChat = this.currentOpenedChat();
-      if (
-        message.senderId === currentChat?.id ||
-        message.receiverId === currentChat?.id
-      ) {
-        this.chatMessages.update((msgs) => [...msgs, message]);
+      if (this.typingTimeouts.has(senderUserName)) {
+        clearTimeout(this.typingTimeouts.get(senderUserName));
       }
+
+      const timeout = setTimeout(() => {
+        this.presenceService.usersList.update((users) =>
+          users.map((u) => (u.userName === senderUserName ? { ...u, isTyping: false } : u))
+        );
+        this.typingTimeouts.delete(senderUserName);
+      }, 3000);
+
+      this.typingTimeouts.set(senderUserName, timeout);
+    });
+
+    this.hubConnection!.on('ReceiveMessageList', (data: { messages: Message[], page: number }) => {
+      if (data.page === 1) {
+        this.chatMessages.set(data.messages);
+      } else {
+        this.chatMessages.update((msgs) => [...data.messages, ...msgs]);
+      }
+    });
+
+   this.hubConnection!.on('ReceiveNewMessage', (message: Message) => {
+      const currentChat = this.currentOpenedChat();
+      const myUserId = localStorage.getItem('myUserId');
+      
+      if (message.receiverId === myUserId) { 
+         const audio = new Audio('assets/notification.mp3');
+         audio.play().catch(e => console.warn('Audio play blocked', e));
+      }
+
+      if (message.senderId === currentChat?.id || message.receiverId === currentChat?.id) {
+        
+        if (message.senderId === currentChat?.id) {
+           message.isRead = true;
+           
+           this.hubConnection?.invoke('MarkChatAsRead', currentChat!.id);
+        }
+        
+        this.chatMessages.update((msgs) => [...msgs, message]);
+      } else {
+        this.presenceService.usersList.update(users => 
+           users.map(u => u.id === message.senderId ? { ...u, unreadCount: (u.unreadCount || 0) + 1 } : u)
+        );
+      }
+    });
+
+    this.hubConnection!.on('MessagesMarkedAsRead', (readerId: string) => {
+      this.chatMessages.update(msgs => msgs.map(m => 
+        m.receiverId === readerId ? { ...m, isRead: true } : m
+      ));
     });
   }
 
   stopConnection() {
-    console.log("CHAT STOP");
-    
-    this.hubConnection?.stop().then(() => this.isConnected.set(false)).catch((err) => console.error(err));
+    this.hubConnection?.stop().then(() => this.isConnected.set(false));
   }
 
   loadMessages(pageNumber: number) {
-    if (!this.currentOpenedChat()) return;
+    if (!this.currentOpenedChat() || !this.isConnected()) return;
 
     this.isLoading.set(true);
     this.hubConnection
@@ -107,10 +118,9 @@ export class ChatService {
       .finally(() => this.isLoading.set(false));
   }
 
-  async sendMessageHub(messageContent: string, attachments: any[], senderId: string) {
+  async sendMessageHub(messageContent: string, attachments: any[]) {
     return this.hubConnection?.invoke('SendMessage', {
       receiverId: this.currentOpenedChat()?.id,
-      senderId: senderId,
       content: messageContent,
       replyMessageId: this.replyMessage()?.id,
       attachments: attachments,
@@ -118,9 +128,6 @@ export class ChatService {
   }
 
   notifyTyping() {
-    this.hubConnection!.invoke(
-      'NotifyTyping',
-      this.currentOpenedChat()?.userName,
-    );
+    this.hubConnection?.invoke('NotifyTyping', this.currentOpenedChat()?.id);
   }
 }

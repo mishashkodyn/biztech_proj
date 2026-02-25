@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import {
   HubConnection,
   HubConnectionBuilder,
@@ -16,6 +16,9 @@ export class PresenceService {
   private hubConnection?: HubConnection;
 
   usersList = signal<User[]>([]);
+  totalUnreadCount = computed(() => {
+    return this.usersList().reduce((total, user) => total + (user.unreadCount || 0), 0);
+  });
   isConnected = signal<boolean>(false);
   constructor() {}
 

@@ -95,7 +95,7 @@ export class ChatWindowComponent {
         );
       }
 
-      await this.chatService.sendMessageHub(contentToSend, uploadedAttachments, this.authService.currentLoggedUser!.id!);
+      await this.chatService.sendMessageHub(contentToSend, uploadedAttachments);
     } catch (error) {
       console.error('Помилка відправки:', error);
     }
