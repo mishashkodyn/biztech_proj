@@ -2,7 +2,7 @@
   class="bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] w-full h-13 flex justify-between items-center px-4 md:px-6 relative z-50"
 >
   <div class="flex items-center gap-2 md:gap-4">
-    @if (!visibilityButtons()) {
+    @if (authService.isLoggedIn()) {
       <button
         (click)="toggleSideBar()"
         class="relative flex items-center justify-center pr-2 text-primary cursor-pointer hover:text-success transition-colors"
@@ -38,7 +38,7 @@
     </div>
   </div>
   <div class="flex justify-end items-center gap-2 md:gap-5">
-    @if (visibilityButtons()) {
+    <!-- @if (visibilityButtons()) {
       <div class="hidden md:flex justify-between gap-3">
         @for (item of menuItems(); track item) {
           <div
@@ -48,7 +48,7 @@
           </div>
         }
       </div>
-    }
+    } -->
 
     <div class="flex items-center gap-2 md:gap-2">
       <!-- <app-dropdown
@@ -58,18 +58,18 @@
         class="shrink-0 hidden md:flex"
       ></app-dropdown> -->
 
-      @if (visibilityButtons()) {
+      @if (route.url != "/login" && route.url != "/register" && !authService.isLoggedIn()) {
         <div class="flex items-center gap-2 md:gap-4">
           <div class="flex gap-2 shrink-0">
             <button
               (click)="navigateTo('login')"
-              class="flex justify-center items-center bg-transparent text-primary font-mono font-semibold border border-primary rounded transition duration-200 cursor-pointer text-xh-8 md:px-4 md:text-base hover:shadow-md shadow-success whitespace-nowrap"
+              class="text-sm sm:text-base flex justify-center items-center bg-transparent text-primary font-mono font-semibold border border-primary rounded transition duration-200 cursor-pointer text-xh-8 px-1 md:px-4 hover:shadow-md shadow-success whitespace-nowrap"
             >
               Log in
             </button>
             <button
               (click)="navigateTo('registration')"
-              class="flex justify-center items-center border border-primary bg-primary text-mint font-mono font-semibold rounded transition duration-200 cursor-pointer text-xs h-8 md:px-4 md:text-base hover:shadow-md shadow-success whitespace-nowrap"
+              class="text-sm sm:text-base flex justify-center items-center border border-primary bg-primary text-mint font-mono font-semibold rounded transition duration-200 cursor-pointer h-8 px-1 md:px-4 hover:shadow-md shadow-success whitespace-nowrap"
             >
               Sign up
             </button>

@@ -1,7 +1,7 @@
 <div class="chat-section flex flex-col h-full w-full overflow-hidden bg-[#F8F9FA]">
   <div
     #scrollContainer
-    class="flex-1 custom-scroll overflow-y-auto p-3 md:p-5 flex flex-col w-full gap-1 md:gap-2"
+    class="flex-1 custom-scroll overflow-y-auto p-3 md:p-5 flex flex-col w-full gap-1"
     style="overscroll-behavior-y: contain"
   >
     <ng-container *ngFor="let item of chatService.chatMessages(); let i = index">
@@ -17,22 +17,23 @@
         @if (item.senderId === authService.currentLoggedUser?.id) {
           <button
             (click)="addReplyMessage(item)"
-            class="text-gray-300 hover:text-primary transition-colors mb-1 md:opacity-0 md:group-hover:opacity-100 shrink-0 p-1 flex items-center justify-center rounded-full hover:bg-black/5"
+            class="text-gray-300 hover:text-primary transition-colors mb-1.5 md:opacity-0 md:group-hover:opacity-100 shrink-0 p-1.5 flex items-center justify-center rounded-full hover:bg-black/5"
             title="Відповісти"
           >
-            <i class="bi bi-reply-fill text-[16px]"></i>
+            <i class="bi bi-reply-fill text-[18px]"></i>
           </button>
         }
 
-        <div class="flex flex-col max-w-[85%] md:max-w-[65%] lg:max-w-[55%] min-w-[80px]">
+        <div class="flex flex-col max-w-[85%] md:max-w-[70%] lg:max-w-[60%] min-w-[80px]">
+          
           <div
-            class="text-[15px] relative w-full break-words shadow-sm"
+            class="text-[15px] leading-relaxed relative w-full break-words shadow-sm rounded-2xl"
             [ngClass]="getBubbleClass(i)"
           >
             
             <div
               *ngIf="item.replyMessageContent"
-              class="mb-2 p-2 rounded-md bg-black/5 border-l-[3px] flex flex-col cursor-pointer hover:bg-black/10 transition-colors"
+              class="mb-2 p-2 rounded-lg bg-black/5 border-l-[4px] flex flex-col cursor-pointer hover:bg-black/10 transition-colors"
               [ngClass]="{
                 'border-primary/60': item.senderId === authService.currentLoggedUser?.id,
                 'border-white/60': item.senderId !== authService.currentLoggedUser?.id
@@ -45,7 +46,7 @@
                 {{ item.replyMessageSenderName || "Користувач" }}
               </span>
               <span 
-                class="truncate text-[13px] opacity-80"
+                class="truncate text-[13px] opacity-80 mt-[2px]"
                 [ngClass]="item.senderId === authService.currentLoggedUser?.id ? 'text-gray-700' : 'text-white'"
               >
                 {{ item.replyMessageContent }}
@@ -53,21 +54,21 @@
             </div>
 
             @if (item.attachments && item.attachments.length > 0) {
-              <div class="flex flex-col gap-2 mb-2 w-full">
+              <div class="flex flex-col gap-2 mb-2 w-full pt-1">
                 @for (att of item.attachments; track $index) {
                   
                   @if (att.type === "image") {
-                    <div class="rounded-lg overflow-hidden border border-black/5 bg-black/5 relative group/img">
+                    <div class="rounded-xl overflow-hidden bg-black/5 relative group/img shadow-sm">
                       <img
                         [src]="att.path"
-                        class="w-full h-auto max-h-[250px] md:max-h-[350px] object-cover cursor-pointer transition-transform duration-300 group-hover/img:scale-105"
+                        class="w-full h-auto max-h-[150px] md:max-h-[250px] object-cover cursor-pointer transition-transform duration-300 group-hover/img:scale-[1.02]"
                         alt="attachment"
                         (click)="viewImage(att.path)"
                       />
                     </div>
                   
                   } @else if (att.type === "video") {
-                    <div class="rounded-lg overflow-hidden bg-black/90 shadow-inner">
+                    <div class="rounded-xl overflow-hidden bg-black/90 shadow-sm">
                       <video
                         [src]="att.path"
                         controls
@@ -79,7 +80,7 @@
                     <a
                       [href]="att.path"
                       target="_blank"
-                      class="flex items-center gap-3 p-2.5 rounded-lg transition-colors border no-underline group/file"
+                      class="flex items-center gap-3 p-3 rounded-xl transition-colors border no-underline group/file shadow-sm"
                       [ngClass]="
                         item.senderId === authService.currentLoggedUser?.id
                           ? 'bg-white/50 hover:bg-white/80 border-black/5'
@@ -97,7 +98,7 @@
                         ></i>
                       </div>
                       
-                      <div class="flex flex-col min-w-0 overflow-hidden w-full">
+                      <div class="flex flex-col min-w-0 overflow-hidden w-full leading-snug">
                         <span 
                           class="text-[14px] font-semibold truncate"
                           [ngClass]="item.senderId === authService.currentLoggedUser?.id ? 'text-gray-800' : 'text-white'"
@@ -108,12 +109,12 @@
                           class="text-[11px] uppercase tracking-wider mt-0.5"
                           [ngClass]="item.senderId === authService.currentLoggedUser?.id ? 'text-gray-500' : 'text-white/70'"
                         >
-                          {{ att.name.split(".").pop() }} File
+                          {{ att.name.split(".").pop() }}
                         </span>
                       </div>
                       
                       <i 
-                        class="bi bi-download text-[18px] shrink-0 transition-transform group-hover/file:-translate-y-0.5"
+                        class="bi bi-download text-[20px] shrink-0 transition-transform group-hover/file:-translate-y-1"
                         [ngClass]="item.senderId === authService.currentLoggedUser?.id ? 'text-gray-400 group-hover/file:text-primary' : 'text-white/50 group-hover/file:text-white'"
                       ></i>
                     </a>
@@ -123,15 +124,15 @@
             }
 
             @if (item.content) {
-              <span class="block leading-relaxed whitespace-pre-wrap word-break">
+              <span class="block whitespace-pre-wrap word-break pt-0.5">
                 {{ item.content }}
               </span>
             }
 
             <div class="flex items-center justify-end gap-1 mt-1.5 select-none float-right ml-3">
               <span
-                class="text-[11px]"
-                [ngClass]="item.senderId === authService.currentLoggedUser?.id ? 'text-gray-500' : 'text-white/80'"
+                class="text-[11px] font-medium"
+                [ngClass]="item.senderId === authService.currentLoggedUser?.id ? 'text-gray-500/90' : 'text-white/80'"
               >
                 {{ item.createdDate | date: "HH:mm" }}
               </span>
@@ -141,9 +142,9 @@
                 class="flex items-center justify-center h-[14px]"
               >
                 @if (item.isRead) {
-                  <i class="bi bi-check-all text-[16px] text-blue-500 leading-none"></i>
+                  <i class="bi bi-check-all text-[18px] text-blue-500 leading-none"></i>
                 } @else {
-                  <i class="bi bi-check text-[16px] text-gray-400 leading-none"></i>
+                  <i class="bi bi-check text-[18px] text-gray-400 leading-none"></i>
                 }
               </div>
             </div>
@@ -156,10 +157,10 @@
         @if (item.senderId !== authService.currentLoggedUser?.id) {
           <button
             (click)="addReplyMessage(item)"
-            class="text-gray-300 hover:text-primary transition-colors mb-1 md:opacity-0 md:group-hover:opacity-100 shrink-0 p-1 flex items-center justify-center rounded-full hover:bg-black/5"
-            title="Відповісти"
+            class="text-gray-300 hover:text-primary transition-colors mb-1.5 md:opacity-0 md:group-hover:opacity-100 shrink-0 p-1.5 flex items-center justify-center rounded-full hover:bg-black/5"
+            title="Reply"
           >
-            <i class="bi bi-reply-fill text-[16px]"></i>
+            <i class="bi bi-reply-fill text-[18px]"></i>
           </button>
         }
         
