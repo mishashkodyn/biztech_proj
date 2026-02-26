@@ -14,6 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { LogoutConfirmModalComponent } from '../../../shared/logout-confirm-modal/logout-confirm-modal.component';
 import { MenuItem } from '../../../../api/models/menu-item';
 import { SidebarService } from '../../../../api/services/sidebar.service';
+import { PresenceService } from '../../../../api/services/presence-service';
 
 @Component({
   selector: 'app-sidebar',
@@ -52,6 +53,7 @@ export class SidebarComponent {
     protected sidebarService: SidebarService,
     private router: Router,
     private dialog: MatDialog,
+    protected presenceService: PresenceService
   ) {}
 
   logout() {

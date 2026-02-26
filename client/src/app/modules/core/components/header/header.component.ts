@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../../api/services/auth.service';
 import { DropdownItem } from '../../../../api/models/dropdown-item';
 import { SidebarService } from '../../../../api/services/sidebar.service';
+import { PresenceService } from '../../../../api/services/presence-service';
 
 @Component({
   selector: 'app-header',
@@ -25,13 +26,18 @@ export class HeaderComponent {
   ]);
 
   languages: DropdownItem[] = [
-    { label: 'EN', value: 'en'},
-    { label: 'UA', value: 'ua'}
+    { label: 'EN', value: 'en' },
+    { label: 'UA', value: 'ua' },
   ];
 
   currentLanguage = this.languages[0];
 
-  constructor(private route: Router, protected authService: AuthService, protected sidebarService: SidebarService) {}
+  constructor(
+    private route: Router,
+    protected authService: AuthService,
+    protected sidebarService: SidebarService,
+    protected presenceService: PresenceService,
+  ) {}
 
   navigateTo(to: string) {
     switch (to) {
@@ -68,7 +74,11 @@ export class HeaderComponent {
   }
 
   visibilityButtons(): boolean {
-    if (this.route.url == '/login' || this.route.url == '/register' || this.authService.isLoggedIn() == false) {
+    if (
+      this.route.url == '/login' ||
+      this.route.url == '/register' ||
+      this.authService.isLoggedIn() == false
+    ) {
       return true;
     }
     return false;

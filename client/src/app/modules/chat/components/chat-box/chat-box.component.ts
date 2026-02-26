@@ -2,6 +2,7 @@ import {
   AfterViewChecked,
   AfterViewInit,
   Component,
+  effect,
   ElementRef,
   ViewChild,
 } from '@angular/core';
@@ -15,23 +16,28 @@ import { Message } from '../../../../api/models/message';
   templateUrl: './chat-box.component.html',
   styleUrl: './chat-box.component.scss',
 })
-export class ChatBoxComponent implements AfterViewChecked, AfterViewInit {
- @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
+export class ChatBoxComponent implements AfterViewInit {
+  @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
 
   private previousMessageCount = 0;
 
   constructor(
     protected chatService: ChatService,
     protected authService: AuthService,
-  ) {}
-
-  ngOnInit(): void {
-    // this.scrollDown();
+  ) {
+    effect(() => {
+      const messages = this.chatService.chatMessages();
+      if (messages && messages.length > 0) {
+        setTimeout(() => this.scrollToBottom(), 50);
+      }
+    });
   }
 
-  ngAfterViewChecked(): void {
-    this.scrollToBottom();
+  ngAfterViewInit(): void {
+    setTimeout(() => this.scrollToBottom(), 100);
   }
+
+  ngOnInit(): void {}
 
   addReplyMessage(message: Message) {
     if (message) {
@@ -50,14 +56,9 @@ export class ChatBoxComponent implements AfterViewChecked, AfterViewInit {
     window.open(url, '_blank');
   }
 
-  ngAfterViewInit(): void {
-    this.scrollToBottom();
-  }
-
   loadMoreMessage() {
     const nextPage = this.chatService.pageNumber() + 1;
     this.chatService.loadMessages(nextPage);
-    // this.scrollDown();
   }
 
   getBubbleClass(index: number): string {
@@ -66,39 +67,32 @@ export class ChatBoxComponent implements AfterViewChecked, AfterViewInit {
     const prevMsg = messages[index - 1];
     const nextMsg = messages[index + 1];
 
-    const isMe =
-      currentMsg.senderId ===
-      this.authService.currentLoggedUser?.id;
-
+    const isMe = currentMsg.senderId === this.authService.currentLoggedUser?.id;
     const isPrevSame = prevMsg && prevMsg.senderId === currentMsg.senderId;
     const isNextSame = nextMsg && nextMsg.senderId === currentMsg.senderId;
 
-    let classes = isMe
-      ? 'bg-mint text-slate-800 ml-auto '
-      : 'bg-primary text-white mr-auto ';
-
-    const radiusLarge = 'rounded-2xl';
-    const radiusSmall = 'rounded-md';
-    const radiusNone = 'rounded-none';
+    let classes = 'px-3 py-2 md:px-4 md:py-2.5 transition-all duration-300 relative ';
 
     if (isMe) {
-      classes += 'rounded-l-2xl ';
-
-      classes += isPrevSame ? `rounded-tr-${radiusSmall} ` : `rounded-tr-2xl `;
-
-      classes += isNextSame ? `rounded-br-${radiusSmall} ` : 'rounded-br-none ';
+      classes += 'bg-mint text-gray-800 shadow-sm border border-mint/40 ';
     } else {
-      classes += 'rounded-r-2xl ';
+      classes += 'bg-primary text-white shadow-md shadow-primary/20 ';
+    }
 
-      classes += isPrevSame ? `rounded-tl-${radiusSmall} ` : `rounded-tl-2xl `;
+    classes += 'rounded-[18px] md:rounded-[20px] ';
 
-      classes += isNextSame ? `rounded-bl-${radiusSmall} ` : 'rounded-bl-none ';
+    if (isMe) {
+      if (isPrevSame) classes += '!rounded-tr-[4px] ';
+      if (isNextSame) classes += '!rounded-br-[4px] ';
+    } else {
+      if (isPrevSame) classes += '!rounded-tl-[4px] ';
+      if (isNextSame) classes += '!rounded-bl-[4px] ';
     }
 
     if (!isNextSame) {
-      classes += 'mb-2';
+      classes += 'mb-3 ';
     } else {
-      classes += 'mb-0.5';
+      classes += 'mb-0.5 ';
     }
 
     return classes;

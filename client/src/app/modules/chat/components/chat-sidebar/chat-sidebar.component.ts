@@ -35,5 +35,9 @@ export class ChatSidebarComponent implements OnInit {
     this.chatService.chatRightSidebarIsOpen.set(false);
     this.chatService.currentOpenedChat.set(user);
     this.chatService.loadMessages(1);
+
+    this.presenceService.usersList.update(users =>
+      users.map(u => u.userName === user.userName ? { ...u, unreadCount: 0 } : u)
+    );
   }
 }

@@ -69,6 +69,10 @@ export class ChatWindowComponent {
 
     this.selectedFiles = [];
 
+    setTimeout(() => {
+      this.scrollToBottom();
+    }, 50);
+
     // this.chatService.chatMessages.update((messages) => [
     //   ...messages,
     //   {
@@ -84,8 +88,6 @@ export class ChatWindowComponent {
     //   },
     // ]);
 
-    this.scrollToBottom();
-
     try {
       let uploadedAttachments: any[] = [];
 
@@ -95,7 +97,7 @@ export class ChatWindowComponent {
         );
       }
 
-      await this.chatService.sendMessageHub(contentToSend, uploadedAttachments, this.authService.currentLoggedUser!.id!);
+      await this.chatService.sendMessageHub(contentToSend, uploadedAttachments);
     } catch (error) {
       console.error('Помилка відправки:', error);
     }
