@@ -33,7 +33,7 @@ export class HeaderComponent {
   currentLanguage = this.languages[0];
 
   constructor(
-    private route: Router,
+    protected route: Router,
     protected authService: AuthService,
     protected sidebarService: SidebarService,
     protected presenceService: PresenceService,
@@ -71,17 +71,6 @@ export class HeaderComponent {
 
   toggleSideBar() {
     this.sidebarService.sideBarOpen.set(!this.sidebarService.sideBarOpen());
-  }
-
-  visibilityButtons(): boolean {
-    if (
-      this.route.url == '/login' ||
-      this.route.url == '/register' ||
-      this.authService.isLoggedIn() == false
-    ) {
-      return true;
-    }
-    return false;
   }
 
   onLanguageChange() {
