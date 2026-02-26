@@ -1,149 +1,169 @@
-<div class="chat-section flex flex-col h-full">
+<div class="chat-section flex flex-col h-full w-full overflow-hidden bg-[#F8F9FA]">
   <div
     #scrollContainer
-    class="flex-1 custom-scroll overflow-y-auto p-4 flex flex-col gap-1"
+    class="flex-1 custom-scroll overflow-y-auto p-3 md:p-5 flex flex-col w-full gap-1 md:gap-2"
     style="overscroll-behavior-y: contain"
   >
-    <div
-      class="message max-w-[85%] md:max-w-[70%]"
-      *ngFor="let item of chatService.chatMessages(); let i = index"
-      [ngClass]="{
-        'self-end': item.senderId === authService.currentLoggedUser?.id,
-        'self-start': item.senderId !== authService.currentLoggedUser?.id,
-      }"
-    >
-      <div class="flex items-end gap-2">
+    <ng-container *ngFor="let item of chatService.chatMessages(); let i = index">
+      
+      <div
+        class="flex w-full items-end gap-2 group"
+        [ngClass]="{
+          'justify-end': item.senderId === authService.currentLoggedUser?.id,
+          'justify-start': item.senderId !== authService.currentLoggedUser?.id
+        }"
+      >
+        
         @if (item.senderId === authService.currentLoggedUser?.id) {
-          <span class="text-gray-400 hover:text-primary mb-2 transition-colors">
-            <mat-icon
-              (click)="addReplyMessage(item)"
-              class="cursor-pointer text-[20px] w-[20px] h-[20px]"
-              >reply</mat-icon
-            >
-          </span>
+          <button
+            (click)="addReplyMessage(item)"
+            class="text-gray-300 hover:text-primary transition-colors mb-1 md:opacity-0 md:group-hover:opacity-100 shrink-0 p-1 flex items-center justify-center rounded-full hover:bg-black/5"
+            title="Відповісти"
+          >
+            <i class="bi bi-reply-fill text-[16px]"></i>
+          </button>
         }
 
-        <div
-          class="pt-2 px-2 shadow-sm text-sm md:text-base relative min-w-[120px] max-w-full overflow-visible"
-          [ngClass]="getBubbleClass(i)"
-        >
+        <div class="flex flex-col max-w-[85%] md:max-w-[65%] lg:max-w-[55%] min-w-[80px]">
           <div
-            *ngIf="item.replyMessageContent"
-            class="mb-2 p-1 rounded bg-black/5 border-l-4 text-xs flex flex-col cursor-pointer hover:bg-black/10 transition"
-            [ngClass]="{
-              'border-primary':
-                item.senderId === authService.currentLoggedUser?.id,
-              'border-gray-400':
-                item.senderId !== authService.currentLoggedUser?.id,
-            }"
+            class="text-[15px] relative w-full break-words shadow-sm"
+            [ngClass]="getBubbleClass(i)"
           >
-            <span class="font-bold text-primar">
-              {{ item.replyMessageSenderName || "Користувач" }}
-            </span>
-            <span class="truncate opacity-80 italic line-clamp-1">
-              {{ item.replyMessageContent }}
-            </span>
-          </div>
-          @if (item.attachments && item.attachments.length > 0) {
-            <div class="flex flex-col gap-2 mb-2">
-              @for (att of item.attachments; track $index) {
-                @if (att.type === "image") {
-                  <div class="rounded-lg overflow-hidden border border-black/5">
-                    <img
-                      [src]="att.path"
-                      class="w-full h-auto max-h-[300px] object-cover cursor-pointer hover:opacity-95 transition"
-                      alt="attachment"
-                      (click)="viewImage(att.path)"
-                    />
-                  </div>
-                } @else if (att.type === "video") {
-                  <div class="rounded-lg overflow-hidden bg-black">
-                    <video
-                      [src]="att.path"
-                      controls
-                      class="w-full max-h-[300px]"
-                    ></video>
-                  </div>
-                } @else {
-                  <a
-                    [href]="att.path"
-                    target="_blank"
-                    class="flex items-center gap-3 p-2 rounded-lg bg-black/5 hover:bg-black/10 transition border border-black/5 no-underline group"
-                  >
-                    <div
-                      class="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 text-primary"
-                    >
-                      <mat-icon
-                        class="text-[20px] w-[20px] h-[20px] flex items-center justify-center"
-                      >
-                        {{
-                          att.type === "pdf" ? "picture_as_pdf" : "description"
-                        }}
-                      </mat-icon>
-                    </div>
-                    <div class="flex flex-col min-w-0 overflow-hidden">
-                      <span
-                        class="text-xs font-semibold truncate w-full text-gray-800"
-                        >{{ att.name }}</span
-                      >
-                      <span class="text-[10px] text-gray-500 uppercase"
-                        >{{ att.name.split(".").pop() }} File</span
-                      >
-                    </div>
-                    <mat-icon
-                      class="ml-auto text-gray-400 group-hover:text-primary"
-                      >download</mat-icon
-                    >
-                  </a>
-                }
-              }
-            </div>
-          }
-          @if (item.content) {
-            <span class="break-words block leading-relaxed">
-              {{ item.content }}
-            </span>
-          }
-
-          <div
-            class="flex items-center gap-1"
-            [ngClass]="
-              item.senderId === authService.currentLoggedUser?.id
-                ? 'justify-between'
-                : 'justify-end'
-            "
-          >
-            <span
-              class="text-[10px] opacity-70"
-              [ngClass]="
-                item.senderId === authService.currentLoggedUser?.id
-                  ? 'text-gray-900'
-                  : 'text-gray-300 pb-2'
-              "
-            >
-              {{ item.createdDate | date: "HH:mm" }}
-            </span>
-
+            
             <div
-              [hidden]="item.senderId !== authService.currentLoggedUser?.id"
-              class="text-primary p-0"
+              *ngIf="item.replyMessageContent"
+              class="mb-2 p-2 rounded-md bg-black/5 border-l-[3px] flex flex-col cursor-pointer hover:bg-black/10 transition-colors"
+              [ngClass]="{
+                'border-primary/60': item.senderId === authService.currentLoggedUser?.id,
+                'border-white/60': item.senderId !== authService.currentLoggedUser?.id
+              }"
             >
-              <mat-icon class="scale-70">{{
-                item.isRead ? "done_all" : "done"
-              }}</mat-icon>
+              <span 
+                class="font-semibold text-[13px] truncate"
+                [ngClass]="item.senderId === authService.currentLoggedUser?.id ? 'text-primary' : 'text-white/90'"
+              >
+                {{ item.replyMessageSenderName || "Користувач" }}
+              </span>
+              <span 
+                class="truncate text-[13px] opacity-80"
+                [ngClass]="item.senderId === authService.currentLoggedUser?.id ? 'text-gray-700' : 'text-white'"
+              >
+                {{ item.replyMessageContent }}
+              </span>
             </div>
+
+            @if (item.attachments && item.attachments.length > 0) {
+              <div class="flex flex-col gap-2 mb-2 w-full">
+                @for (att of item.attachments; track $index) {
+                  
+                  @if (att.type === "image") {
+                    <div class="rounded-lg overflow-hidden border border-black/5 bg-black/5 relative group/img">
+                      <img
+                        [src]="att.path"
+                        class="w-full h-auto max-h-[250px] md:max-h-[350px] object-cover cursor-pointer transition-transform duration-300 group-hover/img:scale-105"
+                        alt="attachment"
+                        (click)="viewImage(att.path)"
+                      />
+                    </div>
+                  
+                  } @else if (att.type === "video") {
+                    <div class="rounded-lg overflow-hidden bg-black/90 shadow-inner">
+                      <video
+                        [src]="att.path"
+                        controls
+                        class="w-full max-h-[250px] md:max-h-[350px]"
+                      ></video>
+                    </div>
+                  
+                  } @else {
+                    <a
+                      [href]="att.path"
+                      target="_blank"
+                      class="flex items-center gap-3 p-2.5 rounded-lg transition-colors border no-underline group/file"
+                      [ngClass]="
+                        item.senderId === authService.currentLoggedUser?.id
+                          ? 'bg-white/50 hover:bg-white/80 border-black/5'
+                          : 'bg-black/10 hover:bg-black/20 border-white/10'
+                      "
+                    >
+                      <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm">
+                        <i 
+                          class="text-[20px]"
+                          [ngClass]="
+                            att.type === 'pdf' ? 'bi-file-earmark-pdf-fill text-red-500' : 
+                            att.type === 'doc' || att.type === 'docx' ? 'bi-file-earmark-word-fill text-blue-500' : 
+                            'bi-file-earmark-text-fill text-gray-500'
+                          "
+                        ></i>
+                      </div>
+                      
+                      <div class="flex flex-col min-w-0 overflow-hidden w-full">
+                        <span 
+                          class="text-[14px] font-semibold truncate"
+                          [ngClass]="item.senderId === authService.currentLoggedUser?.id ? 'text-gray-800' : 'text-white'"
+                        >
+                          {{ att.name }}
+                        </span>
+                        <span 
+                          class="text-[11px] uppercase tracking-wider mt-0.5"
+                          [ngClass]="item.senderId === authService.currentLoggedUser?.id ? 'text-gray-500' : 'text-white/70'"
+                        >
+                          {{ att.name.split(".").pop() }} File
+                        </span>
+                      </div>
+                      
+                      <i 
+                        class="bi bi-download text-[18px] shrink-0 transition-transform group-hover/file:-translate-y-0.5"
+                        [ngClass]="item.senderId === authService.currentLoggedUser?.id ? 'text-gray-400 group-hover/file:text-primary' : 'text-white/50 group-hover/file:text-white'"
+                      ></i>
+                    </a>
+                  }
+                }
+              </div>
+            }
+
+            @if (item.content) {
+              <span class="block leading-relaxed whitespace-pre-wrap word-break">
+                {{ item.content }}
+              </span>
+            }
+
+            <div class="flex items-center justify-end gap-1 mt-1.5 select-none float-right ml-3">
+              <span
+                class="text-[11px]"
+                [ngClass]="item.senderId === authService.currentLoggedUser?.id ? 'text-gray-500' : 'text-white/80'"
+              >
+                {{ item.createdDate | date: "HH:mm" }}
+              </span>
+
+              <div
+                *ngIf="item.senderId === authService.currentLoggedUser?.id"
+                class="flex items-center justify-center h-[14px]"
+              >
+                @if (item.isRead) {
+                  <i class="bi bi-check-all text-[16px] text-blue-500 leading-none"></i>
+                } @else {
+                  <i class="bi bi-check text-[16px] text-gray-400 leading-none"></i>
+                }
+              </div>
+            </div>
+            
+            <div class="clear-both"></div>
+            
           </div>
         </div>
+
         @if (item.senderId !== authService.currentLoggedUser?.id) {
-          <span class="text-gray-400 hover:text-primary mb-2 transition-colors">
-            <mat-icon
-              (click)="addReplyMessage(item)"
-              class="cursor-pointer text-[20px] w-[20px] h-[20px]"
-              >reply</mat-icon
-            >
-          </span>
+          <button
+            (click)="addReplyMessage(item)"
+            class="text-gray-300 hover:text-primary transition-colors mb-1 md:opacity-0 md:group-hover:opacity-100 shrink-0 p-1 flex items-center justify-center rounded-full hover:bg-black/5"
+            title="Відповісти"
+          >
+            <i class="bi bi-reply-fill text-[16px]"></i>
+          </button>
         }
+        
       </div>
-    </div>
+    </ng-container>
   </div>
 </div>

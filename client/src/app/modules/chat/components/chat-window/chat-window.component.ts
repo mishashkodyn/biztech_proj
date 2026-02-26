@@ -69,6 +69,10 @@ export class ChatWindowComponent {
 
     this.selectedFiles = [];
 
+    setTimeout(() => {
+      this.scrollToBottom();
+    }, 50);
+
     // this.chatService.chatMessages.update((messages) => [
     //   ...messages,
     //   {
@@ -83,8 +87,6 @@ export class ChatWindowComponent {
     //     attachments: tempAttachments,
     //   },
     // ]);
-
-    this.scrollToBottom();
 
     try {
       let uploadedAttachments: any[] = [];
