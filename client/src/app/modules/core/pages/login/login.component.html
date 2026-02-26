@@ -1,4 +1,4 @@
-<div class="min-h-screen flex bg-gray-50">
+<div class="h-full w-full flex bg-gray-50 overflow-hidden">
   <div
     class="hidden lg:flex w-1/2 bg-gradient-to-br from-primary to-success items-center justify-center relative overflow-hidden"
   >
@@ -19,22 +19,26 @@
     </div>
   </div>
 
-  <div class="w-full lg:w-1/2 flex items-center justify-center p-8">
+  <div class="w-full lg:w-1/2 flex items-center justify-center p-2 sm:p-4">
     <div
-      class="w-full max-w-lg bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-100"
+      class="bg-white w-full max-w-md rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6 max-h-full overflow-y-auto custom-scroll"
     >
       <div class="text-center mb-8">
         <h2 class="text-3xl font-bold text-[var(--color-primary)]">Log In</h2>
         <p class="text-gray-500 mt-2">Enter your login details</p>
       </div>
 
-      <form #userForm="ngForm" (ngSubmit)="login()" class="flex flex-col gap-5">
+      <form
+        #userForm="ngForm"
+        (ngSubmit)="login()"
+        class="flex flex-col gap-2.5"
+      >
         <div class="relative group">
           <div
             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
           >
             <svg
-              class="h-5 w-5 text-gray-400 group-focus-within:text-[var(--color-primary)] transition-colors"
+              class="h-4 w-4 sm:h-5 sm:w-5 text-gray-500 group-focus-within:text-[var(--color-primary)] transition-colors"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -54,7 +58,7 @@
             [(ngModel)]="email"
             #emailModel="ngModel"
             placeholder="Email Address"
-            class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-mint focus:border-success transition-all duration-200"
+            class="w-full pl-9 sm:pl-10 pr-3 py-2 sm:py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm sm:text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-mint focus:border-success transition-all duration-200"
           />
         </div>
 
@@ -63,7 +67,7 @@
             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
           >
             <svg
-              class="h-5 w-5 text-gray-400 group-focus-within:text-[var(--color-primary)] transition-colors"
+              class="h-4 w-4 sm:h-5 sm:w-5 text-gray-500 group-focus-within:text-[var(--color-primary)] transition-colors"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -83,16 +87,16 @@
             [(ngModel)]="password"
             #passwordModel="ngModel"
             placeholder="Password"
-            class="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[var(--color-mint)] focus:border-[var(--color-success)] transition-all duration-200"
+            class="w-full pl-9 sm:pl-10 pr-3 py-2 sm:py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm sm:text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-mint focus:border-success transition-all duration-200"
           />
           <button
             type="button"
             (click)="hide = !hide"
-            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-[var(--color-primary)] cursor-pointer focus:outline-none"
+            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-[var(--color-primary)] cursor-pointer focus:outline-none"
           >
             @if (!hide) {
               <svg
-                class="h-5 w-5"
+                class="h-4 w-4"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -112,7 +116,7 @@
               </svg>
             } @else {
               <svg
-                class="h-5 w-5"
+                class="h-4 w-4"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -131,7 +135,7 @@
         <div class="flex items-center justify-end">
           <a
             (click)="forgotPassword()"
-            class="text-sm font-medium text-blue hover:text-primary hover:underline cursor-pointer"
+            class="text-sm sm:text-base font-medium text-blue hover:text-primary hover:underline cursor-pointer"
           >
             Forgot Password?
           </a>
@@ -143,23 +147,23 @@
           [isLoading]="authService.isLoading()"
           [text]="'Sign In'"
           [width]="'100%'"
-          [height]="'48px'"
+          [height]="'44px'"
         ></app-button>
 
         <div class="relative my-1">
           <div class="absolute inset-0 flex items-center">
             <div class="w-full border-t border-gray-300"></div>
           </div>
-          <div class="relative flex justify-center text-sm">
+          <div class="relative flex justify-center text-xs sm:text-sm">
             <span class="bg-white px-2 text-gray-500">Or continue with</span>
           </div>
         </div>
         <button
-        (click)="continueWithGoogle()"
+          (click)="continueWithGoogle()"
           type="button"
-          class="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-100 border border-gray-300 text-gray-700 font-medium py-2 px-4 rounded-xl transition-all shadow-sm cursor-pointer"
+          class="w-full flex items-center justify-center gap-2 sm:gap-3 bg-white hover:bg-gray-50 border border-gray-300 text-gray-700 font-medium py-1.5 sm:py-2 px-4 rounded-xl transition-all shadow-sm cursor-pointer"
         >
-          <svg class="w-5 h-5" viewBox="0 0 24 24">
+          <svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24">
             <path
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
               fill="#4285F4"
@@ -180,7 +184,7 @@
           <span class="text-sm">Google</span>
         </button>
 
-        <p class="text-center text-gray-600 mt-1">
+        <p class="text-center text-xs sm:text-sm text-gray-600 mt-1">
           Don't have an account?
           <a
             routerLink="/register"
