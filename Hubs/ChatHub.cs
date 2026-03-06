@@ -11,6 +11,7 @@ using System.Collections.Concurrent;
 
 namespace API.Hubs
 {
+    [Authorize]
     public class ChatHub(UserManager<ApplicationUser> userManager, ApplicationDbContext context) : Hub
     {
         public override async Task OnConnectedAsync()

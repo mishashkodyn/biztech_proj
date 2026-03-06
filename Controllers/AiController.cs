@@ -2,6 +2,7 @@
 using API.Core.DTOs.AI;
 using API.Services;
 using API.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -17,6 +18,7 @@ namespace API.Controllers
             _aiService = aiService;
         }
 
+        [Authorize]
         [HttpPost("chat")]
         public async Task<IActionResult> Chat([FromBody] AiChatRequestDto request)
         {

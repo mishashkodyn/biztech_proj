@@ -7,6 +7,7 @@ using API.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NPOI.Util;
 using System.Runtime.CompilerServices;
 
 namespace API.Endpoints
@@ -56,8 +57,8 @@ namespace API.Endpoints
                 return Results.Ok(Response<string>.Success("", "User create successfully."));
             }).DisableAntiforgery();
 
-            group.MapPost("/login", async (UserManager<ApplicationUser> userManager,
-            TokenService tokenService, LoginDto dto) =>
+            group.MapPost("/login", async (HttpContext context, UserManager < ApplicationUser> userManager,
+            TokenService tokenService, LoginDto dto, IConfiguration _config) =>
             {
                 if (dto is null)
                 {
@@ -78,11 +79,59 @@ namespace API.Endpoints
                     return Results.BadRequest(Response<string>.Failure("Invalid password."));
                 }
                 var roles = await userManager.GetRolesAsync(user!);
-
                 var token = tokenService.GenerateToken(user.Id, user.UserName!, roles);
+                var refreshToken = tokenService.GenerateRefreshToken();
+
+                var refreshTokenExpirationDays = _config.GetValue<int>("JwtSettings:RefreshTokenExpirationDays");
+
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(refreshTokenExpirationDays);
+                await userManager.UpdateAsync(user);
+
+                SetRefreshTokenCookie(context, refreshToken, refreshTokenExpirationDays);
 
                 return Results.Ok(Response<string>.Success(token, "Login successfully"));
             });
+
+            group.MapPost("/refresh", async (HttpContext context, UserManager<ApplicationUser> userManager, TokenService tokenService, IConfiguration _config) =>
+            {
+                var refreshToken = context.Request.Cookies["refreshToken"];
+
+                if (string.IsNullOrEmpty(refreshToken))
+                {
+                    return Results.Unauthorized();
+                }
+
+                var user = await userManager.Users.SingleOrDefaultAsync(u => u.RefreshToken == Guid.Parse(refreshToken));
+
+                if (user is null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+                {
+                    return Results.Unauthorized();
+                }
+
+                var roles = await userManager.GetRolesAsync(user);
+                var newJwtToken = tokenService.GenerateToken(user.Id, user.UserName!, roles);
+                var newRefreshToken = tokenService.GenerateRefreshToken();
+                var refreshTokenExpirationDays = _config.GetValue<int>("JwtSettings:RefreshTokenExpirationDays");
+                user.RefreshToken = newRefreshToken;
+                await userManager.UpdateAsync(user);
+
+                SetRefreshTokenCookie(context, newRefreshToken, refreshTokenExpirationDays);
+
+                return Results.Ok(Response<string>.Success(newJwtToken, "Token refreshed successfully"));
+            });
+
+            void SetRefreshTokenCookie(HttpContext context, Guid refreshToken, int expiresTime)
+            {
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Expires = DateTime.UtcNow.AddDays(expiresTime),
+                    Secure = true,
+                    SameSite = SameSiteMode.None
+                };
+                context.Response.Cookies.Append("refreshToken", refreshToken.ToString(), cookieOptions);
+            }
 
             group.MapGet("/me", async (HttpContext context, UserManager<ApplicationUser> userManager) =>
             {

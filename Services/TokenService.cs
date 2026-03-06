@@ -18,6 +18,8 @@ namespace API.Services
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_config["JwtSettings:SecurityKey"]!);
+            var accessTokenExpirationMinutes = _config.GetValue<int>("JwtSettings:AccessTokenExpirationMinutes");
+            var refreshTokenExpirationDays = _config.GetValue<int>("JwtSettings:RefreshTokenExpirationDays");
 
             var claims = new List<Claim>
             {
@@ -33,14 +35,18 @@ namespace API.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey
-                (key), SecurityAlgorithms.HmacSha256)
+                Expires = DateTime.UtcNow.AddMinutes(accessTokenExpirationMinutes),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
+        }
+
+        public Guid GenerateRefreshToken()
+        {
+            return Guid.NewGuid();
         }
     }
 }

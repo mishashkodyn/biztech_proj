@@ -32,16 +32,23 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<ApiResponse<string>> {
-  return this.httpClient
-    .post<ApiResponse<string>>(`${this.baseUrl}/login`, { email, password })
-    .pipe(
-      tap((res) => {
-        if (res.isSuccess && res.data) {
-          localStorage.setItem(this.token, res.data);
-        }
-      })
-    );
-}
+    return this.httpClient
+      .post<ApiResponse<string>>(`${this.baseUrl}/login`, { email, password }, { withCredentials: true })
+      .pipe(
+        tap((res) => {
+          if (res.isSuccess && res.data) {
+            localStorage.setItem(this.token, res.data);
+          }
+        }),
+      );
+  }
+
+  refreshToken(): Observable<ApiResponse<string>>{
+    console.log("Refresh session");
+    return this.httpClient.post<any>(`${this.baseUrl}/refresh`, {}, {withCredentials: true}).pipe(tap(response => {
+      localStorage.setItem(this.token, response.data);
+    }))
+  }
 
   me(): Observable<ApiResponse<User>> {
     return this.httpClient
@@ -77,7 +84,7 @@ export class AuthService {
   }
 
   logout() {
-    this.sidebarService.toggleSideBar()
+    this.sidebarService.toggleSideBar();
     this.presenceService.stopConnection();
     this.chatService.stopConnection();
     localStorage.removeItem(this.token);

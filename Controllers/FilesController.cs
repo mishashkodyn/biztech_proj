@@ -1,6 +1,7 @@
 ﻿using API.Core.DTOs.BlobStorage;
 using API.Core.Entities;
 using API.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -16,6 +17,7 @@ namespace API.Controllers
             _blobService = blobService;
         }
 
+        [Authorize]
         [HttpPost("upload")]
         public async Task<IActionResult> UploadFiles([FromForm] List<IFormFile> files)
         {
