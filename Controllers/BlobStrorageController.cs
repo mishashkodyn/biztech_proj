@@ -1,5 +1,6 @@
 ﻿using API.Core.DTOs.BlobStorage;
 using API.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -14,6 +15,7 @@ namespace API.Controllers
             _blobService = blobService;
         }
 
+        [Authorize]
         [HttpGet("{blobName}")]
         public async Task<IActionResult> GetBlob(string blobName) 
         {
@@ -28,6 +30,7 @@ namespace API.Controllers
         //    return Ok();
         //}
 
+        [Authorize]
         [HttpDelete("{blobName}")]
         public async Task<IActionResult> DeleteFile(string blobName)
         {
