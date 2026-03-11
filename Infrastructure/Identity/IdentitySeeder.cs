@@ -44,7 +44,8 @@ namespace API.Infrastructure.Identity
                     UserName = adminSettings["UserName"],
                     Email = adminEmail,
                     ProfileImage = adminSettings["ProfileImage"],
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
+                    PreferredAiProvider = adminSettings["PreferredAiProvider"]!
                 };
 
                 var adminPassword = adminSettings["Password"] ?? "DefaultPassword123!";

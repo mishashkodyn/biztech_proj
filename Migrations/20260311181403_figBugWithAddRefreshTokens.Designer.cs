@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260305221734_addRefreshTokens")]
-    partial class addRefreshTokens
+    [Migration("20260311181403_figBugWithAddRefreshTokens")]
+    partial class figBugWithAddRefreshTokens
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -108,8 +108,8 @@ namespace API.Migrations
                     b.Property<string>("ProfileImage")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid?>("RefreshToken")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("RefreshTokenExpiryTime")
                         .HasColumnType("datetime2");
