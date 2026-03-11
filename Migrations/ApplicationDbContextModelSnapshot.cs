@@ -105,8 +105,8 @@ namespace API.Migrations
                     b.Property<string>("ProfileImage")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid?>("RefreshToken")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("RefreshTokenExpiryTime")
                         .HasColumnType("datetime2");

@@ -6,15 +6,15 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace API.Migrations
 {
     /// <inheritdoc />
-    public partial class addRefreshTokens : Migration
+    public partial class figBugWithAddRefreshTokens : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
+            migrationBuilder.AddColumn<Guid>(
                 name: "RefreshToken",
                 table: "AspNetUsers",
-                type: "nvarchar(max)",
+                type: "uniqueidentifier",
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
