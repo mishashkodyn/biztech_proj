@@ -46,6 +46,11 @@ export class SidebarComponent {
       label: 'AI Assistant',
       route: 'ai-chat',
     },
+    {
+      icon: 'dashboard',
+      label: "Dashboard",
+      route: 'admin-dashboard',
+    }
   ]);
 
   constructor(

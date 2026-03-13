@@ -14,6 +14,7 @@ import { UserAccountPageComponent } from './modules/core/pages/user-account-page
 import { SettingsPageComponent } from './modules/core/pages/settings-page/settings-page.component';
 import { EditAccountPageComponent } from './modules/core/pages/edit-account-page/edit-account-page.component';
 import { AiChatComponent } from './modules/ai/pages/ai-chat/ai-chat.component';
+import { AdminDashboardComponent } from './modules/admin-tools/pages/admin-dashboard/admin-dashboard.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,7 @@ const routes: Routes = [
       { path: 'users', canActivate: [AuthGuard], component: UsersPageComponent },
       { path: 'account/:username', canActivate: [AuthGuard], component: UserAccountPageComponent },
       { path: 'settings', canActivate: [AuthGuard], component: SettingsPageComponent },
+      { path: 'admin-dashboard', canActivate: [AuthGuard], component: AdminDashboardComponent },
       { path: 'edit-account', canActivate: [AuthGuard], component: EditAccountPageComponent },
       { path: 'ai-chat', canActivate: [AuthGuard], component: AiChatComponent},
       { path: '', redirectTo: 'home', pathMatch: 'full' },

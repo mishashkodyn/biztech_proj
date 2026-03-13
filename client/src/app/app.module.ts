@@ -10,6 +10,7 @@ import { AppRoutingModule } from './app.routing.module';
 import { AiModule } from './modules/ai/ai.module';
 import { MarkdownModule } from 'ngx-markdown';
 import { JwtInterceptor } from './api/interceptors/jwt-interceptor';
+import { AdminToolsModule } from './modules/admin-tools/admin-tools.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,6 +21,7 @@ import { JwtInterceptor } from './api/interceptors/jwt-interceptor';
     AppRoutingModule,
     ChatModule,
     CoreModule,
+    AdminToolsModule,
     AiModule,
     SharedModule,
     MarkdownModule.forRoot(),
