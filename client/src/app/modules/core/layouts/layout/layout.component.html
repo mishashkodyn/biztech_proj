@@ -6,12 +6,16 @@
 </aside>
 
 <header
-  class="fixed top-0 w-full h-13 z-50 bg-white transition-transform duration-300"
+  class="fixed top-0 left-0 w-full h-13 z-50 bg-white transition-transform duration-300"
   [class.-translate-y-full]="hidden"
 >
   <app-header></app-header>
 </header>
 
-<main class="h-[100dvh] pt-13 box-border bg-gray-100">
+<main 
+  class="min-h-[100dvh] box-border bg-gray-100 transition-[padding] duration-300 ease-in-out"
+  [class.pt-13]="!hidden"
+  [class.pt-0]="hidden"
+>
   <router-outlet></router-outlet>
 </main>
