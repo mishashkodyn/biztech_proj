@@ -1,19 +1,46 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Help Hub</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#2596BE">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="icon" type="image/png" href="/main-icon.png">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&amp;display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="manifest" href="manifest.webmanifest">
-</head>
-<body class="mat-typography">
-  <app-root></app-root>
-  <noscript>Please enable JavaScript to continue using this application.</noscript>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>Help Hub</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#2596BE" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link rel="icon" type="image/png" href="/main-icon.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link rel="manifest" href="manifest.webmanifest" />
+  </head>
+  <body class="mat-typography custom-scroll">
+    <app-root>
+      <div class="global-loader-container">
+        <div class="loader-blob blob-mint"></div>
+        <div class="loader-blob blob-sky"></div>
+
+        <div class="spinner-wrapper">
+          <img src="/main-icon.png" alt="Help Hub Logo" class="spinner-logo" />
+          <div class="spinner-ring"></div>
+        </div>
+
+        <div class="loading-text-wrapper">
+          <span class="loading-text">Help Hub</span>
+          <div class="dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+      </div>
+    </app-root>
+  </body>
 </html>
