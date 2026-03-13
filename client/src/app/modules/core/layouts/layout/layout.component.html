@@ -1,21 +1,22 @@
-<aside
-  class="fixed z-[60] h-full w-full md:w-72 bg-white shadow-2xl transition-transform duration-300 ease-in-out"
-  [class.-translate-x-full]="!sidebarService.sideBarOpen()"
->
-  <app-sidebar class="h-[100dvh]"></app-sidebar>
-</aside>
+<div class="flex flex-col h-[100dvh] w-full overflow-hidden bg-gray-100">
+  
+  <aside
+    class="fixed z-[60] h-full w-full md:w-72 bg-white shadow-2xl transition-transform duration-300 ease-in-out"
+    [class.-translate-x-full]="!sidebarService.sideBarOpen()"
+  >
+    <app-sidebar class="h-full"></app-sidebar>
+  </aside>
 
-<header
-  class="fixed top-0 left-0 w-full h-13 z-50 bg-white transition-transform duration-300"
-  [class.-translate-y-full]="hidden"
->
-  <app-header></app-header>
-</header>
+  <header
+    class="w-full h-13 z-50 bg-white shrink-0 transition-all duration-300"
+    [class.-translate-y-full]="hidden"
+    [class.hidden]="hidden" 
+  >
+    <app-header></app-header>
+  </header>
 
-<main 
-  class="min-h-[100dvh] box-border bg-gray-100 transition-[padding] duration-300 ease-in-out"
-  [class.pt-13]="!hidden"
-  [class.pt-0]="hidden"
->
-  <router-outlet></router-outlet>
-</main>
+  <main class="flex-1 min-h-0 relative w-full box-border">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>
