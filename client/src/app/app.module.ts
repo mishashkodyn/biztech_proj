@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppComponent } from './app.component';
 import { ChatModule } from './modules/chat/chat.module';
@@ -10,6 +10,23 @@ import { AppRoutingModule } from './app.routing.module';
 import { AiModule } from './modules/ai/ai.module';
 import { MarkdownModule } from 'ngx-markdown';
 import { JwtInterceptor } from './api/interceptors/jwt-interceptor';
+import { AdminToolsModule } from './modules/admin-tools/admin-tools.module';
+import { AuthService } from './api/services/auth.service';
+import { catchError, of } from 'rxjs';
+
+export function initializeApp(authService: AuthService) {
+  return () => {
+    if (!authService.isLoggedIn()) {
+      return of(null);
+    }
+
+    return authService.me().pipe(
+      catchError(() => {
+        return of(null);
+      }),
+    );
+  };
+}
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,6 +37,7 @@ import { JwtInterceptor } from './api/interceptors/jwt-interceptor';
     AppRoutingModule,
     ChatModule,
     CoreModule,
+    AdminToolsModule,
     AiModule,
     SharedModule,
     MarkdownModule.forRoot(),
@@ -28,6 +46,12 @@ import { JwtInterceptor } from './api/interceptors/jwt-interceptor';
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JwtInterceptor,
+      multi: true,
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeApp,
+      deps: [AuthService],
       multi: true,
     },
   ],
