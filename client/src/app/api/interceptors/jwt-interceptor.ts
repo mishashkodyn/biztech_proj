@@ -45,9 +45,6 @@ export class JwtInterceptor implements HttpInterceptor {
       return next.handle(request);
     }
 
-    console.log(2);
-    
-
     if (this.authService.getAccessToken) {
       request = this.addTokenHeader(request, this.authService.getAccessToken);
     }

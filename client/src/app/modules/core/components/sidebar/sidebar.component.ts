@@ -64,7 +64,6 @@ export class SidebarComponent {
     dialogRef.afterClosed().subscribe((confirmed) => {
       if (confirmed) {
         this.authService.logout();
-        this.router.navigate(['/login']);
       }
     });
   }

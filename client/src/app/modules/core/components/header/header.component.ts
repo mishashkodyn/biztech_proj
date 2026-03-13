@@ -66,7 +66,6 @@ export class HeaderComponent {
 
   logout() {
     this.authService.logout();
-    this.route.navigate(['/login']);
   }
 
   toggleSideBar() {

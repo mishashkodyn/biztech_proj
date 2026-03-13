@@ -24,7 +24,6 @@ export class ChatSidebarComponent implements OnInit {
 
   logout() {
     this.authService.logout();
-    this.router.navigate(['/login']);
   }
 
   ngOnInit(): void {

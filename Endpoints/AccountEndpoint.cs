@@ -1,176 +1,176 @@
-﻿using API.Common;
-using API.Core.DTOs;
-using API.Core.Entities;
-using API.Extentions;
-using API.Services;
-using API.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using NPOI.Util;
-using System.Runtime.CompilerServices;
+﻿    using API.Common;
+    using API.Core.DTOs;
+    using API.Core.Entities;
+    using API.Extentions;
+    using API.Services;
+    using API.Services.Interfaces;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using NPOI.Util;
+    using System.Runtime.CompilerServices;
 
-namespace API.Endpoints
-{
-    public static class AccountEndpoint
+    namespace API.Endpoints
     {
-        public static RouteGroupBuilder MapAccountEndpoint(this WebApplication app)
+        public static class AccountEndpoint
         {
-            var group = app.MapGroup("api/account").WithTags("account");
-
-            group.MapPost("/register", async (HttpContext context, UserManager<ApplicationUser>
-             userManager, [FromForm] string name, [FromForm] string surname, [FromForm] string email,
-             [FromForm] string password, [FromForm] IFormFile? profileImage, IBlobStorageService blobService) =>
+            public static RouteGroupBuilder MapAccountEndpoint(this WebApplication app)
             {
-                var userFromDb = await userManager.FindByEmailAsync(email);
+                var group = app.MapGroup("api/account").WithTags("account");
 
-                if (userFromDb is not null)
+                group.MapPost("/register", async (HttpContext context, UserManager<ApplicationUser>
+                 userManager, [FromForm] string name, [FromForm] string surname, [FromForm] string email,
+                 [FromForm] string password, [FromForm] IFormFile? profileImage, IBlobStorageService blobService) =>
                 {
-                    return Results.BadRequest(Response<string>.Failure("User is alreade exist."));
+                    var userFromDb = await userManager.FindByEmailAsync(email);
+
+                    if (userFromDb is not null)
+                    {
+                        return Results.BadRequest(Response<string>.Failure("User is alreade exist."));
+                    }
+                    var profileImageUrl = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
+
+                    if (profileImage is not null)
+                    {
+                        profileImageUrl = await blobService.UploadFileAsync(profileImage);
+                    }
+
+                    var user = new ApplicationUser
+                    {
+                        Name = name,
+                        Surname = surname,
+                        Email = email,
+                        UserName = email,
+                        ProfileImage = profileImageUrl
+                    };
+
+                    var result = await userManager.CreateAsync(user, password);
+
+                    if (!result.Succeeded)
+                    {
+                        await blobService.DeleteBlobAsync(user.ProfileImage);
+                        return Results.BadRequest(Response<string>.Failure(result.Errors
+                            .Select(x => x.Description).FirstOrDefault()!));
+                    }
+
+                    await userManager.AddToRoleAsync(user, ApplicationRole.ROLE_USER);
+                    return Results.Ok(Response<string>.Success("", "User create successfully."));
+                }).DisableAntiforgery();
+
+                group.MapPost("/login", async (HttpContext context, UserManager < ApplicationUser> userManager,
+                TokenService tokenService, LoginDto dto, IConfiguration _config) =>
+                {
+                    if (dto is null)
+                    {
+                        return Results.BadRequest(Response<string>.Failure("Invalid login details."));
+                    }
+
+                    var user = await userManager.FindByEmailAsync(dto.Email);
+
+                    if (user is null)
+                    {
+                        return Results.BadRequest(Response<string>.Failure("User not found."));
+                    }
+
+                    var result = await userManager.CheckPasswordAsync(user!, dto.Password);
+
+                    if (!result)
+                    {
+                        return Results.BadRequest(Response<string>.Failure("Invalid password."));
+                    }
+                    var roles = await userManager.GetRolesAsync(user!);
+                    var token = tokenService.GenerateToken(user.Id, user.UserName!, roles);
+                    var refreshToken = tokenService.GenerateRefreshToken();
+
+                    var refreshTokenExpirationDays = _config.GetValue<int>("JwtSettings:RefreshTokenExpirationDays");
+
+                    user.RefreshToken = refreshToken;
+                    user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(refreshTokenExpirationDays);
+                    await userManager.UpdateAsync(user);
+
+                    SetRefreshTokenCookie(context, refreshToken, refreshTokenExpirationDays);
+
+                    return Results.Ok(Response<string>.Success(token, "Login successfully"));
+                });
+
+                group.MapPost("/refresh", async (HttpContext context, UserManager<ApplicationUser> userManager, TokenService tokenService, IConfiguration _config) =>
+                {
+                    var refreshToken = context.Request.Cookies["refreshToken"];
+
+                    if (string.IsNullOrEmpty(refreshToken))
+                    {
+                        return Results.Unauthorized();
+                    }
+
+                    var user = await userManager.Users.SingleOrDefaultAsync(u => u.RefreshToken == Guid.Parse(refreshToken));
+
+                    if (user is null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+                    {
+                        return Results.Unauthorized();
+                    }
+
+                    var roles = await userManager.GetRolesAsync(user);
+                    var newJwtToken = tokenService.GenerateToken(user.Id, user.UserName!, roles);
+                    var newRefreshToken = tokenService.GenerateRefreshToken();
+                    var refreshTokenExpirationDays = _config.GetValue<int>("JwtSettings:RefreshTokenExpirationDays");
+                    user.RefreshToken = newRefreshToken;
+                    await userManager.UpdateAsync(user);
+
+                    SetRefreshTokenCookie(context, newRefreshToken, refreshTokenExpirationDays);
+
+                    return Results.Ok(Response<string>.Success(newJwtToken, "Token refreshed successfully"));
+                });
+
+                void SetRefreshTokenCookie(HttpContext context, Guid refreshToken, int expiresTime)
+                {
+                    var cookieOptions = new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Expires = DateTime.UtcNow.AddDays(expiresTime),
+                        Secure = true,
+                        SameSite = SameSiteMode.None
+                    };
+                    context.Response.Cookies.Append("refreshToken", refreshToken.ToString(), cookieOptions);
                 }
-                var profileImageUrl = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
 
-                if (profileImage is not null)
+                group.MapGet("/me", async (HttpContext context, UserManager<ApplicationUser> userManager) =>
                 {
-                    profileImageUrl = await blobService.UploadFileAsync(profileImage);
-                }
+                    var userId = context.User.GetUserId()!;
+                    var user = await userManager.FindByIdAsync(userId.ToString());
 
-                var user = new ApplicationUser
+                    if (user == null) return Results.NotFound();
+
+                    var roles = await userManager.GetRolesAsync(user);
+
+                    return Results.Ok(Response<object>.Success(new
+                    {
+                        user.Id,
+                        user.Name,
+                        user.Surname,
+                        user.Email,
+                        user.ProfileImage,
+                        user.PreferredAiProvider,
+                        Roles = roles
+                    }, "User fetched successfully."));
+                }).RequireAuthorization();
+
+                group.MapGet("/AIprovider", async (HttpContext context, UserManager<ApplicationUser> userManager) =>
                 {
-                    Name = name,
-                    Surname = surname,
-                    Email = email,
-                    UserName = email,
-                    ProfileImage = profileImageUrl
-                };
+                    var currentLoggedInUserId = context.User.GetUserId()!;
 
-                var result = await userManager.CreateAsync(user, password);
+                    var currentLoggedInUser = await userManager.Users.SingleOrDefaultAsync(x => x.Id == currentLoggedInUserId);
 
-                if (!result.Succeeded)
-                {
-                    await blobService.DeleteBlobAsync(user.ProfileImage);
-                    return Results.BadRequest(Response<string>.Failure(result.Errors
-                        .Select(x => x.Description).FirstOrDefault()!));
-                }
+                    var response = new UserDto
+                    {
+                        Name = currentLoggedInUser!.Name,
+                        Surname = currentLoggedInUser.Surname,
+                        PreferredAiProvider = currentLoggedInUser.PreferredAiProvider
+                    };
 
-                await userManager.AddToRoleAsync(user, ApplicationRole.ROLE_USER);
-                return Results.Ok(Response<string>.Success("", "User create successfully."));
-            }).DisableAntiforgery();
+                    return Results.Ok(Response<UserDto>.Success(response!, "User fetched successfully."));
+                }).RequireAuthorization();
 
-            group.MapPost("/login", async (HttpContext context, UserManager < ApplicationUser> userManager,
-            TokenService tokenService, LoginDto dto, IConfiguration _config) =>
-            {
-                if (dto is null)
-                {
-                    return Results.BadRequest(Response<string>.Failure("Invalid login details."));
-                }
-
-                var user = await userManager.FindByEmailAsync(dto.Email);
-
-                if (user is null)
-                {
-                    return Results.BadRequest(Response<string>.Failure("User not found."));
-                }
-
-                var result = await userManager.CheckPasswordAsync(user!, dto.Password);
-
-                if (!result)
-                {
-                    return Results.BadRequest(Response<string>.Failure("Invalid password."));
-                }
-                var roles = await userManager.GetRolesAsync(user!);
-                var token = tokenService.GenerateToken(user.Id, user.UserName!, roles);
-                var refreshToken = tokenService.GenerateRefreshToken();
-
-                var refreshTokenExpirationDays = _config.GetValue<int>("JwtSettings:RefreshTokenExpirationDays");
-
-                user.RefreshToken = refreshToken;
-                user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(refreshTokenExpirationDays);
-                await userManager.UpdateAsync(user);
-
-                SetRefreshTokenCookie(context, refreshToken, refreshTokenExpirationDays);
-
-                return Results.Ok(Response<string>.Success(token, "Login successfully"));
-            });
-
-            group.MapPost("/refresh", async (HttpContext context, UserManager<ApplicationUser> userManager, TokenService tokenService, IConfiguration _config) =>
-            {
-                var refreshToken = context.Request.Cookies["refreshToken"];
-
-                if (string.IsNullOrEmpty(refreshToken))
-                {
-                    return Results.Unauthorized();
-                }
-
-                var user = await userManager.Users.SingleOrDefaultAsync(u => u.RefreshToken == Guid.Parse(refreshToken));
-
-                if (user is null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
-                {
-                    return Results.Unauthorized();
-                }
-
-                var roles = await userManager.GetRolesAsync(user);
-                var newJwtToken = tokenService.GenerateToken(user.Id, user.UserName!, roles);
-                var newRefreshToken = tokenService.GenerateRefreshToken();
-                var refreshTokenExpirationDays = _config.GetValue<int>("JwtSettings:RefreshTokenExpirationDays");
-                user.RefreshToken = newRefreshToken;
-                await userManager.UpdateAsync(user);
-
-                SetRefreshTokenCookie(context, newRefreshToken, refreshTokenExpirationDays);
-
-                return Results.Ok(Response<string>.Success(newJwtToken, "Token refreshed successfully"));
-            });
-
-            void SetRefreshTokenCookie(HttpContext context, Guid refreshToken, int expiresTime)
-            {
-                var cookieOptions = new CookieOptions
-                {
-                    HttpOnly = true,
-                    Expires = DateTime.UtcNow.AddDays(expiresTime),
-                    Secure = true,
-                    SameSite = SameSiteMode.None
-                };
-                context.Response.Cookies.Append("refreshToken", refreshToken.ToString(), cookieOptions);
+                return group;
             }
-
-            group.MapGet("/me", async (HttpContext context, UserManager<ApplicationUser> userManager) =>
-            {
-                var userId = context.User.GetUserId()!;
-                var user = await userManager.FindByIdAsync(userId.ToString());
-
-                if (user == null) return Results.NotFound();
-
-                var roles = await userManager.GetRolesAsync(user);
-
-                return Results.Ok(Response<object>.Success(new
-                {
-                    user.Id,
-                    user.Name,
-                    user.Surname,
-                    user.Email,
-                    user.ProfileImage,
-                    user.PreferredAiProvider,
-                    Roles = roles
-                }, "User fetched successfully."));
-            }).RequireAuthorization();
-
-            group.MapGet("/AIprovider", async (HttpContext context, UserManager<ApplicationUser> userManager) =>
-            {
-                var currentLoggedInUserId = context.User.GetUserId()!;
-
-                var currentLoggedInUser = await userManager.Users.SingleOrDefaultAsync(x => x.Id == currentLoggedInUserId);
-
-                var response = new UserDto
-                {
-                    Name = currentLoggedInUser!.Name,
-                    Surname = currentLoggedInUser.Surname,
-                    PreferredAiProvider = currentLoggedInUser.PreferredAiProvider
-                };
-
-                return Results.Ok(Response<UserDto>.Success(response!, "User fetched successfully."));
-            }).RequireAuthorization();
-
-            return group;
         }
     }
-}
