@@ -8,6 +8,7 @@ import { environment } from '../../../environments/environment';
 import { SidebarService } from './sidebar.service';
 import { PresenceService } from './presence-service';
 import { ChatService } from './chat.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +21,7 @@ export class AuthService {
   httpClient = inject(HttpClient);
   presenceService = inject(PresenceService);
   chatService = inject(ChatService);
+  router = inject(Router);
 
   register(data: FormData): Observable<ApiResponse<string>> {
     return this.httpClient
@@ -33,7 +35,9 @@ export class AuthService {
 
   login(email: string, password: string): Observable<ApiResponse<string>> {
     return this.httpClient
-      .post<ApiResponse<string>>(`${this.baseUrl}/login`, { email, password }, { withCredentials: true })
+      .post<
+        ApiResponse<string>
+      >(`${this.baseUrl}/login`, { email, password }, { withCredentials: true })
       .pipe(
         tap((res) => {
           if (res.isSuccess && res.data) {
@@ -43,11 +47,21 @@ export class AuthService {
       );
   }
 
-  refreshToken(): Observable<ApiResponse<string>>{
-    console.log("Refresh session");
-    return this.httpClient.post<any>(`${this.baseUrl}/refresh`, {}, {withCredentials: true}).pipe(tap(response => {
-      localStorage.setItem(this.token, response.data);
-    }))
+  refreshToken(): Observable<ApiResponse<string>> {
+    console.log('Refresh session');
+    return this.httpClient
+      .post<any>(`${this.baseUrl}/refresh`, {}, { withCredentials: true })
+      .pipe(
+        tap((response) => {
+          localStorage.setItem(this.token, response.data);
+          if (!this.presenceService.isConnected()) {
+            this.presenceService.startConnection();
+          }
+          if (!this.chatService.isConnected()) {
+            this.chatService.startConnection();
+          }
+        }),
+      );
   }
 
   me(): Observable<ApiResponse<User>> {
@@ -89,6 +103,7 @@ export class AuthService {
     this.chatService.stopConnection();
     localStorage.removeItem(this.token);
     localStorage.removeItem('user');
+    this.router.navigate(['/login']);
   }
 
   get getAccessToken(): string | null {
