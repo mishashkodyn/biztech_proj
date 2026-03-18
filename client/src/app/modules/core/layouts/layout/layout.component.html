@@ -1,4 +1,5 @@
-<div class="flex flex-col h-[100dvh] w-full overflow-hidden bg-gray-100">
+<div class="flex flex-col min-h-[100dvh] w-full bg-white relative">
+  
   <aside
     class="fixed z-[60] h-full w-full md:w-72 bg-white shadow-2xl transition-transform duration-300 ease-in-out"
     [class.-translate-x-full]="!sidebarService.sideBarOpen()"
@@ -13,13 +14,11 @@
     <app-header></app-header>
   </header>
 
-  <div class="flex flex-col h-[100dvh] w-full overflow-hidden bg-white">
-    <main
-      class="min-h-[100dvh] box-border bg-white transition-[padding] duration-300 ease-in-out overscroll-none"
-      [class.pt-13]="!hidden"
-      [class.pt-0]="hidden"
-    >
-      <router-outlet></router-outlet>
-    </main>
-  </div>
+  <main
+    class="flex-1 w-full flex flex-col box-border bg-white transition-[padding] duration-300 ease-in-out"
+    [class.pt-[calc(3.25rem+env(safe-area-inset-top))]]="!hidden"
+    [class.pt-0]="hidden"
+  >
+    <router-outlet></router-outlet>
+  </main>
 </div>
