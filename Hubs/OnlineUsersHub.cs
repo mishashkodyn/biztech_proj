@@ -105,7 +105,7 @@ namespace API.Hubs
 
         private static UserDto CreateBasicUserDto(ApplicationUser user, bool isOnline)
         {
-            return new UserDto
+            return new UserDto11111111111
             {
                 Id = user.Id,
                 UserName = user.UserName,
