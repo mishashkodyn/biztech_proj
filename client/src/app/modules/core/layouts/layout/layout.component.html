@@ -1,23 +1,17 @@
-<div class="flex flex-col min-h-[100dvh] w-full bg-white relative">
-  
-  <aside
-    class="fixed z-[60] h-full w-full md:w-72 bg-white shadow-2xl transition-transform duration-300 ease-in-out will-change-transform"
-    [class.-translate-x-full]="!sidebarService.sideBarOpen()"
-  >
-    <app-sidebar class="h-[100dvh]"></app-sidebar>
-  </aside>
+<aside
+  class="fixed z-[60] h-full w-full md:w-72 bg-white shadow-2xl transition-transform duration-300 ease-in-out"
+  [class.-translate-x-full]="!sidebarService.sideBarOpen()"
+>
+  <app-sidebar class="h-[100dvh]"></app-sidebar>
+</aside>
 
-  <header
-    class="fixed top-0 left-0 w-full h-13 z-50 bg-white transition-transform duration-300 ease-in-out pt-[env(safe-area-inset-top)] box-content will-change-transform"
-    [class.-translate-y-full]="hidden"
-  >
-    <app-header></app-header>
-  </header>
+<header
+  class="fixed top-0 w-full h-13 z-50 bg-white transition-transform duration-300"
+  [class.-translate-y-full]="hidden"
+>
+  <app-header></app-header>
+</header>
 
-  <main
-    class="flex-1 w-full flex flex-col box-border bg-white"
-    style="padding-top: calc(3.25rem + env(safe-area-inset-top));"
-  >
-    <router-outlet></router-outlet>
-  </main>
-</div>
+<main class="h-[100dvh] pt-13 box-border bg-gray-100">
+  <router-outlet></router-outlet>
+</main>
