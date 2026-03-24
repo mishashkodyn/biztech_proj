@@ -6,11 +6,12 @@ import { PsychologistApplicationResponseDto } from '../../../../api/models/psych
   selector: 'app-applications-page',
   standalone: false,
   templateUrl: './applications-page.component.html',
-  styleUrl: './applications-page.component.scss'
+  styleUrl: './applications-page.component.scss',
 })
 export class ApplicationsPageComponent implements OnInit {
   applications: PsychologistApplicationResponseDto[] = [];
   isLoading = true;
+  selectedApp: PsychologistApplicationResponseDto | null = null;
 
   constructor(private service: ApplicationsService) {}
 
@@ -33,7 +34,27 @@ export class ApplicationsPageComponent implements OnInit {
       error: (err) => {
         console.error('Error loading applications', err);
         this.isLoading = false;
-      }
+      },
     });
+  }
+
+  viewDetails(app: PsychologistApplicationResponseDto) {
+    this.selectedApp = app;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeDetails() {
+    this.selectedApp = null;
+    document.body.style.overflow = 'auto';
+  }
+
+  approveApplication(id: string) {
+    console.log('Схвалюємо заявку:', id);
+    // Тут буде виклик бекенду
+  }
+
+  rejectApplication(id: string) {
+    console.log('Відхиляємо заявку:', id);
+    // Тут буде виклик бекенду
   }
 }

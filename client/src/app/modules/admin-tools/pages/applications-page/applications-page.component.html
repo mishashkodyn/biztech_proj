@@ -1,29 +1,42 @@
 <div class="p-6 sm:p-10 bg-gray-50 min-h-screen font-sans">
   <div class="max-w-7xl mx-auto">
-    
     <div class="flex justify-between items-center mb-8">
-      <h1 class="text-3xl font-bold text-primary tracking-tight">Applications</h1>
-      <span class="bg-mint text-success px-4 py-1.5 rounded-full text-sm font-semibold shadow-sm">
+      <h1 class="text-3xl font-bold text-primary tracking-tight">
+        Applications
+      </h1>
+      <span
+        class="bg-mint text-success px-4 py-1.5 rounded-full text-sm font-semibold shadow-sm"
+      >
         Total: {{ applications.length }}
       </span>
     </div>
 
     @if (isLoading) {
       <div class="flex justify-center items-center h-64">
-        <mat-icon class="animate-spin text-success text-4xl w-10 h-10">autorenew</mat-icon>
+        <mat-icon class="animate-spin text-success text-4xl w-10 h-10"
+          >autorenew</mat-icon
+        >
       </div>
     } @else if (applications.length === 0) {
-      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+      <div
+        class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center"
+      >
         <mat-icon class="text-gray-300 text-6xl w-16 h-16 mb-4">inbox</mat-icon>
         <h3 class="text-xl font-medium text-gray-600">No applications yet</h3>
-        <p class="text-gray-400 mt-2">When users apply to become psychologists, they will appear here.</p>
+        <p class="text-gray-400 mt-2">
+          When users apply to become psychologists, they will appear here.
+        </p>
       </div>
     } @else {
-      <div class="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
+      <div
+        class="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden"
+      >
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="bg-gray-50/50 border-b border-gray-100 text-gray-500 text-sm uppercase tracking-wider">
+              <tr
+                class="bg-gray-50/50 border-b border-gray-100 text-gray-500 text-sm uppercase tracking-wider"
+              >
                 <th class="px-6 py-4 font-semibold">Applicant</th>
                 <th class="px-6 py-4 font-semibold">Contact</th>
                 <th class="px-6 py-4 font-semibold">Experience</th>
@@ -35,55 +48,76 @@
             <tbody class="divide-y divide-gray-100">
               @for (app of applications; track app.id) {
                 <tr class="hover:bg-gray-50/50 transition-colors group">
-                  
                   <td class="px-6 py-4">
-                    <div class="font-medium text-gray-800">{{ app.firstName }} {{ app.lastName }}</div>
+                    <div class="font-medium text-gray-800">
+                      {{ app.firstName }} {{ app.lastName }}
+                    </div>
                     <div class="text-sm text-gray-500">{{ app.email }}</div>
                   </td>
-                  
+
                   <td class="px-6 py-4">
                     <div class="text-sm text-gray-700">{{ app.phone }}</div>
                   </td>
-                  
+
                   <td class="px-6 py-4">
-                    <div class="text-sm text-gray-700 font-medium">{{ app.experienceYears }} years</div>
-                    <div class="text-xs text-gray-500 truncate max-w-[150px]" [title]="app.education">
+                    <div class="text-sm text-gray-700 font-medium">
+                      {{ app.experienceYears }} years
+                    </div>
+                    <div
+                      class="text-xs text-gray-500 truncate max-w-[150px]"
+                      [title]="app.education"
+                    >
                       {{ app.education }}
                     </div>
                   </td>
-                  
+
                   <td class="px-6 py-4">
                     @switch (app.status) {
-                      @case ('Pending') {
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
-                          <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Pending
+                      @case ("Pending") {
+                        <span
+                          class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200"
+                        >
+                          <span
+                            class="w-1.5 h-1.5 rounded-full bg-amber-500"
+                          ></span>
+                          Pending
                         </span>
                       }
-                      @case ('Approved') {
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Approved
+                      @case ("Approved") {
+                        <span
+                          class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200"
+                        >
+                          <span
+                            class="w-1.5 h-1.5 rounded-full bg-emerald-500"
+                          ></span>
+                          Approved
                         </span>
                       }
-                      @case ('Rejected') {
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200">
-                          <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Rejected
+                      @case ("Rejected") {
+                        <span
+                          class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200"
+                        >
+                          <span
+                            class="w-1.5 h-1.5 rounded-full bg-red-500"
+                          ></span>
+                          Rejected
                         </span>
                       }
                     }
                   </td>
-                  
+
                   <td class="px-6 py-4 text-sm text-gray-500">
-                    {{ app.createdAt | date:'MMM d, yyyy' }}
+                    {{ app.createdAt | date: "MMM d, yyyy" }}
                   </td>
-                  
+
                   <td class="px-6 py-4 text-right">
-                    <button 
+                    <button
+                      (click)="viewDetails(app)"
                       class="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 hover:border-mint hover:text-success transition-all focus:outline-none focus:ring-2 focus:ring-mint focus:ring-offset-1"
                     >
                       Review
                     </button>
                   </td>
-                  
                 </tr>
               }
             </tbody>
@@ -93,3 +127,154 @@
     }
   </div>
 </div>
+
+@if (selectedApp) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 animate-fade-in"
+  >
+    <div
+      class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm cursor-pointer"
+      (click)="closeDetails()"
+    ></div>
+
+    <div
+      class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-slide-up"
+    >
+      <div
+        class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50"
+      >
+        <h3 class="text-xl font-bold text-gray-800">Application Details</h3>
+        <button
+          (click)="closeDetails()"
+          class="text-gray-400 hover:text-gray-600 transition-colors p-1 cursor-pointer"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto flex-1">
+        <div class="flex items-center gap-4 mb-8 p-4 bg-gray-50 rounded-xl">
+          <div
+            class="w-14 h-14 bg-mint text-success rounded-full flex items-center justify-center text-xl font-bold shadow-sm"
+          >
+            {{ selectedApp.firstName.charAt(0)
+            }}{{ selectedApp.lastName.charAt(0) }}
+          </div>
+          <div>
+            <h4 class="text-lg font-bold text-gray-800">
+              {{ selectedApp.firstName }} {{ selectedApp.lastName }}
+            </h4>
+            <div class="flex gap-4 text-sm text-gray-500 mt-1">
+              <span class="flex items-center gap-1"
+                ><mat-icon class="text-[16px] w-4 h-4">email</mat-icon>
+                {{ selectedApp.email }}</span
+              >
+              <span class="flex items-center gap-1"
+                ><mat-icon class="text-[16px] w-4 h-4">phone</mat-icon>
+                {{ selectedApp.phone }}</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+          <div>
+            <h5
+              class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2"
+            >
+              Education
+            </h5>
+            <p class="text-gray-800 font-medium">{{ selectedApp.education }}</p>
+          </div>
+          <div>
+            <h5
+              class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2"
+            >
+              Experience
+            </h5>
+            <p class="text-gray-800 font-medium">
+              {{ selectedApp.experienceYears }} years of practice
+            </p>
+          </div>
+        </div>
+
+        <div class="mb-8">
+          <h5
+            class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3"
+          >
+            Specializations
+          </h5>
+          <div class="flex flex-wrap gap-2">
+            @for (spec of selectedApp.specializations; track spec) {
+              <span
+                class="px-3 py-1 bg-blue-50 text-blue-700 border border-blue-100 rounded-lg text-sm font-medium"
+              >
+                {{ spec }}
+              </span>
+            }
+          </div>
+        </div>
+
+        <div>
+          <h5
+            class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3"
+          >
+            Documents & Diplomas
+          </h5>
+          <div class="flex flex-col gap-2">
+            @for (doc of selectedApp.documentUrls; track doc) {
+              <a
+                [href]="doc"
+                target="_blank"
+                class="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-mint hover:bg-gray-50 transition-colors group cursor-pointer"
+              >
+                <div
+                  class="w-10 h-10 rounded-lg bg-red-50 text-red-500 flex items-center justify-center group-hover:scale-110 transition-transform"
+                >
+                  <mat-icon>picture_as_pdf</mat-icon>
+                </div>
+                <div class="flex-1 truncate">
+                  <p class="text-sm font-medium text-gray-700 truncate">
+                    Attached Document
+                  </p>
+                  <p class="text-xs text-blue-500 group-hover:underline">
+                    Click to view file
+                  </p>
+                </div>
+              </a>
+            } @empty {
+              <p class="text-sm text-gray-500 italic">No documents attached.</p>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 bg-white"
+      >
+        @if (selectedApp.status === "Pending") {
+          <button
+            (click)="rejectApplication(selectedApp.id)"
+            class="px-5 py-2.5 rounded-xl border border-red-200 text-red-600 font-medium hover:bg-red-50 transition-colors cursor-pointer"
+          >
+            Reject
+          </button>
+          <button
+            (click)="approveApplication(selectedApp.id)"
+            class="px-5 py-2.5 rounded-xl bg-success text-white font-medium hover:bg-opacity-90 transition-colors shadow-sm shadow-success/20 cursor-pointer flex items-center gap-2"
+          >
+            <mat-icon class="scale-90">check_circle</mat-icon>
+            Approve Application
+          </button>
+        } @else {
+          <button
+            (click)="closeDetails()"
+            class="px-5 py-2.5 rounded-xl bg-gray-100 text-gray-700 font-medium hover:bg-gray-200 transition-colors cursor-pointer"
+          >
+            Close
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+}
