@@ -9,6 +9,7 @@ import { SidebarService } from './sidebar.service';
 import { PresenceService } from './presence-service';
 import { ChatService } from './chat.service';
 import { Router } from '@angular/router';
+import { CreatePsychologistApplicationDto } from '../models/psychologist-application.model';
 
 @Injectable({
   providedIn: 'root',
@@ -47,8 +48,38 @@ export class AuthService {
       );
   }
 
+  psychologistRegister(
+    data: CreatePsychologistApplicationDto,
+  ): Observable<ApiResponse<string>> {
+    const formData = new FormData();
+
+    formData.append('phone', data.phone || '');
+    formData.append('education', data.education || '');
+    if (data.experienceYears !== null && data.experienceYears !== undefined) {
+      formData.append('experienceYears', data.experienceYears.toString());
+    } else {
+      formData.append('experienceYears', '0'); 
+    }
+
+    if (data.specializations && data.specializations.length > 0) {
+      data.specializations.forEach(spec => {
+        formData.append('specializations', spec);
+      });
+    }
+
+    if (data.documents && data.documents.length > 0) {
+      data.documents.forEach(file => {
+        formData.append('documents', file, file.name);
+      });
+    }
+
+    return this.httpClient.post<ApiResponse<string>>(
+      `${this.baseUrl}/psychologist-register`,
+      formData,
+    );
+  }
+
   refreshToken(): Observable<ApiResponse<string>> {
-    console.log('Refresh session');
     return this.httpClient
       .post<any>(`${this.baseUrl}/refresh`, {}, { withCredentials: true })
       .pipe(

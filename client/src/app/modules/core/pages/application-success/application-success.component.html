@@ -1,0 +1,60 @@
+<div class="h-full w-full flex items-center justify-center bg-gray-50 relative overflow-hidden font-sans p-4">
+  
+  <div class="absolute top-[10%] left-[15%] w-72 h-72 bg-mint rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob pointer-events-none"></div>
+  <div class="absolute bottom-[10%] right-[15%] w-80 h-80 bg-sky rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000 pointer-events-none"></div>
+  <div class="absolute top-[40%] left-[40%] w-64 h-64 bg-success rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-4000 pointer-events-none"></div>
+
+  <div class="relative z-10 bg-white/80 backdrop-blur-2xl rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-white/60 p-8 sm:p-12 max-w-md w-full flex flex-col items-center text-center transform transition-all animate-fade-in-up">
+    
+    <div class="relative w-24 h-24 mb-8 flex items-center justify-center">
+      <div class="absolute inset-0 bg-mint rounded-full opacity-40 animate-ping"></div>
+      <div class="absolute inset-2 bg-success/10 rounded-full"></div>
+      <div class="relative bg-white w-16 h-16 rounded-full shadow-sm border border-gray-100 flex items-center justify-center text-success z-10">
+        <mat-icon class="text-4xl w-10 h-10 flex items-center justify-center">mark_email_read</mat-icon>
+      </div>
+    </div>
+
+    <h2 class="text-3xl font-bold text-primary mb-4 tracking-tight">
+      Application Submitted!
+    </h2>
+    
+    <p class="text-gray-500 mb-8 leading-relaxed text-sm sm:text-base">
+      Thank you for your willingness to join our community and help. Your application has been successfully forwarded to our moderation team for review.
+      <br><br>
+      We will send an email with further instructions and your account status within <span class="font-bold text-gray-700">48 hours</span>.
+    </p>
+
+    <div class="w-full flex flex-col gap-5 mt-2">
+      <button 
+        routerLink="/"
+        class="w-full py-3.5 px-6 rounded-xl bg-primary text-white font-medium hover:bg-success hover:shadow-lg hover:shadow-success/20 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
+      >
+        <mat-icon class="scale-90">home</mat-icon>
+        Go to Homepage
+      </button>
+      
+      <div class="w-full pt-5 border-t border-gray-100 flex flex-col items-center">
+        <p class="text-[11px] text-gray-400 uppercase tracking-wider mb-3 font-semibold">Contact us directly</p>
+        
+        <a href="tel:+380000000000" class="text-base font-bold text-gray-600 hover:text-primary transition-colors flex items-center gap-2 mb-4 cursor-pointer">
+          <mat-icon class="text-[18px] w-[18px] h-[18px]">call</mat-icon>
+          +38 (068) 989-56-73
+        </a>
+
+        <div class="flex items-center gap-4">
+          <a href="#" target="_blank" class="w-10 h-10 rounded-full bg-gray-50 text-gray-400 border border-gray-100 flex items-center justify-center hover:bg-[#229ED9] hover:text-white hover:border-[#229ED9] transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer group">
+            <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M21.543 2.502a2.035 2.035 0 00-2.228-.275L2.61 9.423C1.168 10.027 1.196 11.234 2.378 11.603l4.312 1.347 1.956 6.077c.28.805.132.964.957.964.633 0 .9-.292 1.246-.628l3.056-2.973 6.355 4.69c1.171.646 2.012.313 2.3-.655l4.162-19.61c.394-1.53-.578-2.232-1.85-1.64h.001zM7.408 12.51l9.927-6.287c.468-.285.897-.13.547.18l-8.41 7.59-.285 4.238-1.78-5.721z"/>
+            </svg>
+          </a>
+          <a href="#" target="_blank" class="w-10 h-10 rounded-full bg-gray-50 text-gray-400 border border-gray-100 flex items-center justify-center hover:bg-gradient-to-tr hover:from-[#fd5949] hover:to-[#d6249f] hover:text-white hover:border-transparent transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer group">
+            <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.20 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

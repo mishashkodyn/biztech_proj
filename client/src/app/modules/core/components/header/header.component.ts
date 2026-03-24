@@ -68,6 +68,11 @@ export class HeaderComponent {
     this.authService.logout();
   }
 
+  isAuthRoute(): boolean {
+    const path = this.route.url.split('?')[0];
+    return ['/login', '/register', '/psychologist-registration'].includes(path);
+  }
+
   toggleSideBar() {
     this.sidebarService.sideBarOpen.set(!this.sidebarService.sideBarOpen());
   }

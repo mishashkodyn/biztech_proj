@@ -50,6 +50,11 @@ export class SidebarComponent {
       icon: 'dashboard',
       label: "Dashboard",
       route: 'admin-dashboard',
+    },
+    {
+      icon: 'assignment',
+      label: "Applications",
+      route: 'applications',
     }
   ]);
 

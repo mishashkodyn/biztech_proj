@@ -1,0 +1,95 @@
+<div class="p-6 sm:p-10 bg-gray-50 min-h-screen font-sans">
+  <div class="max-w-7xl mx-auto">
+    
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold text-primary tracking-tight">Applications</h1>
+      <span class="bg-mint text-success px-4 py-1.5 rounded-full text-sm font-semibold shadow-sm">
+        Total: {{ applications.length }}
+      </span>
+    </div>
+
+    @if (isLoading) {
+      <div class="flex justify-center items-center h-64">
+        <mat-icon class="animate-spin text-success text-4xl w-10 h-10">autorenew</mat-icon>
+      </div>
+    } @else if (applications.length === 0) {
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+        <mat-icon class="text-gray-300 text-6xl w-16 h-16 mb-4">inbox</mat-icon>
+        <h3 class="text-xl font-medium text-gray-600">No applications yet</h3>
+        <p class="text-gray-400 mt-2">When users apply to become psychologists, they will appear here.</p>
+      </div>
+    } @else {
+      <div class="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-gray-50/50 border-b border-gray-100 text-gray-500 text-sm uppercase tracking-wider">
+                <th class="px-6 py-4 font-semibold">Applicant</th>
+                <th class="px-6 py-4 font-semibold">Contact</th>
+                <th class="px-6 py-4 font-semibold">Experience</th>
+                <th class="px-6 py-4 font-semibold">Status</th>
+                <th class="px-6 py-4 font-semibold">Date</th>
+                <th class="px-6 py-4 font-semibold text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              @for (app of applications; track app.id) {
+                <tr class="hover:bg-gray-50/50 transition-colors group">
+                  
+                  <td class="px-6 py-4">
+                    <div class="font-medium text-gray-800">{{ app.firstName }} {{ app.lastName }}</div>
+                    <div class="text-sm text-gray-500">{{ app.email }}</div>
+                  </td>
+                  
+                  <td class="px-6 py-4">
+                    <div class="text-sm text-gray-700">{{ app.phone }}</div>
+                  </td>
+                  
+                  <td class="px-6 py-4">
+                    <div class="text-sm text-gray-700 font-medium">{{ app.experienceYears }} years</div>
+                    <div class="text-xs text-gray-500 truncate max-w-[150px]" [title]="app.education">
+                      {{ app.education }}
+                    </div>
+                  </td>
+                  
+                  <td class="px-6 py-4">
+                    @switch (app.status) {
+                      @case ('Pending') {
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
+                          <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Pending
+                        </span>
+                      }
+                      @case ('Approved') {
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Approved
+                        </span>
+                      }
+                      @case ('Rejected') {
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200">
+                          <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Rejected
+                        </span>
+                      }
+                    }
+                  </td>
+                  
+                  <td class="px-6 py-4 text-sm text-gray-500">
+                    {{ app.createdAt | date:'MMM d, yyyy' }}
+                  </td>
+                  
+                  <td class="px-6 py-4 text-right">
+                    <button 
+                      class="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 hover:border-mint hover:text-success transition-all focus:outline-none focus:ring-2 focus:ring-mint focus:ring-offset-1"
+                    >
+                      Review
+                    </button>
+                  </td>
+                  
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  </div>
+</div>

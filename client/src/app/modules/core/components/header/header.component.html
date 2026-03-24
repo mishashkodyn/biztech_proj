@@ -58,7 +58,7 @@
         class="shrink-0 hidden md:flex"
       ></app-dropdown> -->
 
-      @if (route.url != "/login" && route.url != "/register" && route.url != "/psychologist-registration" &&!authService.isLoggedIn()) {
+      @if (!isAuthRoute() && !authService.isLoggedIn()) {
         <div class="flex items-center gap-2 md:gap-4">
           <div class="flex gap-2 shrink-0">
             <button

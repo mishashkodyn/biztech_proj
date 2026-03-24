@@ -1,10 +1,13 @@
 ﻿    using API.Common;
     using API.Core.DTOs;
-    using API.Core.Entities;
+using API.Core.DTOs.PsychologistApplication;
+using API.Core.Entities;
     using API.Extentions;
-    using API.Services;
+using API.Infrastructure.Data;
+using API.Services;
     using API.Services.Interfaces;
-    using Microsoft.AspNetCore.Identity;
+using AutoMapper;
+using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using NPOI.Util;
@@ -18,7 +21,8 @@
             {
                 var group = app.MapGroup("api/account").WithTags("account");
 
-                group.MapPost("/register", async (HttpContext context, UserManager<ApplicationUser>
+                group.MapPost("/register", async (HttpContext context, TokenService tokenService, 
+                 IConfiguration _config, UserManager<ApplicationUser>
                  userManager, [FromForm] string name, [FromForm] string surname, [FromForm] string email,
                  [FromForm] string password, [FromForm] IFormFile? profileImage, IBlobStorageService blobService) =>
                 {
@@ -28,7 +32,7 @@
                     {
                         return Results.BadRequest(Response<string>.Failure("User is alreade exist."));
                     }
-                    var profileImageUrl = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
+                    var profileImageUrl = "https://i.pinimg.com/474x/47/89/32/478932422ae7476306f5c7fa52414098.jpg";
 
                     if (profileImage is not null)
                     {
@@ -54,12 +58,70 @@
                     }
 
                     await userManager.AddToRoleAsync(user, ApplicationRole.ROLE_USER);
-                    return Results.Ok(Response<string>.Success("", "User create successfully."));
+
+                    var roles = new List<string> { ApplicationRole.ROLE_USER };
+                    var token = tokenService.GenerateToken(user.Id, user.UserName!, roles);
+                    var refreshToken = tokenService.GenerateRefreshToken();
+
+                    var refreshTokenExpirationDays = _config.GetValue<int>("JwtSettings:RefreshTokenExpirationDays");
+                    user.RefreshToken = refreshToken;
+                    user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(refreshTokenExpirationDays);
+                    await userManager.UpdateAsync(user);
+
+                    SetRefreshTokenCookie(context, refreshToken, refreshTokenExpirationDays);
+
+                    return Results.Ok(Response<string>.Success(token, "User create successfully."));
                 }).DisableAntiforgery();
 
-                group.MapPost("/login", async (HttpContext context, UserManager < ApplicationUser> userManager,
-                TokenService tokenService, LoginDto dto, IConfiguration _config) =>
+                group.MapPost("/psychologist-register", async ([FromForm] CreatePsychologistApplicationDto dto, 
+                    IMapper mapper, ApplicationDbContext dbContext, HttpContext context, 
+                    UserManager<ApplicationUser> userManager, IBlobStorageService blobService) =>
                 {
+                    var userId = context.User.GetUserId()!;
+                    var user = await userManager.FindByIdAsync(userId.ToString());
+
+                    if (user == null) return Results.BadRequest(Response<string>.Failure("User not found."));
+
+                    var existingApp = await dbContext.PsychologistApplications
+                        .AnyAsync(a => a.UserId == userId && a.Status == ApplicationStatus.Pending);
+
+                    if (existingApp)
+                    {
+                        if (user == null) return Results.BadRequest(Response<string>.Failure("You already have a pending application."));
+                    }
+
+                    var uploadedFileUrls = new List<string>();
+
+                    if (dto.Documents != null && dto.Documents.Count > 0)
+                    {
+                        foreach (var file in dto.Documents)
+                        {
+                            if (file.Length > 0)
+                            {
+                                var fileUrl = await blobService.UploadFileAsync(file);
+                                uploadedFileUrls.Add(fileUrl);
+                            }
+                        }
+                    }
+
+                    var application = mapper.Map<PsychologistApplication>(dto);
+
+                    application.UserId = userId;
+                    application.DocumentUrls = uploadedFileUrls;
+                    application.Status = ApplicationStatus.Pending;
+                    application.CreatedAt = DateTime.UtcNow;
+
+                    application.Specializations ??= new List<string>();
+
+                    dbContext.PsychologistApplications.Add(application);
+                    await dbContext.SaveChangesAsync();
+
+                    return Results.Ok(new { message = "Application submitted successfully" });
+                }).DisableAntiforgery();
+
+            group.MapPost("/login", async (HttpContext context, UserManager < ApplicationUser> userManager,
+                    TokenService tokenService, LoginDto dto, IConfiguration _config) =>
+                    {
                     if (dto is null)
                     {
                         return Results.BadRequest(Response<string>.Failure("Invalid login details."));

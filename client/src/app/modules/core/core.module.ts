@@ -3,11 +3,16 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
-import { RouterLink, RouterModule, RouterOutlet, RouterLinkActive } from '@angular/router';
+import {
+  RouterLink,
+  RouterModule,
+  RouterOutlet,
+  RouterLinkActive,
+} from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { FormsModule } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { LayoutComponent } from './layouts/layout/layout.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
@@ -24,7 +29,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './components/header/header.component';
 import { MainComponent } from './components/main/main.component';
 import { PsychologistRegistrationComponent } from './pages/psychologist-registration/psychologist-registration.component';
-
+import { ApplicationSuccessComponent } from './pages/application-success/application-success.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +44,8 @@ import { PsychologistRegistrationComponent } from './pages/psychologist-registra
     EditAccountPageComponent,
     HeaderComponent,
     MainComponent,
-    PsychologistRegistrationComponent
+    PsychologistRegistrationComponent,
+    ApplicationSuccessComponent,
   ],
   imports: [
     CommonModule,
@@ -56,8 +62,8 @@ import { PsychologistRegistrationComponent } from './pages/psychologist-registra
     RouterLinkActive,
     MatToolbarModule,
     MatTooltipModule,
-    BrowserAnimationsModule
-],
-
+    BrowserAnimationsModule,
+    ReactiveFormsModule,
+  ],
 })
-export class CoreModule { }
+export class CoreModule {}

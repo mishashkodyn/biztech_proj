@@ -16,6 +16,8 @@ import { EditAccountPageComponent } from './modules/core/pages/edit-account-page
 import { AiChatComponent } from './modules/ai/pages/ai-chat/ai-chat.component';
 import { AdminDashboardComponent } from './modules/admin-tools/pages/admin-dashboard/admin-dashboard.component';
 import { PsychologistRegistrationComponent } from './modules/core/pages/psychologist-registration/psychologist-registration.component';
+import { ApplicationSuccessComponent } from './modules/core/pages/application-success/application-success.component';
+import { ApplicationsPageComponent } from './modules/admin-tools/pages/applications-page/applications-page.component';
 
 const routes: Routes = [
   {
@@ -30,6 +32,7 @@ const routes: Routes = [
       { path: 'admin-dashboard', canActivate: [AuthGuard], component: AdminDashboardComponent },
       { path: 'edit-account', canActivate: [AuthGuard], component: EditAccountPageComponent },
       { path: 'ai-chat', canActivate: [AuthGuard], component: AiChatComponent},
+      { path: 'applications', canActivate: [AuthGuard], component: ApplicationsPageComponent },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       {
         path: 'register',
@@ -44,7 +47,12 @@ const routes: Routes = [
       {
         path: 'psychologist-registration',
         component: PsychologistRegistrationComponent,
-        canActivate: [loginGuard],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'application-success',
+        component: ApplicationSuccessComponent,
+        canActivate: [AuthGuard],
       }
     ],
   },

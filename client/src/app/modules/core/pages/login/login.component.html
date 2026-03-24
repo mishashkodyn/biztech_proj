@@ -195,7 +195,8 @@
         </p>
         <p class="text-center text-sm sm:text-base text-gray-600 mt-3">
           <a
-            routerLink="/psychologist-registration"
+            routerLink="/register"
+            [queryParams]="{ returnUrl: '/psychologist-registration' }"
             class="font-bold text-success hover:underline hover:text-primary transition-colors"
           >
             Become a psychologist

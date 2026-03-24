@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 export class MainComponent {
   constructor(private router: Router) {}
 
-  navigateTo(path: string) {
-    this.router.navigate([path]);
+  navigateTo(path: string, queryParams?: { [key: string]: any }) {
+    this.router.navigate([path], { queryParams });
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '../../../../api/services/auth.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiResponse } from '../../../../api/models/api-response';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ButtonComponent } from '../../../shared/button/button.component';
 
 @Component({
@@ -17,7 +17,7 @@ import { ButtonComponent } from '../../../shared/button/button.component';
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   email!: string;
   password!: string;
   username!: string;
@@ -27,11 +27,20 @@ export class RegisterComponent {
   profileImage: File | null = null;
   hide: boolean = true;
 
+  returnUrl: string = '/';
+
   constructor(
     public authService: AuthService,
     private snackBar: MatSnackBar,
     private router: Router,
+    private route: ActivatedRoute
   ) {}
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.returnUrl = params['returnUrl'] || '/';
+    });
+  }
 
   togglePassword(event: MouseEvent) {
     this.hide = !this.hide;
@@ -63,6 +72,8 @@ export class RegisterComponent {
 
     this.authService.register(formData).subscribe({
       next: () => {
+        this.authService.me().subscribe();
+        
         this.snackBar.open('User registered successfully.', 'Close', {
           duration: 3000,
         });
@@ -76,7 +87,7 @@ export class RegisterComponent {
         this.authService.isLoading.set(false);
       },
       complete: () => {
-        this.router.navigate(['/']);
+        this.router.navigate([this.returnUrl]);
         this.authService.isLoading.set(false);
       },
     });
@@ -86,5 +97,9 @@ export class RegisterComponent {
     this.snackBar.open('Temporarily unavailable.', 'Close', {
       duration: 3000,
     });
+  }
+
+  isPsychologistRegistration() {
+    return this.returnUrl === '/psychologist-registration';
   }
 }
