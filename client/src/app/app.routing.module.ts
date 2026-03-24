@@ -15,6 +15,7 @@ import { SettingsPageComponent } from './modules/core/pages/settings-page/settin
 import { EditAccountPageComponent } from './modules/core/pages/edit-account-page/edit-account-page.component';
 import { AiChatComponent } from './modules/ai/pages/ai-chat/ai-chat.component';
 import { AdminDashboardComponent } from './modules/admin-tools/pages/admin-dashboard/admin-dashboard.component';
+import { PsychologistRegistrationComponent } from './modules/core/pages/psychologist-registration/psychologist-registration.component';
 
 const routes: Routes = [
   {
@@ -40,6 +41,11 @@ const routes: Routes = [
         component: LoginComponent,
         canActivate: [loginGuard],
       },
+      {
+        path: 'psychologist-registration',
+        component: PsychologistRegistrationComponent,
+        canActivate: [loginGuard],
+      }
     ],
   },
   {

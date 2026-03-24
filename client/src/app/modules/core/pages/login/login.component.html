@@ -1,4 +1,4 @@
-<div class="h-full w-full flex bg-gray-50 overflow-hidden">
+<div class="h-full w-full flex bg-gray-50 overflow-hidden font-sans">
   <div
     class="hidden lg:flex w-1/2 bg-gradient-to-br from-primary to-success items-center justify-center relative overflow-hidden"
   >
@@ -19,9 +19,9 @@
     </div>
   </div>
 
-  <div class="w-full lg:w-1/2 flex items-center justify-center p-2 sm:p-4">
+  <div class="w-full lg:w-1/2 flex items-center justify-center sm:p-6 lg:p-8">
     <div
-      class="bg-white w-full max-w-md rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6 max-h-full overflow-y-auto custom-scroll"
+      class="bg-white w-full max-w-lg h-full sm:h-auto sm:max-h-[800px] sm:rounded-2xl sm:shadow-xl sm:border border-gray-100 flex flex-col overflow-hidden p-3"
     >
       <div class="text-center mb-8">
         <h2 class="text-3xl font-bold text-[var(--color-primary)]">Log In</h2>
@@ -191,6 +191,14 @@
             class="font-bold text-success hover:underline hover:text-primary transition-colors"
           >
             Register now
+          </a>
+        </p>
+        <p class="text-center text-sm sm:text-base text-gray-600 mt-3">
+          <a
+            routerLink="/psychologist-registration"
+            class="font-bold text-success hover:underline hover:text-primary transition-colors"
+          >
+            Become a psychologist
           </a>
         </p>
       </form>

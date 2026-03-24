@@ -1,10 +1,10 @@
 <div class="relative min-h-screen bg-[#f8fafc] font-sans overflow-hidden">
   
-  <div class="absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] rounded-full bg-[var(--color-mint)] mix-blend-multiply filter blur-[128px] opacity-40 animate-blob pointer-events-none"></div>
+  <div class="absolute left-[-10%] w-[40rem] h-[40rem] rounded-full bg-[var(--color-mint)] mix-blend-multiply filter blur-[128px] opacity-40 animate-blob pointer-events-none"></div>
   <div class="absolute top-[20%] right-[-5%] w-[35rem] h-[35rem] rounded-full bg-[var(--color-sky)] mix-blend-multiply filter blur-[128px] opacity-30 animate-blob animation-delay-2000 pointer-events-none"></div>
   <div class="absolute bottom-[-10%] left-[20%] w-[45rem] h-[45rem] rounded-full bg-[var(--color-blue)] mix-blend-multiply filter blur-[128px] opacity-20 animate-blob animation-delay-4000 pointer-events-none"></div>
 
-  <section class="relative z-10 pt-32 pb-20 md:pt-40 md:pb-28 px-6 max-w-7xl mx-auto flex flex-col items-center text-center">
+  <section class="relative z-10 pt-32 md:pb-28 px-6 max-w-7xl mx-auto flex flex-col items-center text-center">
     <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-md border border-[var(--color-mint)] shadow-sm mb-8 animate-fade-in-up">
       <span class="w-2 h-2 rounded-full bg-[var(--color-success)] animate-pulse"></span>
       <span class="text-sm font-semibold text-[var(--color-primary)] tracking-wide">Secure & Confidential Support</span>
@@ -22,12 +22,12 @@
     </p>
 
     <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-      <button (click)="navigateTo('registration')" class="flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[var(--color-primary)] text-[var(--color-mint)] font-bold text-lg hover:bg-[#003800] hover:shadow-[0_8px_30px_rgba(53,121,4,0.3)] transition-all duration-300 transform hover:-translate-y-1">
+      <button (click)="navigateTo('registration')" class="flex items-center justify-center gap-2 px-8 py-4 rounded-xl cursor-pointer bg-[var(--color-primary)] text-[var(--color-mint)] font-bold text-lg hover:bg-[#003800] hover:shadow-[0_8px_30px_rgba(53,121,4,0.3)] transition-all duration-300 transform hover:-translate-y-1">
         <mat-icon>volunteer_activism</mat-icon>
-        Get Help Now
+        Get Help
       </button>
-      <button (click)="navigateTo('about')" class="flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-white text-[var(--color-primary)] border-2 border-[var(--color-mint)] font-bold text-lg hover:bg-[var(--color-mint)] hover:bg-opacity-10 transition-all duration-300">
-        <mat-icon>info</mat-icon>
+      <button (click)="navigateTo('psychologist-registration')" class="flex items-center justify-center gap-2 px-8 py-4 rounded-xl cursor-pointer bg-white text-[var(--color-primary)] border-2 border-[var(--color-mint)] font-bold text-lg hover:bg-[var(--color-mint)] hover:bg-opacity-10 transition-all duration-300">
+        <mat-icon>psychology_alt</mat-icon>
         Become a psychologist
       </button>
     </div>

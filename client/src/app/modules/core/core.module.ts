@@ -23,6 +23,7 @@ import { EditAccountPageComponent } from './pages/edit-account-page/edit-account
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './components/header/header.component';
 import { MainComponent } from './components/main/main.component';
+import { PsychologistRegistrationComponent } from './pages/psychologist-registration/psychologist-registration.component';
 
 
 @NgModule({
@@ -37,7 +38,8 @@ import { MainComponent } from './components/main/main.component';
     SettingsPageComponent,
     EditAccountPageComponent,
     HeaderComponent,
-    MainComponent
+    MainComponent,
+    PsychologistRegistrationComponent
   ],
   imports: [
     CommonModule,
