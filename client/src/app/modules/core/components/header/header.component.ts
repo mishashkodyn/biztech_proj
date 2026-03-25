@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, HostListener, signal } from '@angular/core';
 import { MenuItem } from '../../../../api/models/menu-item';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../api/services/auth.service';
@@ -13,6 +13,8 @@ import { PresenceService } from '../../../../api/services/presence-service';
   standalone: false,
 })
 export class HeaderComponent {
+  isNotificationsOpen = false;
+
   menuItems = signal<MenuItem[]>([
     {
       label: 'FAQ',
@@ -79,5 +81,15 @@ export class HeaderComponent {
 
   onLanguageChange() {
     console.log('Language changed to:', this.currentLanguage.value);
+  }
+
+  toggleNotificationsPopUp(event: Event) {
+    event.stopPropagation(); 
+    this.isNotificationsOpen = !this.isNotificationsOpen;
+  }
+
+  @HostListener('document:click')
+  onDocumentClick() {
+    this.isNotificationsOpen = false;
   }
 }

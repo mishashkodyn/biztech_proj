@@ -21,6 +21,7 @@ import { ApplicationsPageComponent } from './modules/admin-tools/pages/applicati
 import { PsychologistListComponent } from './modules/client-portal/pages/psychologist-list/psychologist-list.component';
 import { PsychologistDashboardComponent } from './modules/psychologist-tools/pages/psychologist-dashboard/psychologist-dashboard.component';
 import { HomePageResolverComponent } from './modules/core/components/home-page-resolver/home-page-resolver.component';
+import { NotificationsPageComponent } from './modules/core/components/notifications-page/notifications-page.component';
 
 const routes: Routes = [
   {
@@ -65,6 +66,11 @@ const routes: Routes = [
       {
         path: 'psychologist-dashboard',
         component: PsychologistDashboardComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'notifications',
+        component: NotificationsPageComponent,
         canActivate: [AuthGuard],
       },
     ],

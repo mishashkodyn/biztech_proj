@@ -1,0 +1,55 @@
+<div
+  class="absolute top-full right-[-20px] sm:right-0 mt-4 w-72 sm:w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden cursor-default transform origin-top-right animate-fade-in"
+  (click)="$event.stopPropagation()"
+>
+  <div class="px-4 py-3 flex justify-between items-center border-b border-gray-50 bg-gray-50/50">
+    <span class="font-bold text-gray-800 text-sm">Notifications</span>
+    <button
+      (click)="markAllAsRead()"
+      class="text-xs text-[var(--color-primary)] hover:text-success font-medium transition-colors cursor-pointer bg-transparent border-none"
+    >
+      Mark all as read
+    </button>
+  </div>
+
+  <div class="max-h-80 overflow-y-auto custom-scroll">
+    <div class="px-4 py-3 border-b border-gray-50 hover:bg-gray-50/80 transition-colors flex gap-3 group cursor-pointer">
+      <div class="w-8 h-8 rounded-full bg-[var(--color-sky)]/20 text-[var(--color-primary)] flex items-center justify-center shrink-0 mt-0.5">
+        <mat-icon class="scale-75">info</mat-icon>
+      </div>
+      <div>
+        <p class="text-sm text-gray-800 font-medium group-hover:text-[var(--color-primary)] transition-colors">
+          Welcome to Help hub!
+        </p>
+        <p class="text-xs text-gray-500 mt-0.5 line-clamp-2">
+          Your profile is almost ready. Check out the catalog to find a specialist.
+        </p>
+        <p class="text-[10px] text-gray-400 mt-1.5 font-medium">Just now</p>
+      </div>
+    </div>
+
+    <div class="px-4 py-3 border-b border-gray-50 hover:bg-gray-50/80 transition-colors flex gap-3 group cursor-pointer">
+      <div class="w-8 h-8 rounded-full bg-mint/20 text-success flex items-center justify-center shrink-0 mt-0.5">
+        <mat-icon class="scale-75">check_circle</mat-icon>
+      </div>
+      <div>
+        <p class="text-sm text-gray-800 font-medium group-hover:text-[var(--color-primary)] transition-colors">
+          Application Approved
+        </p>
+        <p class="text-xs text-gray-500 mt-0.5 line-clamp-2">
+          Your psychologist application has been approved by the admin.
+        </p>
+        <p class="text-[10px] text-gray-400 mt-1.5 font-medium">2 hours ago</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-2 border-t border-gray-50 bg-gray-50/30">
+    <button
+      (click)="viewAll()"
+      class="w-full py-2 text-xs font-bold text-gray-500 hover:text-[var(--color-primary)] hover:bg-white rounded-xl transition-all cursor-pointer border-none bg-transparent"
+    >
+      View All Notifications
+    </button>
+  </div>
+</div>

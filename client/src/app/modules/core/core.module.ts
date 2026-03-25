@@ -31,6 +31,8 @@ import { MainComponent } from './components/main/main.component';
 import { PsychologistRegistrationComponent } from './pages/psychologist-registration/psychologist-registration.component';
 import { ApplicationSuccessComponent } from './pages/application-success/application-success.component';
 import { HomePageResolverComponent } from './components/home-page-resolver/home-page-resolver.component';
+import { NotificationsPageComponent } from './components/notifications-page/notifications-page.component';
+import { NotificationsPopupComponent } from './components/notifications-popup/notifications-popup.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +49,9 @@ import { HomePageResolverComponent } from './components/home-page-resolver/home-
     MainComponent,
     PsychologistRegistrationComponent,
     ApplicationSuccessComponent,
-    HomePageResolverComponent
+    HomePageResolverComponent,
+    NotificationsPageComponent,
+    NotificationsPopupComponent
   ],
   imports: [
     CommonModule,

@@ -29,10 +29,20 @@ export class SidebarComponent {
 
   menuItems = signal<MenuItem[]>([
     {
+      icon: 'people',
+      label: 'Find psychologist',
+      route: '/catalog'
+    },
+    {
       icon: 'chat',
       label: 'Chat',
       route: 'chat',
     },
+    {
+      icon: 'mail',
+      label: 'Notifications',
+      route: 'notifications'
+    }
   ]);
 
   adminItems = signal<MenuItem[]>([
