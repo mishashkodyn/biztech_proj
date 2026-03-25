@@ -6,6 +6,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { ApplicationsPageComponent } from './pages/applications-page/applications-page.component';
 import { ApplicationDetailsDialogComponent } from './components/application-details-dialog/application-details-dialog.component';
 import { MatDialogActions, MatDialogContent } from '@angular/material/dialog';
+import { ManageSpecializationsComponent } from './pages/manage-specializations/manage-specializations.component';
+import { RouterModule } from '@angular/router';
+import { SpecializationDialogComponent } from './components/specialization-dialog/specialization-dialog.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { UsersPageComponent } from './pages/users-page/users-page.component';
 
 
 
@@ -13,14 +18,19 @@ import { MatDialogActions, MatDialogContent } from '@angular/material/dialog';
   declarations: [
     AdminDashboardComponent,
     ApplicationsPageComponent,
-    ApplicationDetailsDialogComponent
+    ApplicationDetailsDialogComponent,
+    ManageSpecializationsComponent,
+    SpecializationDialogComponent,
+    UsersPageComponent
   ],
   imports: [
     CommonModule,
     MatToolbarModule,
     MatIconModule,
     MatDialogActions,
-    MatDialogContent
+    MatDialogContent,
+    RouterModule,
+    ReactiveFormsModule
   ]
 })
 export class AdminToolsModule { }

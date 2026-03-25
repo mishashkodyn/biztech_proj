@@ -68,6 +68,22 @@ namespace API.Controllers
                 if (user != null && !await _userManager.IsInRoleAsync(user, "Psychologist"))
                 {
                     await _userManager.AddToRoleAsync(user, "Psychologist");
+
+                    var existingProfile = await _context.Psychologists.FirstOrDefaultAsync(p => p.UserId == app.UserId);
+
+                    if (existingProfile == null)
+                    {
+                        var newProfile = new Psychologist
+                        {
+                            UserId = app.UserId,
+                            IsPublished = false,
+                            Education = app.Education,
+                            ExperienceYears = app.ExperienceYears,
+                            Specializations = app.Specializations.ToList(),
+                            ContactPhone = app.Phone
+                        };
+                        _context.Psychologists.Add(newProfile);
+                    }
                 }
             }
 

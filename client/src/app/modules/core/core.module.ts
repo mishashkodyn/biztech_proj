@@ -19,7 +19,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { HomePageComponent } from './pages/home-page/home-page.component';
-import { UsersPageComponent } from './pages/users-page/users-page.component';
+import { UsersPageComponent } from '../admin-tools/pages/users-page/users-page.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { UserAccountPageComponent } from './pages/user-account-page/user-account-page.component';
@@ -42,7 +42,6 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
     LayoutComponent,
     SidebarComponent,
     HomePageComponent,
-    UsersPageComponent,
     UserAccountPageComponent,
     SettingsPageComponent,
     EditAccountPageComponent,

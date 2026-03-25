@@ -59,7 +59,7 @@ export class SidebarComponent {
     {
       icon: 'dashboard',
       label: "Dashboard",
-      route: 'admin-dashboard',
+      route: 'admin',
     },
     {
       icon: 'assignment',

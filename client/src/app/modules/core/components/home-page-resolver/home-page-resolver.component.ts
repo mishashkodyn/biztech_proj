@@ -32,7 +32,7 @@ export class HomePageResolverComponent implements OnInit {
 
   private redirectUser() {
     if (this.authService.isAdmin || this.authService.isSuperAdmin) {
-      this.router.navigate(['/admin-dashboard']);
+      this.router.navigate(['/admin']);
     } else if (this.authService.isPsychologist) {
       this.router.navigate(['/psychologist-dashboard']);
     } else {

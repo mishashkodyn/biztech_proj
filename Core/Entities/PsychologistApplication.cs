@@ -8,7 +8,7 @@
         public string Phone { get; set; } = string.Empty;
         public string Education { get; set; } = string.Empty;
         public int ExperienceYears { get; set; }
-        public List<string> Specializations { get; set; } = new();
+        public ICollection<Specialization> Specializations { get; set; } = new List<Specialization>();
         public List<string> DocumentUrls { get; set; } = new();
         public ApplicationStatus Status { get; set; } = ApplicationStatus.Pending;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

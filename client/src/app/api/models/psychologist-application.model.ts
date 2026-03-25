@@ -1,10 +1,12 @@
+import { SpecializationDto } from "./specialization.model";
+
 export type ApplicationStatus = 'Pending' | 'Approved' | 'Rejected';
 
 export interface CreatePsychologistApplicationDto {
   phone: string;
   education: string;
   experienceYears: number | null;
-  specializations: string[];
+  specializationIds: string[];
   documents: File[];
 }
 
@@ -19,7 +21,7 @@ export interface PsychologistApplicationResponseDto {
   phone: string;
   education: string;
   experienceYears: number;
-  specializations: string[];
+  specializations: SpecializationDto[];
   documentUrls: string[];
   
   status: ApplicationStatus;

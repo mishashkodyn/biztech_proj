@@ -11,6 +11,12 @@ namespace API.Infrastructure.Data.EntityConfigurations
             builder
               .Property(u => u.PreferredAiProvider)
               .HasDefaultValue("Groq");
+
+            builder
+                .HasOne(u => u.Psychologist)
+                .WithOne(u => u.User)
+                .HasForeignKey<Psychologist>(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

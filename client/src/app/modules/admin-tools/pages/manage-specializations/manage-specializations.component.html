@@ -1,0 +1,177 @@
+<div class="p-6 sm:p-10 bg-gray-50 min-h-screen font-sans">
+  <div class="max-w-7xl mx-auto">
+    <a 
+      routerLink="/admin" 
+      class="inline-flex items-center gap-1 text-gray-500 hover:text-[var(--color-primary)] transition-colors text-sm font-medium mb-6 cursor-pointer w-fit"
+    >
+      <mat-icon class="scale-90">arrow_back</mat-icon>
+      Back to Dashboard
+    </a>
+    <div
+      class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8"
+    >
+      <div>
+        <h1
+          class="text-3xl font-bold text-[var(--color-primary)] tracking-tight"
+        >
+          Specializations
+        </h1>
+        <p class="text-gray-500 mt-1">
+          Manage expertise topics for the psychologist catalog.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <span
+          class="bg-mint text-success px-4 py-1.5 rounded-full text-sm font-semibold shadow-sm"
+        >
+          Total Topics: {{ specializations.length }}
+        </span>
+        <button
+          (click)="addSpecialization()"
+          class="px-5 py-2.5 bg-[var(--color-primary)] text-white rounded-xl text-sm font-medium hover:bg-[var(--color-success)] hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+        >
+          <mat-icon class="scale-90">add</mat-icon>
+          Add Topic
+        </button>
+      </div>
+    </div>
+
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 mb-6">
+      <div class="relative w-full">
+        <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+          >search</mat-icon
+        >
+        <input
+          type="text"
+          (input)="onSearch($event)"
+          placeholder="Search by topic name..."
+          class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-mint)] focus:bg-white transition-all text-sm"
+        />
+      </div>
+    </div>
+
+    @if (isLoading) {
+      <div class="flex justify-center items-center h-64">
+        <mat-icon
+          class="animate-spin text-[var(--color-success)] text-4xl w-10 h-10"
+          >autorenew</mat-icon
+        >
+      </div>
+    } @else if (specializations.length === 0) {
+      <div
+        class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center flex flex-col items-center"
+      >
+        <div
+          class="w-20 h-20 mb-4 bg-purple-50 rounded-full flex items-center justify-center"
+        >
+          <mat-icon class="text-purple-300 text-5xl">category</mat-icon>
+        </div>
+        <h3 class="text-xl font-medium text-gray-600">
+          No specializations found
+        </h3>
+        <p class="text-gray-400 mt-2 max-w-sm">
+          Create the first topic (e.g. PTSD or Depression) to help clients find
+          the right specialist.
+        </p>
+      </div>
+    } @else if (filteredSpecializations.length === 0) {
+      <div
+        class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center"
+      >
+        <mat-icon class="text-gray-300 text-6xl w-16 h-16 mb-4"
+          >search_off</mat-icon
+        >
+        <h3 class="text-xl font-medium text-gray-600">No matches found</h3>
+        <p class="text-gray-400 mt-2">Try adjusting your search query.</p>
+        <button
+          (click)="searchQuery = ''; applyFilters()"
+          class="mt-6 px-4 py-2 text-[var(--color-primary)] bg-[var(--color-sky)]/20 rounded-lg text-sm font-semibold hover:bg-[var(--color-sky)]/30 transition-colors"
+        >
+          Clear Search
+        </button>
+      </div>
+    } @else {
+      <div class="bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-300 rounded-2xl">
+        <div
+          class="overflow-auto custom-scroll max-h-[600px] border border-gray-200 rounded-2xl"
+        >
+          <table
+            class="w-full text-left table-fixed min-w-[700px] border-collapse"
+          >
+            <thead class="sticky top-0 z-10 bg-gray-200 shadow-sm">
+              <tr
+                class="border-b border-gray-300 text-gray-500 text-sm uppercase tracking-wider"
+              >
+                <th class="px-3 py-2 text-primary w-6/12">Topic Name</th>
+                <th class="px-3 py-2 text-primary w-2/12 text-center">Psychologists</th>
+                <th class="px-3 py-2 text-primary w-2/12 text-center">Pending Apps</th>
+                <th class="px-3 py-2 text-primary w-2/12 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              @for (spec of filteredSpecializations; track spec.id) {
+                <tr
+                  class="even:bg-gray-200 odd:bg-gray-100 hover:bg-gray-50/50 border-b border-gray-300 transition-colors group"
+                >
+                  <td class="px-3 py-2">
+                    <div
+                      class="font-bold text-[var(--color-primary)] flex items-center gap-3"
+                    >
+                      <div
+                        class="w-8 h-8 rounded-lg bg-[var(--color-sky)]/20 flex items-center justify-center shrink-0"
+                      >
+                        <mat-icon class="scale-75">tag</mat-icon>
+                      </div>
+                      {{ spec.name }}
+                    </div>
+                  </td>
+
+                  <td class="px-3 py-2 text-center">
+                    <span
+                      class="inline-flex items-center justify-center min-w-[2.5rem] px-2 py-1 rounded-md font-medium text-sm"
+                      [ngClass]="
+                        spec.psychologistsCount > 0
+                          ? 'bg-mint/20 text-success'
+                          : 'bg-gray-100 text-gray-500'
+                      "
+                    >
+                      {{ spec.psychologistsCount }}
+                    </span>
+                  </td>
+
+                  <td class="px-3 py-2 text-center">
+                    <span
+                      class="inline-flex items-center justify-center min-w-[2.5rem] px-2 py-1 rounded-md font-medium text-sm text-gray-500 bg-gray-100"
+                    >
+                      {{ spec.applicationsCount }}
+                    </span>
+                    </td>
+
+                  <td class="px-3 py-2">
+                    <div class="flex items-center justify-end gap-2">
+                      <button
+                        (click)="editSpecialization(spec)"
+                        matTooltip="Edit topic"
+                        class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-[var(--color-primary)] hover:bg-[var(--color-sky)]/30 transition-all focus:outline-none"
+                      >
+                        <mat-icon class="scale-75">edit</mat-icon>
+                      </button>
+                      <button
+                        (click)="deleteSpecialization(spec)"
+                        matTooltip="Delete topic"
+                        class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all focus:outline-none"
+                      >
+                        <mat-icon class="scale-75">delete</mat-icon>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -53,8 +53,6 @@ export class AuthService {
   psychologistRegister(
     data: CreatePsychologistApplicationDto,
   ): Observable<ApiResponse<string>> {
-    console.log(data);
-
     const formData = new FormData();
 
     formData.append('phone', data.phone || '');
@@ -65,9 +63,9 @@ export class AuthService {
       formData.append('experienceYears', '0');
     }
 
-    if (data.specializations && data.specializations.length > 0) {
-      data.specializations.forEach((spec) => {
-        formData.append('specializations', spec);
+    if (data.specializationIds && data.specializationIds.length > 0) {
+      data.specializationIds.forEach((id) => {
+        formData.append('specializations', id);
       });
     }
 

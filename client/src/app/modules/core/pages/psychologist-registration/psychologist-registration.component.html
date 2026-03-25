@@ -366,20 +366,20 @@
                     @for (spec of availableSpecializations; track spec) {
                       <button
                         type="button"
-                        (click)="toggleSpecialization(spec)"
+                        (click)="toggleSpecialization(spec.id)"
                         class="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-medium border transition-all duration-200 cursor-pointer"
                         [ngClass]="{
                           'bg-[var(--color-primary)] text-white border-transparent shadow-md ring-2 ring-mint':
                             applicationForm
                               .get('specializations')
-                              ?.value.includes(spec),
+                              ?.value.includes(spec.id),
                           'bg-white text-gray-600 border-gray-200 hover:border-mint hover:bg-gray-50':
                             !applicationForm
                               .get('specializations')
-                              ?.value.includes(spec),
+                              ?.value.includes(spec.id),
                         }"
                       >
-                        {{ spec }}
+                        {{ spec.name }}
                       </button>
                     }
                   </div>

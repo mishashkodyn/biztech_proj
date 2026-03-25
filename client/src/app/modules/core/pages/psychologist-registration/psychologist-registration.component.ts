@@ -4,6 +4,8 @@ import { CreatePsychologistApplicationDto } from '../../../../api/models/psychol
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../../api/services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SpecializationDto } from '../../../../api/models/specialization.model';
+import { SpecializationService } from '../../../../api/services/specializations.service';
 
 @Component({
   selector: 'app-psychologist-registration',
@@ -18,24 +20,29 @@ export class PsychologistRegistrationComponent implements OnInit {
   applicationForm!: FormGroup;
   selectedFiles: { file: File; preview: string }[] = [];
 
-  availableSpecializations = [
-    'PTSD & Combat Trauma',
-    'Grief & Loss',
-    'Anxiety Disorders',
-    'Depression',
-    'Family Therapy',
-    'Child & Adolescent Therapy',
-  ];
+  availableSpecializations: SpecializationDto[] = [];
 
   constructor(
     private router: Router,
     private fb: FormBuilder,
     private authService: AuthService,
     private snackBar: MatSnackBar,
+    private specializationService: SpecializationService,
   ) {}
 
   ngOnInit(): void {
     this.initForm();
+    this.loadSpecializations();
+  }
+
+  loadSpecializations() {
+    this.specializationService.getSpecializations().subscribe({
+      next: (res) => {
+        if (res.isSuccess && res.data) {
+          this.availableSpecializations = res.data;
+        }
+      },
+    });
   }
 
   initForm() {
@@ -92,7 +99,8 @@ export class PsychologistRegistrationComponent implements OnInit {
   removeFile(index: number) {
     this.selectedFiles.splice(index, 1);
 
-    const currentFormFiles = this.applicationForm.get('documents')?.value as File[];
+    const currentFormFiles = this.applicationForm.get('documents')
+      ?.value as File[];
     currentFormFiles.splice(index, 1);
     this.applicationForm.get('documents')?.setValue(currentFormFiles);
   }
@@ -146,13 +154,18 @@ export class PsychologistRegistrationComponent implements OnInit {
     }
   }
 
-  toggleSpecialization(spec: string) {
-    const index = this.applicationForm.value.specializations.indexOf(spec);
+  toggleSpecialization(specId: string) {
+    const currentSpecs = this.applicationForm.get('specializationIds')
+      ?.value as string[];
+    const index = currentSpecs.indexOf(specId);
+
     if (index > -1) {
-      this.applicationForm.value.specializations.splice(index, 1);
+      currentSpecs.splice(index, 1);
     } else {
-      this.applicationForm.value.specializations.push(spec);
+      currentSpecs.push(specId);
     }
+
+    this.applicationForm.get('specializationIds')?.setValue([...currentSpecs]);
   }
 
   submitApplication() {

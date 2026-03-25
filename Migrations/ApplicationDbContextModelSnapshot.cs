@@ -120,6 +120,9 @@ namespace API.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
+                    b.Property<int>("UserCategory")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -236,6 +239,63 @@ namespace API.Migrations
                     b.ToTable("Notifications");
                 });
 
+            modelBuilder.Entity("API.Core.Entities.Psychologist", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Bio")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactPhone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DiscountForAffected")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Education")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ExperienceYears")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("HasTraumaTraining")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("OffersFreeSessionsForMilitary")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("PricePerSession")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("SessionDurationMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("VideoGreetingUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("WorksWithMilitary")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Psychologists");
+                });
+
             modelBuilder.Entity("API.Core.Entities.PsychologistApplication", b =>
                 {
                     b.Property<Guid>("Id")
@@ -266,10 +326,6 @@ namespace API.Migrations
                     b.Property<Guid?>("ReviewedById")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Specializations")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -283,6 +339,27 @@ namespace API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("PsychologistApplications");
+                });
+
+            modelBuilder.Entity("API.Core.Entities.Specialization", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Specializations");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -388,6 +465,36 @@ namespace API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("PsychologistApplicationSpecialization", b =>
+                {
+                    b.Property<Guid>("ApplicationsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SpecializationsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ApplicationsId", "SpecializationsId");
+
+                    b.HasIndex("SpecializationsId");
+
+                    b.ToTable("PsychologistApplicationSpecialization");
+                });
+
+            modelBuilder.Entity("PsychologistSpecialization", b =>
+                {
+                    b.Property<Guid>("PsychologistsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SpecializationsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("PsychologistsId", "SpecializationsId");
+
+                    b.HasIndex("SpecializationsId");
+
+                    b.ToTable("PsychologistSpecialization");
+                });
+
             modelBuilder.Entity("API.Core.Entities.Message", b =>
                 {
                     b.HasOne("API.Core.Entities.ApplicationUser", "Receiver")
@@ -417,6 +524,17 @@ namespace API.Migrations
                         .HasForeignKey("MessageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("API.Core.Entities.Psychologist", b =>
+                {
+                    b.HasOne("API.Core.Entities.ApplicationUser", "User")
+                        .WithOne("Psychologist")
+                        .HasForeignKey("API.Core.Entities.Psychologist", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("API.Core.Entities.PsychologistApplication", b =>
@@ -485,6 +603,41 @@ namespace API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("PsychologistApplicationSpecialization", b =>
+                {
+                    b.HasOne("API.Core.Entities.PsychologistApplication", null)
+                        .WithMany()
+                        .HasForeignKey("ApplicationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Core.Entities.Specialization", null)
+                        .WithMany()
+                        .HasForeignKey("SpecializationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PsychologistSpecialization", b =>
+                {
+                    b.HasOne("API.Core.Entities.Psychologist", null)
+                        .WithMany()
+                        .HasForeignKey("PsychologistsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Core.Entities.Specialization", null)
+                        .WithMany()
+                        .HasForeignKey("SpecializationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("API.Core.Entities.ApplicationUser", b =>
+                {
+                    b.Navigation("Psychologist");
                 });
 
             modelBuilder.Entity("API.Core.Entities.Message", b =>

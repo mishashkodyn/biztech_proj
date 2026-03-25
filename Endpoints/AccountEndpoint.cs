@@ -111,7 +111,7 @@ using Microsoft.AspNetCore.Identity;
                     application.Status = ApplicationStatus.Pending;
                     application.CreatedAt = DateTime.UtcNow;
 
-                    application.Specializations ??= new List<string>();
+                    application.Specializations ??= new List<Specialization>();
 
                     dbContext.PsychologistApplications.Add(application);
                     await dbContext.SaveChangesAsync();

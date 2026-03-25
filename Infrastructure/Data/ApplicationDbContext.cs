@@ -17,6 +17,8 @@ namespace API.Infrastructure.Data
         public DbSet<PsychologistApplication> PsychologistApplications { get; set; }
         public DbSet<MessageAttachment> MessageAttachments { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Psychologist> Psychologists { get; set; }
+        public DbSet<Specialization> Specializations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
