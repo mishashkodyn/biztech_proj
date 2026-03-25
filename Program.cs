@@ -33,6 +33,8 @@ var blobConn = builder.Configuration.GetConnectionString("BlobConnection")
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.AddSingleton(x => new BlobServiceClient(blobConn));
 
 //builder.Services.AddOpenApi();
@@ -83,6 +85,7 @@ builder.Services.AddAuthentication(opt =>
 
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 builder.Services.AddScoped<IAiService, AiService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();
@@ -124,6 +127,7 @@ app.UseStaticFiles();
 app.MapHub<ChatHub>("hubs/chat");
 app.MapHub<VideoChatHub>("hubs/video");
 app.MapHub<OnlineUsersHub>("hubs/online-users");
+app.MapHub<NotificationHub>("hubs/notification");
 app.MapAccountEndpoint();
 app.MapControllers();
 

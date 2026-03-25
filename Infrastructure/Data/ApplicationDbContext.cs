@@ -14,7 +14,9 @@ namespace API.Infrastructure.Data
             
         }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<PsychologistApplication> PsychologistApplications { get; set; }
         public DbSet<MessageAttachment> MessageAttachments { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -22,6 +24,7 @@ namespace API.Infrastructure.Data
 
             modelBuilder.ApplyConfiguration(new MessageConfiguration());
             modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
+            modelBuilder.ApplyConfiguration(new ApplicationsConfiguration());
 
             //modelBuilder.Entity<ApplicationUser>()
             //    .HasMany(u => u.UserRoles)

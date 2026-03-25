@@ -29,10 +29,20 @@ export class SidebarComponent {
 
   menuItems = signal<MenuItem[]>([
     {
+      icon: 'people',
+      label: 'Find psychologist',
+      route: '/catalog'
+    },
+    {
       icon: 'chat',
       label: 'Chat',
       route: 'chat',
     },
+    {
+      icon: 'mail',
+      label: 'Notifications',
+      route: 'notifications'
+    }
   ]);
 
   adminItems = signal<MenuItem[]>([
@@ -50,8 +60,21 @@ export class SidebarComponent {
       icon: 'dashboard',
       label: "Dashboard",
       route: 'admin-dashboard',
+    },
+    {
+      icon: 'assignment',
+      label: "Applications",
+      route: 'applications',
     }
   ]);
+
+  psychologistItems = signal<MenuItem[]>([
+    {
+      icon: 'psychology',
+      label: 'Psychologist Dashboard',
+      route: 'psychologist-dashboard',
+    },
+  ])
 
   constructor(
     protected authService: AuthService,

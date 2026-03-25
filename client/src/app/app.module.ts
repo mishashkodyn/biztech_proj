@@ -13,6 +13,8 @@ import { JwtInterceptor } from './api/interceptors/jwt-interceptor';
 import { AdminToolsModule } from './modules/admin-tools/admin-tools.module';
 import { AuthService } from './api/services/auth.service';
 import { catchError, of } from 'rxjs';
+import { PsychologistToolsModule } from './modules/psychologist-tools/psychologist-tools.module';
+import { ClientPortalModule } from './modules/client-portal/client-portal.module';
 
 export function initializeApp(authService: AuthService) {
   return () => {
@@ -40,6 +42,8 @@ export function initializeApp(authService: AuthService) {
     AdminToolsModule,
     AiModule,
     SharedModule,
+    PsychologistToolsModule,
+    ClientPortalModule,
     MarkdownModule.forRoot(),
   ],
   providers: [

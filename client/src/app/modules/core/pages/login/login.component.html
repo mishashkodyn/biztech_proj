@@ -1,4 +1,4 @@
-<div class="h-full w-full flex bg-gray-50 overflow-hidden">
+<div class="h-full w-full flex bg-gray-50 overflow-hidden font-sans">
   <div
     class="hidden lg:flex w-1/2 bg-gradient-to-br from-primary to-success items-center justify-center relative overflow-hidden"
   >
@@ -19,9 +19,9 @@
     </div>
   </div>
 
-  <div class="w-full lg:w-1/2 flex items-center justify-center p-2 sm:p-4">
+  <div class="w-full lg:w-1/2 flex items-center justify-center sm:p-6 lg:p-8">
     <div
-      class="bg-white w-full max-w-md rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6 max-h-full overflow-y-auto custom-scroll"
+      class="bg-white w-full max-w-lg h-full sm:h-auto sm:max-h-[800px] sm:rounded-2xl sm:shadow-xl sm:border border-gray-100 flex flex-col overflow-hidden p-3"
     >
       <div class="text-center mb-8">
         <h2 class="text-3xl font-bold text-[var(--color-primary)]">Log In</h2>
@@ -56,6 +56,7 @@
             type="email"
             name="email"
             [(ngModel)]="email"
+            (keydown.enter)="passwordInput.focus()"
             #emailModel="ngModel"
             placeholder="Email Address"
             class="w-full pl-9 sm:pl-10 pr-3 py-2 sm:py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-mint focus:border-success transition-all duration-200"
@@ -81,9 +82,11 @@
             </svg>
           </div>
           <input
+            #passwordInput
             required
             [type]="hide ? 'password' : 'text'"
             name="password"
+            (keydown.enter)="login()"
             [(ngModel)]="password"
             #passwordModel="ngModel"
             placeholder="Password"
@@ -191,6 +194,15 @@
             class="font-bold text-success hover:underline hover:text-primary transition-colors"
           >
             Register now
+          </a>
+        </p>
+        <p class="text-center text-sm sm:text-base text-gray-600 mt-3">
+          <a
+            routerLink="/register"
+            [queryParams]="{ returnUrl: '/psychologist-registration' }"
+            class="font-bold text-success hover:underline hover:text-primary transition-colors"
+          >
+            Become a psychologist
           </a>
         </p>
       </form>

@@ -3,11 +3,16 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
-import { RouterLink, RouterModule, RouterOutlet, RouterLinkActive } from '@angular/router';
+import {
+  RouterLink,
+  RouterModule,
+  RouterOutlet,
+  RouterLinkActive,
+} from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { FormsModule } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { LayoutComponent } from './layouts/layout/layout.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
@@ -23,7 +28,12 @@ import { EditAccountPageComponent } from './pages/edit-account-page/edit-account
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './components/header/header.component';
 import { MainComponent } from './components/main/main.component';
-
+import { PsychologistRegistrationComponent } from './pages/psychologist-registration/psychologist-registration.component';
+import { ApplicationSuccessComponent } from './pages/application-success/application-success.component';
+import { HomePageResolverComponent } from './components/home-page-resolver/home-page-resolver.component';
+import { NotificationsPageComponent } from './components/notifications-page/notifications-page.component';
+import { NotificationsPopupComponent } from './components/notifications-popup/notifications-popup.component';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -37,7 +47,12 @@ import { MainComponent } from './components/main/main.component';
     SettingsPageComponent,
     EditAccountPageComponent,
     HeaderComponent,
-    MainComponent
+    MainComponent,
+    PsychologistRegistrationComponent,
+    ApplicationSuccessComponent,
+    HomePageResolverComponent,
+    NotificationsPageComponent,
+    NotificationsPopupComponent
   ],
   imports: [
     CommonModule,
@@ -54,8 +69,9 @@ import { MainComponent } from './components/main/main.component';
     RouterLinkActive,
     MatToolbarModule,
     MatTooltipModule,
-    BrowserAnimationsModule
-],
-
+    BrowserAnimationsModule,
+    ReactiveFormsModule,
+    MatProgressSpinner
+  ],
 })
-export class CoreModule { }
+export class CoreModule {}

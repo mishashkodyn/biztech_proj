@@ -15,6 +15,13 @@ import { SettingsPageComponent } from './modules/core/pages/settings-page/settin
 import { EditAccountPageComponent } from './modules/core/pages/edit-account-page/edit-account-page.component';
 import { AiChatComponent } from './modules/ai/pages/ai-chat/ai-chat.component';
 import { AdminDashboardComponent } from './modules/admin-tools/pages/admin-dashboard/admin-dashboard.component';
+import { PsychologistRegistrationComponent } from './modules/core/pages/psychologist-registration/psychologist-registration.component';
+import { ApplicationSuccessComponent } from './modules/core/pages/application-success/application-success.component';
+import { ApplicationsPageComponent } from './modules/admin-tools/pages/applications-page/applications-page.component';
+import { PsychologistListComponent } from './modules/client-portal/pages/psychologist-list/psychologist-list.component';
+import { PsychologistDashboardComponent } from './modules/psychologist-tools/pages/psychologist-dashboard/psychologist-dashboard.component';
+import { HomePageResolverComponent } from './modules/core/components/home-page-resolver/home-page-resolver.component';
+import { NotificationsPageComponent } from './modules/core/components/notifications-page/notifications-page.component';
 
 const routes: Routes = [
   {
@@ -22,14 +29,15 @@ const routes: Routes = [
     component: LayoutComponent,
     children: [
       { path: 'chat', canActivate: [AuthGuard], component: ChatComponent },
-      { path: 'home', component: HomePageComponent },
+      { path: 'home', component: HomePageComponent, canActivate: [loginGuard] },
       { path: 'users', canActivate: [AuthGuard], component: UsersPageComponent },
       { path: 'account/:username', canActivate: [AuthGuard], component: UserAccountPageComponent },
       { path: 'settings', canActivate: [AuthGuard], component: SettingsPageComponent },
       { path: 'admin-dashboard', canActivate: [AuthGuard], component: AdminDashboardComponent },
       { path: 'edit-account', canActivate: [AuthGuard], component: EditAccountPageComponent },
       { path: 'ai-chat', canActivate: [AuthGuard], component: AiChatComponent},
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      { path: 'applications', canActivate: [AuthGuard], component: ApplicationsPageComponent },
+      { path: '', component: HomePageResolverComponent},
       {
         path: 'register',
         component: RegisterComponent,
@@ -40,11 +48,36 @@ const routes: Routes = [
         component: LoginComponent,
         canActivate: [loginGuard],
       },
+      {
+        path: 'psychologist-registration',
+        component: PsychologistRegistrationComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'application-success',
+        component: ApplicationSuccessComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'catalog',
+        component: PsychologistListComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'psychologist-dashboard',
+        component: PsychologistDashboardComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'notifications',
+        component: NotificationsPageComponent,
+        canActivate: [AuthGuard],
+      },
     ],
   },
   {
     path: '**',
-    redirectTo: 'chat',
+    redirectTo: '',
     pathMatch: 'full',
   },
 ];

@@ -1,4 +1,195 @@
-<div class="md:flex">
-  <img class="w-full md:w-1/2 h-full object-cover" src="/honey.jpg" alt="" />
-  <img class="w-full md:w-1/2 h-full object-cover" src="/honey-2.jpg" alt="" />
+<div class="relative min-h-screen bg-[#f8fafc] font-sans overflow-hidden">
+  <div
+    class="absolute left-[-10%] w-[40rem] h-[40rem] rounded-full bg-[var(--color-mint)] mix-blend-multiply filter blur-[128px] opacity-40 animate-blob pointer-events-none"
+  ></div>
+  <div
+    class="absolute top-[20%] right-[-5%] w-[35rem] h-[35rem] rounded-full bg-[var(--color-sky)] mix-blend-multiply filter blur-[128px] opacity-30 animate-blob animation-delay-2000 pointer-events-none"
+  ></div>
+  <div
+    class="absolute bottom-[-10%] left-[20%] w-[45rem] h-[45rem] rounded-full bg-[var(--color-blue)] mix-blend-multiply filter blur-[128px] opacity-20 animate-blob animation-delay-4000 pointer-events-none"
+  ></div>
+
+  <section
+    class="relative z-10 pt-32 md:pb-28 px-6 max-w-7xl mx-auto flex flex-col items-center text-center"
+  >
+    <div
+      class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-md border border-[var(--color-mint)] shadow-sm mb-8 animate-fade-in-up"
+    >
+      <span
+        class="w-2 h-2 rounded-full bg-[var(--color-success)] animate-pulse"
+      ></span>
+      <span
+        class="text-sm font-semibold text-[var(--color-primary)] tracking-wide"
+        >Secure & Confidential Support</span
+      >
+    </div>
+
+    <h1
+      class="text-5xl md:text-7xl font-extrabold text-[var(--color-primary)] tracking-tight mb-6 leading-tight"
+    >
+      Your Safe Space <br class="hidden md:block" />
+      <span
+        class="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-blue)] to-[var(--color-success)]"
+      >
+        In Hard Times.
+      </span>
+    </h1>
+
+    <p class="text-lg md:text-xl text-gray-600 max-w-2xl mb-10 leading-relaxed">
+      Professional psychological assistance for military, civilians, and those
+      affected by war. Connect with licensed therapists, compassionate AI, or
+      supportive communities—anytime, anywhere.
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+      <button
+        (click)="navigateTo('registration')"
+        class="flex items-center justify-center gap-2 px-8 py-4 rounded-xl cursor-pointer bg-[var(--color-primary)] text-[var(--color-mint)] font-bold text-lg hover:bg-[#003800] hover:shadow-[0_8px_30px_rgba(53,121,4,0.3)] transition-all duration-300 transform hover:-translate-y-1"
+      >
+        <mat-icon>volunteer_activism</mat-icon>
+        Get Help
+      </button>
+      <button
+        (click)="
+          navigateTo('/register', {
+            returnUrl: '/psychologist-registration',
+          })
+        "
+        class="flex items-center justify-center gap-2 px-8 py-4 rounded-xl cursor-pointer bg-white text-[var(--color-primary)] border-2 border-[var(--color-mint)] font-bold text-lg hover:bg-[var(--color-mint)] hover:bg-opacity-10 transition-all duration-300"
+      >
+        <mat-icon>psychology_alt</mat-icon>
+        Become a psychologist
+      </button>
+    </div>
+  </section>
+
+  <div
+    class="relative z-10 border-y border-gray-200/50 bg-white/40 backdrop-blur-xl"
+  >
+    <div
+      class="max-w-7xl mx-auto px-6 py-8 flex flex-wrap justify-around gap-8 text-center"
+    >
+      <div class="flex flex-col gap-1">
+        <span class="text-3xl font-black text-[var(--color-blue)]">24/7</span>
+        <span
+          class="text-sm font-semibold text-gray-500 uppercase tracking-wider"
+          >AI Support</span
+        >
+      </div>
+      <div class="flex flex-col gap-1">
+        <span class="text-3xl font-black text-[var(--color-blue)]">100%</span>
+        <span
+          class="text-sm font-semibold text-gray-500 uppercase tracking-wider"
+          >Anonymous</span
+        >
+      </div>
+      <div class="flex flex-col gap-1">
+        <span class="text-3xl font-black text-[var(--color-blue)]"
+          >End-to-End</span
+        >
+        <span
+          class="text-sm font-semibold text-gray-500 uppercase tracking-wider"
+          >Encrypted Chats</span
+        >
+      </div>
+    </div>
+  </div>
+
+  <section class="relative z-10 py-24 px-6 max-w-7xl mx-auto">
+    <div class="text-center mb-16">
+      <h2
+        class="text-3xl md:text-5xl font-bold text-[var(--color-primary)] mb-4"
+      >
+        Comprehensive Care
+      </h2>
+      <p class="text-gray-500 max-w-xl mx-auto">
+        Tailored tools designed to help you process trauma, manage anxiety, and
+        find peace at your own pace.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div
+        class="group bg-white/70 backdrop-blur-lg border border-gray-100 p-8 rounded-[2rem] shadow-sm hover:shadow-xl hover:shadow-[var(--color-sky)]/20 transition-all duration-300 cursor-pointer"
+      >
+        <div
+          class="w-14 h-14 rounded-2xl bg-[var(--color-sky)]/20 flex items-center justify-center text-[var(--color-blue)] mb-6 group-hover:scale-110 transition-transform"
+        >
+          <mat-icon class="text-3xl">videocam</mat-icon>
+        </div>
+        <h3 class="text-xl font-bold text-[var(--color-primary)] mb-3">
+          Therapist Video Calls
+        </h3>
+        <p class="text-gray-500 leading-relaxed">
+          Secure, high-quality video sessions with trauma-informed specialists.
+          Connect face-to-face when you need it most.
+        </p>
+      </div>
+
+      <div
+        class="group bg-white/70 backdrop-blur-lg border border-gray-100 p-8 rounded-[2rem] shadow-sm hover:shadow-xl hover:shadow-[var(--color-mint)]/30 transition-all duration-300 cursor-pointer"
+      >
+        <div
+          class="w-14 h-14 rounded-2xl bg-[var(--color-mint)]/30 flex items-center justify-center text-[var(--color-success)] mb-6 group-hover:scale-110 transition-transform"
+        >
+          <mat-icon class="text-3xl">smart_toy</mat-icon>
+        </div>
+        <h3 class="text-xl font-bold text-[var(--color-primary)] mb-3">
+          AI Companion
+        </h3>
+        <p class="text-gray-500 leading-relaxed">
+          An empathetic, 24/7 AI assistant trained in CBT techniques to help
+          ground you during panic attacks or sleepless nights.
+        </p>
+      </div>
+
+      <div
+        class="group bg-white/70 backdrop-blur-lg border border-gray-100 p-8 rounded-[2rem] shadow-sm hover:shadow-xl hover:shadow-[var(--color-primary)]/10 transition-all duration-300 cursor-pointer"
+      >
+        <div
+          class="w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center text-[var(--color-primary)] mb-6 group-hover:scale-110 transition-transform"
+        >
+          <mat-icon class="text-3xl">forum</mat-icon>
+        </div>
+        <h3 class="text-xl font-bold text-[var(--color-primary)] mb-3">
+          Anonymous Text Chat
+        </h3>
+        <p class="text-gray-500 leading-relaxed">
+          Sometimes writing is easier than speaking. Chat securely with
+          counselors or in moderated peer-support groups.
+        </p>
+      </div>
+
+      <div
+        class="group bg-[var(--color-primary)] p-8 rounded-[2rem] shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer md:col-span-2 lg:col-span-3 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden"
+      >
+        <div
+          class="absolute right-0 top-0 w-64 h-64 bg-[var(--color-success)] opacity-20 blur-3xl rounded-full"
+        ></div>
+
+        <div
+          class="w-16 h-16 shrink-0 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-[var(--color-mint)] backdrop-blur-sm"
+        >
+          <mat-icon class="text-3xl">self_improvement</mat-icon>
+        </div>
+
+        <div class="flex-grow z-10 text-center md:text-left">
+          <h3 class="text-2xl font-bold text-[var(--color-mint)] mb-2">
+            Interactive Grounding Toolkit
+          </h3>
+          <p class="text-gray-300 max-w-2xl">
+            Feeling overwhelmed? Access guided breathing exercises, 5-4-3-2-1
+            sensory grounding, and PTSD-specific stabilization tools instantly
+            without needing to log in.
+          </p>
+        </div>
+
+        <button
+          class="z-10 shrink-0 px-6 py-3 rounded-xl bg-[var(--color-mint)] text-[var(--color-primary)] font-bold hover:bg-white transition-colors"
+        >
+          Explore Tools
+        </button>
+      </div>
+    </div>
+  </section>
 </div>

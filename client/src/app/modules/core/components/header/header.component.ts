@@ -1,10 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { Component, HostListener, signal } from '@angular/core';
 import { MenuItem } from '../../../../api/models/menu-item';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../api/services/auth.service';
 import { DropdownItem } from '../../../../api/models/dropdown-item';
 import { SidebarService } from '../../../../api/services/sidebar.service';
 import { PresenceService } from '../../../../api/services/presence-service';
+import { NotificationService } from '../../../../api/services/notification.service';
 
 @Component({
   selector: 'app-header',
@@ -13,6 +14,8 @@ import { PresenceService } from '../../../../api/services/presence-service';
   standalone: false,
 })
 export class HeaderComponent {
+  isNotificationsOpen = false;
+
   menuItems = signal<MenuItem[]>([
     {
       label: 'FAQ',
@@ -37,6 +40,7 @@ export class HeaderComponent {
     protected authService: AuthService,
     protected sidebarService: SidebarService,
     protected presenceService: PresenceService,
+    protected notificationService: NotificationService
   ) {}
 
   navigateTo(to: string) {
@@ -68,11 +72,26 @@ export class HeaderComponent {
     this.authService.logout();
   }
 
+  isAuthRoute(): boolean {
+    const path = this.route.url.split('?')[0];
+    return ['/login', '/register', '/psychologist-registration'].includes(path);
+  }
+
   toggleSideBar() {
     this.sidebarService.sideBarOpen.set(!this.sidebarService.sideBarOpen());
   }
 
   onLanguageChange() {
     console.log('Language changed to:', this.currentLanguage.value);
+  }
+
+  toggleNotificationsPopUp(event: Event) {
+    event.stopPropagation(); 
+    this.isNotificationsOpen = !this.isNotificationsOpen;
+  }
+
+  @HostListener('document:click')
+  onDocumentClick() {
+    this.isNotificationsOpen = false;
   }
 }
