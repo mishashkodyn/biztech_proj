@@ -16,6 +16,7 @@ export class PsychologistRegistrationComponent implements OnInit {
   totalSteps = 3;
   isLoading = false;
   applicationForm!: FormGroup;
+  selectedFiles: { file: File; preview: string }[] = [];
 
   availableSpecializations = [
     'PTSD & Combat Trauma',
@@ -47,6 +48,53 @@ export class PsychologistRegistrationComponent implements OnInit {
       specializations: [[] as string[], Validators.required],
       documents: [[] as File[], Validators.required],
     });
+  }
+
+  onFileSelected(event: any) {
+    const input = event.target as HTMLInputElement;
+    const files = input.files;
+
+    if (files && files.length > 0) {
+      const currentFormFiles =
+        (this.applicationForm.get('documents')?.value as File[]) || [];
+      const newFormFiles = [...currentFormFiles];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        if (file.size > 10 * 1024 * 1024) {
+          this.snackBar.open(
+            `File ${file.name} is too large. Max 10MB.`,
+            'Close',
+            { duration: 3000 },
+          );
+          continue;
+        }
+
+        newFormFiles.push(file);
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.selectedFiles.push({
+            file: file,
+            preview: e.target?.result as string,
+          });
+        };
+        reader.readAsDataURL(file);
+      }
+
+      this.applicationForm.get('documents')?.setValue(newFormFiles);
+      this.applicationForm.get('documents')?.markAsTouched();
+    }
+    input.value = '';
+  }
+
+  removeFile(index: number) {
+    this.selectedFiles.splice(index, 1);
+
+    const currentFormFiles = this.applicationForm.get('documents')?.value as File[];
+    currentFormFiles.splice(index, 1);
+    this.applicationForm.get('documents')?.setValue(currentFormFiles);
   }
 
   nextStep() {

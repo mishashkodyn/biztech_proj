@@ -6,6 +6,6 @@
         public string Education { get; set; } = string.Empty;
         public int ExperienceYears { get; set; }
         public List<string> Specializations { get; set; } = new();
-        public List<IFormFile> Documents { get; set; } = new();
+        public IFormFileCollection? Documents { get; set; }
     }
 }

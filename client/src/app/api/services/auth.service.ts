@@ -51,6 +51,8 @@ export class AuthService {
   psychologistRegister(
     data: CreatePsychologistApplicationDto,
   ): Observable<ApiResponse<string>> {
+    console.log(data);
+
     const formData = new FormData();
 
     formData.append('phone', data.phone || '');
@@ -58,17 +60,19 @@ export class AuthService {
     if (data.experienceYears !== null && data.experienceYears !== undefined) {
       formData.append('experienceYears', data.experienceYears.toString());
     } else {
-      formData.append('experienceYears', '0'); 
+      formData.append('experienceYears', '0');
     }
 
     if (data.specializations && data.specializations.length > 0) {
-      data.specializations.forEach(spec => {
+      data.specializations.forEach((spec) => {
         formData.append('specializations', spec);
       });
     }
 
     if (data.documents && data.documents.length > 0) {
-      data.documents.forEach(file => {
+      data.documents.forEach((file) => {
+        console.log("file: ", file);
+        
         formData.append('documents', file, file.name);
       });
     }

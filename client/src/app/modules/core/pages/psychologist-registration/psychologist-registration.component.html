@@ -30,9 +30,11 @@
     </div>
   </div>
 
-  <div class="w-full lg:w-1/2 flex items-center justify-center sm:p-6 lg:p-8">
+  <div
+    class="w-full lg:w-1/2 h-full flex overflow-y-auto custom-scroll p-4 sm:p-6 lg:p-8"
+  >
     <div
-      class="bg-white w-full max-w-lg h-full sm:h-auto sm:max-h-[800px] sm:rounded-2xl sm:shadow-xl sm:border border-gray-100 flex flex-col overflow-hidden"
+      class="bg-white m-auto shrink-0 w-full max-w-lg sm:h-auto sm:max-h-[800px] sm:rounded-2xl sm:shadow-xl sm:border border-gray-100 flex flex-col overflow-hidden"
     >
       <div class="flex flex-col h-full p-4 sm:p-8">
         <div class="text-center mb-4 sm:mb-6 shrink-0 pt-2 sm:pt-0">
@@ -273,10 +275,11 @@
                   </div>
 
                   <div
-                    class="mt-1 sm:mt-2 border-2 border-dashed border-gray-300 rounded-xl p-4 sm:p-6 flex flex-col items-center justify-center bg-gray-50 hover:bg-[var(--color-sky)]/10 hover:border-[var(--color-sky)] transition-all cursor-pointer group flex-grow min-h-[120px]"
+                    class="mt-1 flex gap-3 sm:mt-2 border-2 border-dashed border-gray-300 rounded-xl p-2 items-center justify-center bg-gray-50 hover:bg-[var(--color-sky)]/10 hover:border-[var(--color-sky)] transition-all cursor-pointer group"
+                    (click)="fileInput.click()"
                   >
                     <svg
-                      class="h-6 w-6 sm:h-8 sm:w-8 text-gray-400 group-hover:text-[var(--color-blue)] mb-2 transition-colors"
+                      class="h-6 w-6 sm:h-8 sm:w-8 text-gray-400 group-hover:text-[var(--color-blue)] transition-colors"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -296,6 +299,59 @@
                       >PDF, JPG up to 10MB</span
                     >
                   </div>
+                  <input
+                    #fileInput
+                    type="file"
+                    hidden
+                    multiple
+                    (change)="onFileSelected($event)"
+                    accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar"
+                  />
+                  @if (selectedFiles.length > 0) {
+                    <div class="mt-2 flex flex-col gap-2">
+                      <p class="text-xs sm:text-sm font-medium text-gray-600">
+                        Attached Documents:
+                      </p>
+
+                      @for (
+                        item of selectedFiles;
+                        track item.file.name;
+                        let i = $index
+                      ) {
+                        <div
+                          class="flex items-center justify-between p-2 sm:p-3 bg-white border border-gray-200 rounded-xl shadow-sm"
+                        >
+                          <div class="flex items-center gap-3 overflow-hidden">
+                            <div
+                              class="w-8 h-8 rounded-lg bg-mint/20 text-success flex items-center justify-center shrink-0"
+                            >
+                              <mat-icon class="scale-75">description</mat-icon>
+                            </div>
+                            <div class="flex flex-col truncate">
+                              <span
+                                class="text-xs sm:text-sm font-medium text-gray-700 truncate"
+                                >{{ item.file.name }}</span
+                              >
+                              <span class="text-[10px] text-gray-400"
+                                >{{
+                                  (item.file.size / 1024 / 1024).toFixed(2)
+                                }}
+                                MB</span
+                              >
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            (click)="removeFile(i)"
+                            class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer shrink-0"
+                          >
+                            <mat-icon class="scale-75">close</mat-icon>
+                          </button>
+                        </div>
+                      }
+                    </div>
+                  }
                 </div>
               }
 
@@ -334,10 +390,11 @@
         </div>
 
         <div
-          class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-gray-100 flex justify-between shrink-0"
+          class="shrink-0 mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-gray-100 flex justify-between shrink-0"
         >
           <button
             type="button"
+            [disabled]="isLoading"
             (click)="prevStep()"
             [style.visibility]="currentStep === 1 ? 'hidden' : 'visible'"
             class="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl text-sm sm:text-base font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors flex items-center justify-center gap-1 sm:gap-2 cursor-pointer w-[48%]"
@@ -359,13 +416,22 @@
               (click)="submitApplication()"
               class="px-4 py-2 sm:px-6 sm:py-2.5 rounded-xl text-sm sm:text-base bg-[var(--color-success)] text-white font-medium hover:shadow-lg transition-all flex items-center justify-center gap-1 sm:gap-2 cursor-pointer w-[48%]"
             >
-              Submit
+              @if (isLoading) {
+                <div
+                  class="w-4 h-4 border-2 mr-2 border-white border-t-transparent rounded-full animate-spin"
+                ></div>
+              }
+              @if (isLoading) {
+                <span>Processing...</span>
+              } @else {
+                Submit
+              }
             </button>
           }
         </div>
 
         <p
-          class="text-center text-xs sm:text-sm text-gray-600 mt-4 sm:mt-3 pb-2 sm:pb-0 shrink-0"
+          class="shrink-0 text-center text-xs sm:text-sm text-gray-600 mt-4 sm:mt-3 pb-2 sm:pb-0 shrink-0"
         >
           Already have an account?
           <a
