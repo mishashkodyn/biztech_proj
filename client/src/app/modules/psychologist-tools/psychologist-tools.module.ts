@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PsychologistDashboardComponent } from './pages/psychologist-dashboard/psychologist-dashboard.component';
+import { MatIconModule } from '@angular/material/icon';
 
 
 
@@ -9,7 +10,8 @@ import { PsychologistDashboardComponent } from './pages/psychologist-dashboard/p
     PsychologistDashboardComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    MatIconModule
   ]
 })
 export class PsychologistToolsModule { }

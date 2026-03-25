@@ -58,6 +58,14 @@ export class SidebarComponent {
     }
   ]);
 
+  psychologistItems = signal<MenuItem[]>([
+    {
+      icon: 'psychology',
+      label: 'Psychologist Dashboard',
+      route: 'psychologist-dashboard',
+    },
+  ])
+
   constructor(
     protected authService: AuthService,
     protected sidebarService: SidebarService,
