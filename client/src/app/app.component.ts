@@ -6,6 +6,7 @@ import { VideoChatComponent } from './modules/chat/components/video-chat/video-c
 import { ChatService } from './api/services/chat.service'; // Додав ChatService, бо він у тебе в HTML
 import { Subscription } from 'rxjs';
 import { PresenceService } from './api/services/presence-service';
+import { NotificationService } from './api/services/notification.service';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public presenceService = inject(PresenceService);
   public chatService = inject(ChatService);
   private matDialog = inject(MatDialog);
+  private notificationService = inject(NotificationService);
   private sub = new Subscription();
 
   ngOnInit(): void {
@@ -32,6 +34,7 @@ export class AppComponent implements OnInit, OnDestroy {
     });
     this.presenceService.startConnection();
     this.chatService.startConnection();
+    this.notificationService.startConnection();
   }
 
   ngOnDestroy() {

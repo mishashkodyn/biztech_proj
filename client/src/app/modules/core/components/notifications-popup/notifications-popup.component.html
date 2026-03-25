@@ -4,44 +4,75 @@
 >
   <div class="px-4 py-3 flex justify-between items-center border-b border-gray-50 bg-gray-50/50">
     <span class="font-bold text-gray-800 text-sm">Notifications</span>
-    <button
-      (click)="markAllAsRead()"
-      class="text-xs text-[var(--color-primary)] hover:text-success font-medium transition-colors cursor-pointer bg-transparent border-none"
-    >
-      Mark all as read
-    </button>
+    @if (service.unreadCount() > 0) {
+      <button
+        (click)="markAllAsRead()"
+        class="text-xs text-[var(--color-primary)] hover:text-success font-medium transition-colors cursor-pointer bg-transparent border-none"
+      >
+        Mark all as read
+      </button>
+    }
   </div>
 
-  <div class="max-h-80 overflow-y-auto custom-scroll">
-    <div class="px-4 py-3 border-b border-gray-50 hover:bg-gray-50/80 transition-colors flex gap-3 group cursor-pointer">
-      <div class="w-8 h-8 rounded-full bg-[var(--color-sky)]/20 text-[var(--color-primary)] flex items-center justify-center shrink-0 mt-0.5">
-        <mat-icon class="scale-75">info</mat-icon>
-      </div>
-      <div>
-        <p class="text-sm text-gray-800 font-medium group-hover:text-[var(--color-primary)] transition-colors">
-          Welcome to Help hub!
-        </p>
-        <p class="text-xs text-gray-500 mt-0.5 line-clamp-2">
-          Your profile is almost ready. Check out the catalog to find a specialist.
-        </p>
-        <p class="text-[10px] text-gray-400 mt-1.5 font-medium">Just now</p>
-      </div>
-    </div>
+  <div class="max-h-80 overflow-y-auto custom-scroll flex flex-col">
+    
+    @for (notif of service.notifications(); track notif.id) {
+      <div
+        (click)="onNotificationClick(notif)"
+        class="px-4 py-3 border-b border-gray-50 transition-colors flex gap-3 group cursor-pointer"
+        [ngClass]="{
+          'bg-[var(--color-sky)]/10 hover:bg-[var(--color-sky)]/20': !notif.isRead,
+          'bg-white hover:bg-gray-50': notif.isRead
+        }"
+      >
+        <div
+          class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+          [ngClass]="{
+            'bg-mint/20 text-success': notif.type === 'Success',
+            'bg-[var(--color-sky)]/20 text-[var(--color-primary)]': notif.type === 'Info',
+            'bg-red-100 text-red-500': notif.type === 'Error',
+            'bg-yellow-100 text-yellow-600': notif.type === 'Warning'
+          }"
+        >
+          <mat-icon class="scale-75">
+            {{ 
+              notif.type === 'Success' ? 'check_circle' : 
+              notif.type === 'Error' ? 'error' : 
+              notif.type === 'Warning' ? 'warning' : 'info' 
+            }}
+          </mat-icon>
+        </div>
 
-    <div class="px-4 py-3 border-b border-gray-50 hover:bg-gray-50/80 transition-colors flex gap-3 group cursor-pointer">
-      <div class="w-8 h-8 rounded-full bg-mint/20 text-success flex items-center justify-center shrink-0 mt-0.5">
-        <mat-icon class="scale-75">check_circle</mat-icon>
+        <div class="flex-grow">
+          <p
+            class="text-sm font-medium transition-colors"
+            [ngClass]="notif.isRead ? 'text-gray-600' : 'text-gray-900 group-hover:text-[var(--color-primary)]'"
+          >
+            {{ notif.title }}
+          </p>
+          <p
+            class="text-xs mt-0.5 line-clamp-2"
+            [ngClass]="notif.isRead ? 'text-gray-500' : 'text-gray-700'"
+          >
+            {{ notif.message }}
+          </p>
+          <p class="text-[10px] text-gray-400 mt-1.5 font-medium">
+            {{ notif.createdAt | date:'MMM d, h:mm a' }}
+          </p>
+        </div>
+
+        @if (!notif.isRead) {
+          <div class="w-2 h-2 rounded-full bg-[var(--color-primary)] mt-1.5 shrink-0"></div>
+        }
       </div>
-      <div>
-        <p class="text-sm text-gray-800 font-medium group-hover:text-[var(--color-primary)] transition-colors">
-          Application Approved
-        </p>
-        <p class="text-xs text-gray-500 mt-0.5 line-clamp-2">
-          Your psychologist application has been approved by the admin.
-        </p>
-        <p class="text-[10px] text-gray-400 mt-1.5 font-medium">2 hours ago</p>
+    } @empty {
+      <div class="px-4 py-10 flex flex-col items-center justify-center text-center">
+        <mat-icon class="text-gray-300 text-4xl mb-2">notifications_none</mat-icon>
+        <p class="text-sm font-medium text-gray-600">No new notifications</p>
+        <p class="text-xs text-gray-400 mt-1">You're all caught up!</p>
       </div>
-    </div>
+    }
+
   </div>
 
   <div class="p-2 border-t border-gray-50 bg-gray-50/30">

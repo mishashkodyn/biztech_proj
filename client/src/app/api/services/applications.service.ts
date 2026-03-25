@@ -21,4 +21,8 @@ export class ApplicationsService {
       `${this.baseUrl}/admin/applications`,
     );
   }
+
+  approveApplication(id: string) {
+    return this.http.post(`${this.baseUrl}/approve-application/${id}`, id)
+  }
 }

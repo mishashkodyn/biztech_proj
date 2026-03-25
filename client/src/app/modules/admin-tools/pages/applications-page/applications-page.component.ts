@@ -49,8 +49,9 @@ export class ApplicationsPageComponent implements OnInit {
   }
 
   approveApplication(id: string) {
-    console.log('Схвалюємо заявку:', id);
-    // Тут буде виклик бекенду
+    this.service.approveApplication(id).subscribe(() => {
+      console.log("Схвалено");
+    })
   }
 
   rejectApplication(id: string) {

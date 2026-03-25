@@ -10,6 +10,7 @@ import { PresenceService } from './presence-service';
 import { ChatService } from './chat.service';
 import { Router } from '@angular/router';
 import { CreatePsychologistApplicationDto } from '../models/psychologist-application.model';
+import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,6 +23,7 @@ export class AuthService {
   httpClient = inject(HttpClient);
   presenceService = inject(PresenceService);
   chatService = inject(ChatService);
+  notificationService = inject(NotificationService);
   router = inject(Router);
 
   register(data: FormData): Observable<ApiResponse<string>> {
@@ -95,6 +97,9 @@ export class AuthService {
           if (!this.chatService.isConnected()) {
             this.chatService.startConnection();
           }
+          if (!this.notificationService.isConnected()){
+            this.notificationService.startConnection();
+          }
         }),
       );
   }
@@ -117,6 +122,9 @@ export class AuthService {
           if (!this.chatService.isConnected()) {
             this.chatService.startConnection();
           }
+          if (!this.notificationService.isConnected()){
+            this.notificationService.startConnection();
+          }
         }),
       );
   }
@@ -135,6 +143,7 @@ export class AuthService {
   logout() {
     this.sidebarService.toggleSideBar();
     this.presenceService.stopConnection();
+    this.chatService.stopConnection();
     this.chatService.stopConnection();
     localStorage.removeItem(this.token);
     localStorage.removeItem('user');
