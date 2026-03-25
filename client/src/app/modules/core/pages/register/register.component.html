@@ -127,6 +127,7 @@
               required
               type="text"
               name="name"
+              (keydown.enter)="surnameInput.focus()"
               [(ngModel)]="name"
               placeholder="Name"
               class="w-full pl-9 sm:pl-10 pr-3 py-2 sm:py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-mint focus:border-success transition-all duration-200"
@@ -154,6 +155,8 @@
               required
               type="text"
               name="surname"
+              #surnameInput
+              (keydown.enter)="emailInput.focus()"
               [(ngModel)]="surname"
               placeholder="Surname"
               class="w-full pl-9 sm:pl-10 pr-3 py-2 sm:py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-mint focus:border-success transition-all duration-200"
@@ -184,6 +187,8 @@
             email
             type="email"
             name="email"
+            #emailInput
+            (keydown.enter)="passwordInput.focus()"
             [(ngModel)]="email"
             placeholder="Email Address"
             class="w-full pl-9 sm:pl-10 pr-3 py-2 sm:py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-mint focus:border-success transition-all duration-200"
@@ -212,6 +217,8 @@
             required
             [type]="hide ? 'password' : 'text'"
             name="password"
+            #passwordInput
+            (keydown.enter)="register()"
             [(ngModel)]="password"
             placeholder="Password"
             class="w-full pl-9 sm:pl-10 pr-10 py-2 sm:py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-mint focus:border-success transition-all duration-200"

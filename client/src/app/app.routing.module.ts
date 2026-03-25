@@ -18,6 +18,9 @@ import { AdminDashboardComponent } from './modules/admin-tools/pages/admin-dashb
 import { PsychologistRegistrationComponent } from './modules/core/pages/psychologist-registration/psychologist-registration.component';
 import { ApplicationSuccessComponent } from './modules/core/pages/application-success/application-success.component';
 import { ApplicationsPageComponent } from './modules/admin-tools/pages/applications-page/applications-page.component';
+import { PsychologistListComponent } from './modules/client-portal/pages/psychologist-list/psychologist-list.component';
+import { PsychologistDashboardComponent } from './modules/psychologist-tools/pages/psychologist-dashboard/psychologist-dashboard.component';
+import { HomePageResolverComponent } from './modules/core/components/home-page-resolver/home-page-resolver.component';
 
 const routes: Routes = [
   {
@@ -25,7 +28,7 @@ const routes: Routes = [
     component: LayoutComponent,
     children: [
       { path: 'chat', canActivate: [AuthGuard], component: ChatComponent },
-      { path: 'home', component: HomePageComponent },
+      { path: 'home', component: HomePageComponent, canActivate: [loginGuard] },
       { path: 'users', canActivate: [AuthGuard], component: UsersPageComponent },
       { path: 'account/:username', canActivate: [AuthGuard], component: UserAccountPageComponent },
       { path: 'settings', canActivate: [AuthGuard], component: SettingsPageComponent },
@@ -33,7 +36,7 @@ const routes: Routes = [
       { path: 'edit-account', canActivate: [AuthGuard], component: EditAccountPageComponent },
       { path: 'ai-chat', canActivate: [AuthGuard], component: AiChatComponent},
       { path: 'applications', canActivate: [AuthGuard], component: ApplicationsPageComponent },
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      { path: '', component: HomePageResolverComponent},
       {
         path: 'register',
         component: RegisterComponent,
@@ -53,12 +56,22 @@ const routes: Routes = [
         path: 'application-success',
         component: ApplicationSuccessComponent,
         canActivate: [AuthGuard],
-      }
+      },
+      {
+        path: 'catalog',
+        component: PsychologistListComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'psychologist-dashboard',
+        component: PsychologistDashboardComponent,
+        canActivate: [AuthGuard],
+      },
     ],
   },
   {
     path: '**',
-    redirectTo: 'chat',
+    redirectTo: '',
     pathMatch: 'full',
   },
 ];

@@ -30,6 +30,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { MainComponent } from './components/main/main.component';
 import { PsychologistRegistrationComponent } from './pages/psychologist-registration/psychologist-registration.component';
 import { ApplicationSuccessComponent } from './pages/application-success/application-success.component';
+import { HomePageResolverComponent } from './components/home-page-resolver/home-page-resolver.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { ApplicationSuccessComponent } from './pages/application-success/applica
     MainComponent,
     PsychologistRegistrationComponent,
     ApplicationSuccessComponent,
+    HomePageResolverComponent
   ],
   imports: [
     CommonModule,
