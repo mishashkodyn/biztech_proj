@@ -8,22 +8,21 @@ import { AppNotification } from '../../../../api/models/notification.model';
   templateUrl: './notifications-page.component.html',
   styleUrl: './notifications-page.component.scss'
 })
-export class NotificationsPageComponent implements OnInit {
-  notifications: AppNotification[] | [] = [];
-  isLoading: boolean = false;
-
-  constructor(private service: NotificationService) {
+export class NotificationsPageComponent {
+  constructor(protected service: NotificationService) {
   }
 
-  ngOnInit(): void {
-    this.loadNotifications();
+  markAsRead(notif: AppNotification){
+    if (notif.isRead) return;
+
+    notif.isRead = true;
+
+    if (notif.id){
+      this.service.markAsRead(notif.id).subscribe();
+    }
   }
 
-  loadNotifications(){
-    this.isLoading = true;
-    this.service.getMyNotifications().subscribe((res) => {
-      this.notifications = res.data;
-      this.isLoading = false;
-    })
+  markAllAsRead() {
+    this.service.markAllAsRead();
   }
 }

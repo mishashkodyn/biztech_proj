@@ -5,6 +5,7 @@ import { AuthService } from '../../../../api/services/auth.service';
 import { DropdownItem } from '../../../../api/models/dropdown-item';
 import { SidebarService } from '../../../../api/services/sidebar.service';
 import { PresenceService } from '../../../../api/services/presence-service';
+import { NotificationService } from '../../../../api/services/notification.service';
 
 @Component({
   selector: 'app-header',
@@ -39,6 +40,7 @@ export class HeaderComponent {
     protected authService: AuthService,
     protected sidebarService: SidebarService,
     protected presenceService: PresenceService,
+    protected notificationService: NotificationService
   ) {}
 
   navigateTo(to: string) {

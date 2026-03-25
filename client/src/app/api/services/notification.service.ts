@@ -21,22 +21,19 @@ export class NotificationService {
   notifications = signal<AppNotification[]>([]);
   unreadCount = signal<number>(0);
   isConnected = signal<boolean>(false);
+  isLoading = signal<boolean>(false);
 
   constructor(private http: HttpClient) {}
-
-  getMyNotifications(): Observable<ApiResponse<AppNotification[]>> {
-    return this.http.get<ApiResponse<AppNotification[]>>(`${this.baseUrl}`);
-  }
 
   markAsRead(id: string) {
     return this.http.put(`${this.baseUrl}/mark-as-read/${id}`, {}).pipe(
       tap(() => {
-        this.unreadCount.update(count => Math.max(0, count - 1));
+        this.unreadCount.update((count) => Math.max(0, count - 1));
 
-        this.notifications.update(nots => 
-          nots.map(n => n.id === id ? { ...n, isRead: true } : n)
+        this.notifications.update((nots) =>
+          nots.map((n) => (n.id === id ? { ...n, isRead: true } : n)),
         );
-      })
+      }),
     );
   }
 
@@ -47,6 +44,7 @@ export class NotificationService {
   startConnection() {
     if (this.hubConnection?.state === HubConnectionState.Connected) return;
 
+    this.isLoading.set(true);
     if (!this.hubConnection) {
       this.hubConnection = new HubConnectionBuilder()
         .withUrl(this.hubUrl, {
@@ -58,7 +56,7 @@ export class NotificationService {
 
     this.hubConnection.start().then(() => {
       this.isConnected.set(true);
-      console.log('NotificationHub connected');
+       this.isLoading.set(false);
       this.addListeners();
 
       this.hubConnection?.invoke('GetAllNotifications');
@@ -74,10 +72,6 @@ export class NotificationService {
   }
 
   private addListeners() {
-    this.hubConnection?.on('Connected', (message: string) => {
-      console.log('🔔 Backend Hub says:', message);
-    });
-
     this.hubConnection?.on(
       'ReceiveAllNotifications',
       (notifications: AppNotification[]) => {
@@ -104,6 +98,6 @@ export class NotificationService {
       nots.map((n) => ({ ...n, isRead: true })),
     );
 
-    this.markAllAsReadRequest();
+    this.markAllAsReadRequest().subscribe();
   }
 }

@@ -33,6 +33,7 @@ import { ApplicationSuccessComponent } from './pages/application-success/applica
 import { HomePageResolverComponent } from './components/home-page-resolver/home-page-resolver.component';
 import { NotificationsPageComponent } from './components/notifications-page/notifications-page.component';
 import { NotificationsPopupComponent } from './components/notifications-popup/notifications-popup.component';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { NotificationsPopupComponent } from './components/notifications-popup/no
     MatTooltipModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
+    MatProgressSpinner
   ],
 })
 export class CoreModule {}
