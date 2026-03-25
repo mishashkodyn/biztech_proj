@@ -42,35 +42,45 @@ namespace API.Controllers
             var response = _mapper.Map<List<PsychologistApplicationResponseDto>>(applications);
 
             return Ok(Response<List<PsychologistApplicationResponseDto>>.Success(response, "GET SUCCESS"));
+
         }
 
-        [HttpPost("approve-application/{applicationId}")]
-        public async Task<IActionResult> ApproveApplication(Guid applicationId)
+        [HttpPost("review-application/{applicationId}")]
+        public async Task<IActionResult> ReviewApplication(Guid applicationId, [FromQuery] bool isApproved)
         {
             var reviewerId = User.GetUserId();
-
             var app = await _context.PsychologistApplications.FindAsync(applicationId);
 
-            app.Status = ApplicationStatus.Approved;
+            if (app == null)
+            {
+                return NotFound();
+            }
+
+            app.Status = isApproved ? ApplicationStatus.Approved : ApplicationStatus.Rejected;
             app.ReviewedAt = DateTime.UtcNow;
             app.ReviewedById = reviewerId;
 
             await _context.SaveChangesAsync();
 
-            var user = await _userManager.FindByIdAsync(app.UserId.ToString());
-            if (user != null)
+            if (isApproved)
             {
-                if (!await _userManager.IsInRoleAsync(user, "Psychologist"))
+                var user = await _userManager.FindByIdAsync(app.UserId.ToString());
+                if (user != null && !await _userManager.IsInRoleAsync(user, "Psychologist"))
                 {
                     await _userManager.AddToRoleAsync(user, "Psychologist");
                 }
             }
 
+            var notificationTitle = isApproved ? "Application Approved" : "Application Rejected";
+            var notificationMessage = isApproved
+                ? "Congratulations! Your application to become a psychologist has been approved."
+                : "Unfortunately, your application to become a psychologist was rejected. You can review your information and submit again.";
+
             await _notificationService.SendNotificationAsync(new CreateNotificationDto
             {
                 UserId = app.UserId,
-                Title = "Application Approved",
-                Message = "Congratulations! Your application to become a psychologist has been approved.",
+                Title = notificationTitle,
+                Message = notificationMessage,
                 Type = NotificationType.Application,
                 RelatedEntityId = app.Id
             });

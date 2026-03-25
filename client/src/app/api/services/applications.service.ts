@@ -22,7 +22,7 @@ export class ApplicationsService {
     );
   }
 
-  approveApplication(id: string) {
-    return this.http.post(`${this.baseUrl}/approve-application/${id}`, id)
+  reviewApplication(id: string, isApproved: boolean) {
+    return this.http.post(`${this.baseUrl}/review-application/${id}?isApproved=${isApproved}`, {});
   }
 }

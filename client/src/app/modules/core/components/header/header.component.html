@@ -80,7 +80,7 @@
 
     @if (authService.isLoggedIn()) {
       <div
-        class="relative flex items-center"
+        class="relative flex items-center mr-3"
         [hidden]="route.url == '/notifications'"
       >
         <div
@@ -92,7 +92,8 @@
           ></i>
 
           <span
-            class="absolute -top-2 -right-4 bg-red-600 text-white text-[11px] font-bold min-w-[20px] h-[20px] px-1 flex items-center justify-center rounded-full shadow-md"
+            [hidden]="notificationService.unreadCount() == 0"
+            class="absolute -top-2 -left-3 bg-red-600 text-white text-[11px] font-bold min-w-[20px] h-[20px] px-1 flex items-center justify-center rounded-full shadow-md"
           >
             {{ notificationService.unreadCount() }}
           </span>

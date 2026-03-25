@@ -12,8 +12,14 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class ApplicationsPageComponent implements OnInit {
   applications: PsychologistApplicationResponseDto[] = [];
+  filteredApplications: PsychologistApplicationResponseDto[] = [];
+
   isLoading = true;
   selectedApp: PsychologistApplicationResponseDto | null = null;
+
+  searchQuery: string = '';
+  statusFilter: string = 'All';
+  availableStatuses = ['All', 'Pending', 'Approved', 'Rejected'];
 
   constructor(
     private service: ApplicationsService,
@@ -34,6 +40,7 @@ export class ApplicationsPageComponent implements OnInit {
           return;
         }
         this.applications = res.data;
+        this.applyFilters();
         this.isLoading = false;
       },
       error: (err) => {
@@ -43,20 +50,52 @@ export class ApplicationsPageComponent implements OnInit {
     });
   }
 
+  onSearch(event: Event) {
+    this.searchQuery = (event.target as HTMLInputElement).value;
+    this.applyFilters();
+  }
+
+  setStatusFilter(status: string) {
+    this.statusFilter = status;
+    this.applyFilters();
+  }
+
+  applyFilters() {
+    let tempApplications = [...this.applications];
+
+    if (this.statusFilter !== 'All') {
+      tempApplications = tempApplications.filter(
+        (app) => app.status === this.statusFilter,
+      );
+    }
+
+    if (this.searchQuery.trim()) {
+      const query = this.searchQuery.toLowerCase().trim();
+      tempApplications = tempApplications.filter(app => 
+        app.firstName?.toLowerCase().includes(query) ||
+        app.lastName?.toLowerCase().includes(query) ||
+        app.email?.toLowerCase().includes(query) ||
+        app.phone?.toLowerCase().includes(query)
+      );
+    }
+
+    this.filteredApplications = tempApplications;
+  }
+
   closeDetails() {
     this.selectedApp = null;
     document.body.style.overflow = 'auto';
   }
 
-  approveApplication(id: string) {
-    this.service.approveApplication(id).subscribe(() => {
-      console.log("Схвалено");
-    })
-  }
-
-  rejectApplication(id: string) {
-    console.log('Відхиляємо заявку:', id);
-    // Тут буде виклик бекенду
+  reviewApplication(id: string, approved: boolean) {
+    this.service.reviewApplication(id, approved).subscribe(() => {
+      this.applications = this.applications.map((app) =>
+        app.id === id
+          ? { ...app, status: approved ? 'Approved' : 'Rejected' }
+          : app,
+      );
+      this.applyFilters();
+    });
   }
 
   viewDetails(app: PsychologistApplicationResponseDto) {
@@ -71,9 +110,9 @@ export class ApplicationsPageComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         if (result.action === 'approve') {
-          this.approveApplication(result.id);
+          this.reviewApplication(result.id, true);
         } else if (result.action === 'reject') {
-          this.rejectApplication(result.id);
+          this.reviewApplication(result.id, false);
         }
       }
     });
