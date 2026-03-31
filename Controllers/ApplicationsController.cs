@@ -36,6 +36,7 @@ namespace API.Controllers
         {
             var applications = await _context.PsychologistApplications
                 .Include(a => a.User)
+                .Include(a => a.Specializations)
                 .OrderByDescending(a => a.CreatedAt)
                 .ToListAsync();
 
@@ -49,7 +50,9 @@ namespace API.Controllers
         public async Task<IActionResult> ReviewApplication(Guid applicationId, [FromQuery] bool isApproved)
         {
             var reviewerId = User.GetUserId();
-            var app = await _context.PsychologistApplications.FindAsync(applicationId);
+            var app = await _context.PsychologistApplications
+                .Include(a => a.Specializations)
+                .FirstOrDefaultAsync(a => a.Id == applicationId);
 
             if (app == null)
             {
@@ -80,7 +83,7 @@ namespace API.Controllers
                             Education = app.Education,
                             ExperienceYears = app.ExperienceYears,
                             Specializations = app.Specializations.ToList(),
-                            ContactPhone = app.Phone
+                            ContactPhone = app.Phone,
                         };
                         _context.Psychologists.Add(newProfile);
                     }

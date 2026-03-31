@@ -155,7 +155,7 @@ export class PsychologistRegistrationComponent implements OnInit {
   }
 
   toggleSpecialization(specId: string) {
-    const currentSpecs = this.applicationForm.get('specializationIds')
+    const currentSpecs = this.applicationForm.get('specializations')
       ?.value as string[];
     const index = currentSpecs.indexOf(specId);
 
@@ -165,7 +165,7 @@ export class PsychologistRegistrationComponent implements OnInit {
       currentSpecs.push(specId);
     }
 
-    this.applicationForm.get('specializationIds')?.setValue([...currentSpecs]);
+    this.applicationForm.get('specializations')?.setValue([...currentSpecs]);
   }
 
   submitApplication() {

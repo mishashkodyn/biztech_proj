@@ -113,6 +113,23 @@ using Microsoft.AspNetCore.Identity;
 
                     application.Specializations ??= new List<Specialization>();
 
+                    if (dto.Specializations != null && dto.Specializations.Any())
+                    {
+                        var specIds = dto.Specializations
+                            .Where(id => Guid.TryParse(id, out _))
+                            .Select(Guid.Parse)
+                            .ToList();
+
+                        var selectedSpecializations = await dbContext.Specializations
+                            .Where(s => specIds.Contains(s.Id))
+                            .ToListAsync();
+
+                        foreach (var spec in selectedSpecializations)
+                        {
+                            application.Specializations.Add(spec);
+                        }
+                    }
+
                     dbContext.PsychologistApplications.Add(application);
                     await dbContext.SaveChangesAsync();
 

@@ -45,7 +45,7 @@ namespace API.Controllers
                     Id = s.Id,
                     Name = s.Name,
                     PsychologistsCount = s.Psychologists.Count,
-                    ApplicationsCount = s.Applications.Count
+                    ApplicationsCount = s.Applications.Where(x => x.Status == ApplicationStatus.Pending).Count()
                 })
                 .ToListAsync();
 

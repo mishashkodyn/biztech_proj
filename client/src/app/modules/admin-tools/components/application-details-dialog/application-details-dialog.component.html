@@ -36,7 +36,7 @@
     <h5 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Specializations</h5>
     <div class="flex flex-wrap gap-2">
       @for (spec of data.app.specializations; track spec) {
-        <span class="px-3 py-1 bg-blue-50 text-blue-700 border border-blue-100 rounded-lg text-sm font-medium">{{ spec }}</span>
+        <span class="px-3 py-1 bg-blue-50 text-blue-700 border border-blue-100 rounded-lg text-sm font-medium">{{ spec.name }}</span>
       }
     </div>
   </div>

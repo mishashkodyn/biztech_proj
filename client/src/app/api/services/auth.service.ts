@@ -63,16 +63,18 @@ export class AuthService {
       formData.append('experienceYears', '0');
     }
 
-    if (data.specializationIds && data.specializationIds.length > 0) {
-      data.specializationIds.forEach((id) => {
+    const specsArray = data.specializations;
+    console.log("SPEC: ", data.specializations);
+    console.log(specsArray);
+
+    if (data.specializations && data.specializations.length > 0) {
+      data.specializations.forEach((id) => {
         formData.append('specializations', id);
       });
     }
 
     if (data.documents && data.documents.length > 0) {
       data.documents.forEach((file) => {
-        console.log("file: ", file);
-        
         formData.append('documents', file, file.name);
       });
     }

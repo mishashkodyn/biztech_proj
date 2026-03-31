@@ -10,7 +10,7 @@
         public string Phone { get; set; } = string.Empty;
         public string Education { get; set; } = string.Empty;
         public int ExperienceYears { get; set; }
-        public List<string> Specializations { get; set; } = new();
+        public List<SpecializationDto> Specializations { get; set; } = new();
         public List<string> DocumentUrls { get; set; } = new();
         public string Status { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }

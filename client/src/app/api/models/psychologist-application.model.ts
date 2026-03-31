@@ -6,7 +6,7 @@ export interface CreatePsychologistApplicationDto {
   phone: string;
   education: string;
   experienceYears: number | null;
-  specializationIds: string[];
+  specializations: string[];
   documents: File[];
 }
 
