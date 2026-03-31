@@ -56,7 +56,6 @@ export class NotificationService {
 
     this.hubConnection.start().then(() => {
       this.isConnected.set(true);
-       this.isLoading.set(false);
       this.addListeners();
 
       this.hubConnection?.invoke('GetAllNotifications');
@@ -79,6 +78,7 @@ export class NotificationService {
 
         const unread = notifications.filter((n) => !n.isRead).length;
         this.unreadCount.set(unread);
+        this.isLoading.set(false);
       },
     );
 

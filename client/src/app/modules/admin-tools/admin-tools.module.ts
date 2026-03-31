@@ -11,6 +11,7 @@ import { RouterModule } from '@angular/router';
 import { SpecializationDialogComponent } from './components/specialization-dialog/specialization-dialog.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UsersPageComponent } from './pages/users-page/users-page.component';
+import { SharedModule } from '../shared/shared.module';
 
 
 
@@ -30,7 +31,8 @@ import { UsersPageComponent } from './pages/users-page/users-page.component';
     MatDialogActions,
     MatDialogContent,
     RouterModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedModule
   ]
 })
 export class AdminToolsModule { }

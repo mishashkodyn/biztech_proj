@@ -1,0 +1,123 @@
+<div class="p-6 md:p-10 bg-gray-50 min-h-screen font-sans">
+  <div class="max-w-4xl mx-auto">
+    <div
+      class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8"
+    >
+      <div>
+        <h1
+          class="text-3xl font-bold text-[var(--color-primary)] tracking-tight"
+        >
+          Notifications
+        </h1>
+        <p class="text-gray-500 mt-1">
+          Manage your alerts, messages, and application updates.
+        </p>
+      </div>
+
+      @if (!service.isLoading() && service.unreadCount() > 0) {
+        <button
+          (click)="markAllAsRead()"
+          class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl font-semibold hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] hover:shadow-sm transition-all flex items-center gap-2 cursor-pointer"
+        >
+          <mat-icon class="scale-90">done_all</mat-icon>
+          Mark all as read
+        </button>
+      }
+    </div>
+
+    @if (service.isLoading()) {
+      <app-loading-spinner></app-loading-spinner>
+    } @else {
+      @if (service.notifications().length > 0) {
+        <div
+          class="bg-white rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden animate-fade-in"
+        >
+          @for (notif of service.notifications(); track notif.id) {
+            <div
+              (click)="markAsRead(notif)"
+              class="p-5 sm:p-6 border-b border-gray-50 flex gap-4 sm:gap-6 items-start transition-colors hover:bg-gray-50 cursor-pointer group"
+              [ngClass]="{ 'bg-[var(--color-sky)]/5': !notif.isRead }"
+            >
+              <div
+                class="w-12 h-12 rounded-full flex items-center justify-center shrink-0 mt-1"
+                [ngClass]="{
+                  'bg-mint/20 text-success': notif.type === 'Success',
+                  'bg-[var(--color-sky)]/20 text-[var(--color-primary)]':
+                    notif.type === 'Info',
+                  'bg-red-100 text-red-500': notif.type === 'Error',
+                  'bg-yellow-100 text-yellow-600': notif.type === 'Warning',
+                }"
+              >
+                <mat-icon>
+                  {{
+                    notif.type === "Success"
+                      ? "check_circle"
+                      : notif.type === "Error"
+                        ? "error"
+                        : notif.type === "Warning"
+                          ? "warning"
+                          : "info"
+                  }}
+                </mat-icon>
+              </div>
+
+              <div class="flex-grow min-w-0">
+                <div
+                  class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-4 mb-1"
+                >
+                  <h4
+                    class="text-base sm:text-lg transition-colors truncate"
+                    [ngClass]="
+                      notif.isRead
+                        ? 'text-gray-700 font-medium'
+                        : 'text-gray-900 font-bold group-hover:text-[var(--color-primary)]'
+                    "
+                  >
+                    {{ notif.title }}
+                  </h4>
+                  <span
+                    class="text-xs sm:text-sm text-gray-400 whitespace-nowrap font-medium shrink-0"
+                  >
+                    {{ notif.createdAt | date: "MMM d, y, h:mm a" }}
+                  </span>
+                </div>
+
+                <p
+                  class="text-sm sm:text-base leading-relaxed"
+                  [ngClass]="notif.isRead ? 'text-gray-500' : 'text-gray-700'"
+                >
+                  {{ notif.message }}
+                </p>
+              </div>
+
+              @if (!notif.isRead) {
+                <div
+                  class="w-3 h-3 rounded-full bg-[var(--color-primary)] mt-3 shrink-0 shadow-sm shadow-[var(--color-primary)]"
+                ></div>
+              }
+            </div>
+          }
+        </div>
+      } @else {
+        <div
+          class="bg-white rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.03)] border border-gray-100 p-16 text-center animate-fade-in flex flex-col items-center"
+        >
+          <div
+            class="w-24 h-24 mb-6 bg-gray-50 rounded-full flex items-center justify-center"
+          >
+            <mat-icon class="text-5xl text-gray-300"
+              >notifications_none</mat-icon
+            >
+          </div>
+          <h3 class="text-2xl font-bold text-[var(--color-primary)] mb-2">
+            No notifications yet
+          </h3>
+          <p class="text-gray-500 text-lg max-w-md">
+            When you receive updates about your profile or applications, they
+            will appear here.
+          </p>
+        </div>
+      }
+    }
+  </div>
+</div>

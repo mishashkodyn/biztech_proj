@@ -21,7 +21,7 @@ import { ApplicationsPageComponent } from './modules/admin-tools/pages/applicati
 import { PsychologistListComponent } from './modules/client-portal/pages/psychologist-list/psychologist-list.component';
 import { PsychologistDashboardComponent } from './modules/psychologist-tools/pages/psychologist-dashboard/psychologist-dashboard.component';
 import { HomePageResolverComponent } from './modules/core/components/home-page-resolver/home-page-resolver.component';
-import { NotificationsPageComponent } from './modules/core/components/notifications-page/notifications-page.component';
+import { NotificationsPageComponent } from './modules/core/pages/notifications-page/notifications-page.component';
 import { ManageSpecializationsComponent } from './modules/admin-tools/pages/manage-specializations/manage-specializations.component';
 
 const routes: Routes = [

@@ -4,12 +4,14 @@ import { SpecializationService } from '../../../../api/services/specializations.
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SpecializationDialogComponent } from '../../components/specialization-dialog/specialization-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogModalComponent } from '../../../shared/confirm-dialog-modal/confirm-dialog-modal.component';
+import { ConfirmDialogData } from '../../../../api/models/confirm-dialog-data';
 
 @Component({
   selector: 'app-manage-specializations',
   standalone: false,
   templateUrl: './manage-specializations.component.html',
-  styleUrl: './manage-specializations.component.scss'
+  styleUrl: './manage-specializations.component.scss',
 })
 export class ManageSpecializationsComponent implements OnInit {
   specializations: SpecializationAdminDto[] = [];
@@ -21,7 +23,7 @@ export class ManageSpecializationsComponent implements OnInit {
   constructor(
     private service: SpecializationService,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -43,7 +45,7 @@ export class ManageSpecializationsComponent implements OnInit {
       error: () => {
         this.showError('Error connecting to server');
         this.isLoading = false;
-      }
+      },
     });
   }
 
@@ -59,8 +61,8 @@ export class ManageSpecializationsComponent implements OnInit {
     }
 
     const query = this.searchQuery.toLowerCase().trim();
-    this.filteredSpecializations = this.specializations.filter(s => 
-      s.name.toLowerCase().includes(query)
+    this.filteredSpecializations = this.specializations.filter((s) =>
+      s.name.toLowerCase().includes(query),
     );
   }
 
@@ -70,7 +72,7 @@ export class ManageSpecializationsComponent implements OnInit {
       maxWidth: '28rem',
       panelClass: 'custom-dialog-container',
       autoFocus: true,
-      data: {}
+      data: {},
     });
 
     dialogRef.afterClosed().subscribe((newName: string | null) => {
@@ -85,7 +87,7 @@ export class ManageSpecializationsComponent implements OnInit {
             this.showError(res.error || 'Creation failed');
           }
         },
-        error: () => this.showError('Server error during creation')
+        error: () => this.showError('Server error during creation'),
       });
     });
   }
@@ -96,56 +98,89 @@ export class ManageSpecializationsComponent implements OnInit {
       maxWidth: '28rem',
       panelClass: 'custom-dialog-container',
       autoFocus: true,
-      data: { spec: spec }
+      data: { spec: spec },
     });
 
     dialogRef.afterClosed().subscribe((updatedName: string | null) => {
-      if (!updatedName || !updatedName.trim() || updatedName.trim() === spec.name) return;
+      if (
+        !updatedName ||
+        !updatedName.trim() ||
+        updatedName.trim() === spec.name
+      )
+        return;
 
-      this.service.updateSpecialization(spec.id, { name: updatedName.trim() }).subscribe({
-        next: (res) => {
-          if (res.isSuccess) {
-            this.showSuccess('Topic updated');
-            this.loadSpecializations();
-          } else {
-            this.showError(res.error || 'Update failed');
-          }
-        },
-        error: () => this.showError('Server error during update')
-      });
+      this.service
+        .updateSpecialization(spec.id, { name: updatedName.trim() })
+        .subscribe({
+          next: (res) => {
+            if (res.isSuccess) {
+              this.showSuccess('Topic updated');
+              this.loadSpecializations();
+            } else {
+              this.showError(res.error || 'Update failed');
+            }
+          },
+          error: () => this.showError('Server error during update'),
+        });
     });
   }
 
-  deleteSpecialization(spec: SpecializationAdminDto) {
+  deleteItem(spec: SpecializationAdminDto) {
+    var warningMessage = `Warning: This topic is currently used by ${spec.psychologistsCount} psychologists and ${spec.applicationsCount} applications. Are you sure you want to delete "${spec.name}"? This action cannot be undone.`;
+    console.log("йоу");
+    
     if (spec.psychologistsCount > 0 || spec.applicationsCount > 0) {
-      const isConfirmed = window.confirm(
-        `Warning: This topic is used by ${spec.psychologistsCount} psychologists and ${spec.applicationsCount} applications.\n\nAre you sure you want to delete it? This action cannot be undone.`
-      );
-      if (!isConfirmed) return;
-    } else {
-      const isConfirmed = window.confirm(`Delete topic "${spec.name}"?`);
-      if (!isConfirmed) return;
+      warningMessage = `Warning: This topic is currently used by ${spec.psychologistsCount} psychologists and ${spec.applicationsCount} applications. Are you sure you want to delete "${spec.name}"? This action cannot be undone.`;
     }
 
+    const dialogRef = this.dialog.open(ConfirmDialogModalComponent, {
+      width: '100%',
+      maxWidth: '28rem',
+      panelClass: 'custom-dialog-container',
+      data: {
+        title: 'Delete Topic',
+        message: warningMessage,
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+        isDestructive: true,
+      } as ConfirmDialogData,
+    });
+
+    dialogRef.afterClosed().subscribe((isConfirmed: boolean) => {
+      if (isConfirmed){
+        this.deleteSpecialization(spec);
+      }
+    })
+  }
+
+  deleteSpecialization(spec: SpecializationAdminDto) {
     this.service.deleteSpecialization(spec.id).subscribe({
       next: (res) => {
         if (res.isSuccess) {
           this.showSuccess('Topic deleted');
-          this.specializations = this.specializations.filter(s => s.id !== spec.id);
+          this.specializations = this.specializations.filter(
+            (s) => s.id !== spec.id,
+          );
           this.applyFilters();
         } else {
           this.showError(res.error || 'Deletion failed');
         }
       },
-      error: () => this.showError('Server error during deletion')
+      error: () => this.showError('Server error during deletion'),
     });
   }
 
   private showSuccess(msg: string) {
-    this.snackBar.open(msg, 'Close', { duration: 3000, panelClass: ['bg-green-600', 'text-white'] });
+    this.snackBar.open(msg, 'Close', {
+      duration: 3000,
+      panelClass: ['bg-green-600', 'text-white'],
+    });
   }
 
   private showError(msg: string) {
-    this.snackBar.open(msg, 'Close', { duration: 4000, panelClass: ['bg-red-600', 'text-white'] });
+    this.snackBar.open(msg, 'Close', {
+      duration: 4000,
+      panelClass: ['bg-red-600', 'text-white'],
+    });
   }
 }

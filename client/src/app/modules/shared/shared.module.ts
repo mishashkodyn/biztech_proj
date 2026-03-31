@@ -6,6 +6,8 @@ import { LogoutConfirmModalComponent } from './logout-confirm-modal/logout-confi
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIcon } from "@angular/material/icon";
 import { DropdownComponent } from './dropdown/dropdown.component';
+import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
+import { ConfirmDialogModalComponent } from './confirm-dialog-modal/confirm-dialog-modal.component';
 
 
 @NgModule({
@@ -13,7 +15,9 @@ import { DropdownComponent } from './dropdown/dropdown.component';
     ButtonComponent,
     TypingIndicatorComponent,
     LogoutConfirmModalComponent,
-    DropdownComponent
+    DropdownComponent,
+    LoadingSpinnerComponent,
+    ConfirmDialogModalComponent
   ],
   imports: [
     CommonModule,
@@ -24,7 +28,9 @@ import { DropdownComponent } from './dropdown/dropdown.component';
     ButtonComponent,
     TypingIndicatorComponent,
     LogoutConfirmModalComponent,
-    DropdownComponent
+    DropdownComponent,
+    LoadingSpinnerComponent,
+    ConfirmDialogModalComponent
   ]
 })
 export class SharedModule { }

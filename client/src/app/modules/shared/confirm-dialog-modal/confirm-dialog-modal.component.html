@@ -1,0 +1,36 @@
+<div class="p-6 sm:p-8 font-sans bg-white rounded-2xl relative overflow-hidden">
+  
+  @if (data.isDestructive) {
+    <div class="absolute top-0 left-0 w-full h-1.5 bg-red-500"></div>
+  } @else {
+    <div class="absolute top-0 left-0 w-full h-1.5 bg-[var(--color-primary)]"></div>
+  }
+
+  <div class="mb-6 mt-2">
+    <h2 class="text-2xl font-bold text-gray-800 mb-2">
+      {{ data.title }}
+    </h2>
+    <p class="text-gray-500 text-[15px] leading-relaxed">
+      {{ data.message }}
+    </p>
+  </div>
+
+  <div class="flex gap-3 justify-end mt-8">
+    <button 
+      (click)="onCancel()" 
+      class="px-5 py-2.5 rounded-xl text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer focus:outline-none"
+    >
+      {{ data.cancelText || 'Cancel' }}
+    </button>
+    
+    <button 
+      (click)="onConfirm()" 
+      class="px-5 py-2.5 rounded-xl text-sm font-medium text-white hover:shadow-lg transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1"
+      [ngClass]="data.isDestructive 
+        ? 'bg-red-500 hover:bg-red-600 focus:ring-red-500' 
+        : 'bg-[var(--color-primary)] hover:bg-[var(--color-success)] focus:ring-[var(--color-primary)]'"
+    >
+      {{ data.confirmText || 'Confirm' }}
+    </button>
+  </div>
+</div>

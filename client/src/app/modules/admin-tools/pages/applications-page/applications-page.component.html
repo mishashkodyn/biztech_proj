@@ -56,10 +56,7 @@
 
     @if (isLoading) {
       <div class="flex justify-center items-center h-64">
-        <mat-icon
-          class="animate-spin text-[var(--color-success)] text-4xl w-10 h-10"
-          >autorenew</mat-icon
-        >
+        <app-loading-spinner></app-loading-spinner>
       </div>
     } @else if (applications.length === 0) {
       <div

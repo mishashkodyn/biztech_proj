@@ -31,7 +31,7 @@ import { MainComponent } from './components/main/main.component';
 import { PsychologistRegistrationComponent } from './pages/psychologist-registration/psychologist-registration.component';
 import { ApplicationSuccessComponent } from './pages/application-success/application-success.component';
 import { HomePageResolverComponent } from './components/home-page-resolver/home-page-resolver.component';
-import { NotificationsPageComponent } from './components/notifications-page/notifications-page.component';
+import { NotificationsPageComponent } from './pages/notifications-page/notifications-page.component';
 import { NotificationsPopupComponent } from './components/notifications-popup/notifications-popup.component';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 

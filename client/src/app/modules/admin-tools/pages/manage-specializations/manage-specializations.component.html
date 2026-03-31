@@ -53,10 +53,7 @@
 
     @if (isLoading) {
       <div class="flex justify-center items-center h-64">
-        <mat-icon
-          class="animate-spin text-[var(--color-success)] text-4xl w-10 h-10"
-          >autorenew</mat-icon
-        >
+        <app-loading-spinner></app-loading-spinner>
       </div>
     } @else if (specializations.length === 0) {
       <div
@@ -112,7 +109,7 @@
             <tbody class="divide-y divide-gray-100">
               @for (spec of filteredSpecializations; track spec.id) {
                 <tr
-                  class="even:bg-gray-200 odd:bg-gray-100 hover:bg-gray-50/50 border-b border-gray-300 transition-colors group"
+                  class="even:bg-gray-100 odd:bg-gray-50/50 hover:bg-gray-200 border-b border-gray-300 transition-colors group"
                 >
                   <td class="px-3 py-2">
                     <div
@@ -158,7 +155,7 @@
                         <mat-icon class="scale-75">edit</mat-icon>
                       </button>
                       <button
-                        (click)="deleteSpecialization(spec)"
+                        (click)="deleteItem(spec)"
                         matTooltip="Delete topic"
                         class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all focus:outline-none"
                       >
