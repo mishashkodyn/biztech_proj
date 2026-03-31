@@ -9,15 +9,31 @@
   overflow: hidden; 
 }
 
+.right-sidebar {
+  border-left: 1px solid transparent;
+  overflow: hidden;
+}
+
+.right-sidebar-inner {
+  width: 100vw;
+  height: 100%;
+}
+
 @media (min-width: 768px) {
   .right-sidebar {
     width: 0;
-    overflow: hidden;
-    transition: width 0.3s ease;
+    min-width: 0;
+    transition: width 0.3s ease-in-out, min-width 0.3s ease-in-out, border-color 0.3s ease-in-out;
   }
 
   .right-sidebar.open {
     width: 30%;
     min-width: 300px;
+    border-left-color: #e5e7eb;
+  }
+
+  .right-sidebar-inner {
+    min-width: 300px;
+    width: 100%;
   }
 }
