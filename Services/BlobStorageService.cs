@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.StaticFiles;
 
 namespace API.Services
 {
-    public class BlobStorageService : IBlobStorageService
+    public class BlobStorageService : IStorageService
     {
         private readonly BlobServiceClient _blobServiceClient;
         private static readonly FileExtensionContentTypeProvider Provider = new FileExtensionContentTypeProvider();
@@ -14,17 +14,6 @@ namespace API.Services
         public BlobStorageService(BlobServiceClient blobServiceClient) 
         { 
             _blobServiceClient = blobServiceClient;
-        }
-
-        public async Task<BlobInfoDto> GetBlobAsync(string blobName) 
-        {
-            var conteinerClient = _blobServiceClient.GetBlobContainerClient(CONTAINER_NAME);
-
-            var blobClient = conteinerClient.GetBlobClient(blobName);
-
-            var blobDownloadInfo = await blobClient.DownloadAsync();
-
-            return new BlobInfoDto(blobDownloadInfo.Value.Content, blobDownloadInfo.Value.ContentType);
         }
 
         public async Task<string> UploadFileAsync(IFormFile file)
@@ -43,7 +32,7 @@ namespace API.Services
             return blobClient.Uri.ToString();
         }
 
-        public async Task DeleteBlobAsync(string blobName)
+        public async Task DeleteFileAsync(string blobName)
         {
             var conteinerClient = _blobServiceClient.GetBlobContainerClient(CONTAINER_NAME);
 

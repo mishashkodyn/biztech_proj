@@ -10,9 +10,9 @@ namespace API.Controllers
     [ApiController]
     public class FilesController : ControllerBase
     {
-        private readonly IBlobStorageService _blobService;
+        private readonly IStorageService _blobService;
 
-        public FilesController(IBlobStorageService blobService)
+        public FilesController(IStorageService blobService)
         {
             _blobService = blobService;
         }

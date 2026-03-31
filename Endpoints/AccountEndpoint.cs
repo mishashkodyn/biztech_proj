@@ -24,7 +24,7 @@ using Microsoft.AspNetCore.Identity;
                 group.MapPost("/register", async (HttpContext context, TokenService tokenService, 
                  IConfiguration _config, UserManager<ApplicationUser>
                  userManager, [FromForm] string name, [FromForm] string surname, [FromForm] string email,
-                 [FromForm] string password, [FromForm] IFormFile? profileImage, IBlobStorageService blobService) =>
+                 [FromForm] string password, [FromForm] IFormFile? profileImage, IStorageService blobService) =>
                 {
                     var userFromDb = await userManager.FindByEmailAsync(email);
 
@@ -52,7 +52,7 @@ using Microsoft.AspNetCore.Identity;
 
                     if (!result.Succeeded)
                     {
-                        await blobService.DeleteBlobAsync(user.ProfileImage);
+                        await blobService.DeleteFileAsync(user.ProfileImage);
                         return Results.BadRequest(Response<string>.Failure(result.Errors
                             .Select(x => x.Description).FirstOrDefault()!));
                     }
@@ -75,7 +75,7 @@ using Microsoft.AspNetCore.Identity;
 
                 group.MapPost("/psychologist-register", async ([FromForm] CreatePsychologistApplicationDto dto, 
                     IMapper mapper, ApplicationDbContext dbContext, HttpContext context, 
-                    UserManager<ApplicationUser> userManager, IBlobStorageService blobService) =>
+                    UserManager<ApplicationUser> userManager, IStorageService blobService) =>
                 {
                     var userId = context.User.GetUserId()!;
                     var user = await userManager.FindByIdAsync(userId.ToString());

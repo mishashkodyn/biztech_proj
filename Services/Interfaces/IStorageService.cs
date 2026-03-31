@@ -3,10 +3,9 @@ using Azure.Storage.Blobs.Models;
 
 namespace API.Services.Interfaces
 {
-    public interface IBlobStorageService
+    public interface IStorageService
     {
-        public Task<BlobInfoDto> GetBlobAsync(string blobName);
         public Task<string> UploadFileAsync(IFormFile file);
-        public Task DeleteBlobAsync(string blobName);
+        public Task DeleteFileAsync(string blobName);
     }
 }

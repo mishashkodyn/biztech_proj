@@ -1,8 +1,10 @@
+using Amazon.S3;
 using API.Core.Entities;
 using API.Endpoints;
 using API.Hubs;
 using API.Infrastructure.Data;
 using API.Infrastructure.Identity;
+using API.Options;
 using API.Services;
 using API.Services.Interfaces;
 using Azure.Storage.Blobs;
@@ -83,9 +85,22 @@ builder.Services.AddAuthentication(opt =>
     };
 });
 
-builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
+// Configs
+var r2Section = builder.Configuration.GetSection("CloudflareConfig");
+builder.Services.Configure<CloudflareConfig>(r2Section);
+
+// Services
 builder.Services.AddScoped<IAiService, AiService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+
+if (r2Section.GetValue<bool>("Enabled"))
+{
+    builder.Services.AddScoped<IStorageService, R2StorageService>();
+}
+else
+{
+    builder.Services.AddScoped<IStorageService, BlobStorageService>();
+}
 
 builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();
